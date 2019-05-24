@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -65,6 +66,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',  # <- Here
+                'social_django.context_processors.login_redirect', # <- Here
             ],
         },
     },
@@ -102,6 +105,18 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+#Google authentication backend
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.open_id.OpenIdAuth',
+     'social_core.backends.google.GoogleOpenId',
+     'social_core.backends.google.GoogleOAuth2',
+     'django.contrib.auth.backends.ModelBackend',
+)
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '800804488579-hd1dq4ksund5uhbmpt0s3f1bg05pt6qa.apps.googleusercontent.com'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'iOAPQ19BBcRoWPeM9Hy7OHCZ'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -123,3 +138,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+LOGIN_REDIRECT_URL = 'profile'
+
+LOGIN_URL = 'login'
+
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+
