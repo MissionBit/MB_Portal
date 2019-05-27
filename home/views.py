@@ -10,8 +10,17 @@ def home(request):
 		return redirect('home-home')
 	else:
 		user = Users.objects.filter(email = str(request.user.email)).first()
+		print(user.role == 'staff')
 		if user is None:
 			return render(request, 'home/register.html')
+		elif user.role == 'staff':
+			return redirect('home-staff')
+		elif user.role == 'student':
+			return redirect('home-student')
+		elif user.role == 'teacher':
+			return redirect('home-teacher')
+		elif user.role == 'volunteer':
+			return redirect('home-volunteer')
 		else: 
 			context = {
 				'useremail' : user.email
@@ -30,4 +39,26 @@ def create_user(request):
 		last_name = last_name,
 		role = role
 		)
-	new_user.save()	
+	new_user.save()
+
+
+def staff(request):
+	print()
+	if Users.objects.filter(email = str(request.user.email)).first().role != 'staff':
+		return HttpResponse('Unauthorized', status=401)
+	return render(request, 'home/staff.html')
+
+def student(request):
+	if Users.objects.filter(email = str(request.user.email)).first().role != 'student':
+		return HttpResponse('Unauthorized', status=401)
+	return render(request, 'home/student.html')
+
+def teacher(request):
+	if Users.objects.filter(email = str(request.user.email)).first().role != 'teacher':
+		return HttpResponse('Unauthorized', status=401)
+	return render(request, 'home/teacher.html')
+
+def volunteer(request):
+	if Users.objects.filter(email = str(request.user.email)).first().role != 'volunteer':
+		return HttpResponse('Unauthorized', status=401)
+	return render(request, 'home/volunteer.html')

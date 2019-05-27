@@ -80,9 +80,9 @@ WSGI_APPLICATION = 'missionbit.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # <- Postgeres Setup
-        'NAME' : '', # <- Postgeres Setup (source into bash later)
-        'USER' : '', # <- Postgeres Setup (source into bash later)
-        'PASSWORD': '', # <- Postgeres Setup (source into bash later)
+        'NAME' : 'mbdb', # <- Postgeres Setup (source into bash later)
+        'USER' : 'mbadmin', # <- Postgeres Setup (source into bash later)
+        'PASSWORD': 'missionbit', # <- Postgeres Setup (source into bash later)
         'HOST': 'localhost', # <- Postgeres Setup 
         'PORT': '5432' # <- Postgeres Setup 
     }
@@ -116,9 +116,9 @@ AUTHENTICATION_BACKENDS = (
      'django.contrib.auth.backends.ModelBackend',
 )
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = ''
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '800804488579-hd1dq4ksund5uhbmpt0s3f1bg05pt6qa.apps.googleusercontent.com'
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ''
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'iOAPQ19BBcRoWPeM9Hy7OHCZ'
 
 ## End Google Auth backend
 
