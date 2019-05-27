@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<h1>Please Register</h1>
+
+	<div class = "content-section">	
+		<form method = "POST">
+			{% csrf_token %}
+			First Name: <br>
+			<input type="text" name="first_name">  <br>
+			Last Name: <br>
+			<input type="text" name="last_name"> <br>
+			<input type="radio" name="role" value="student" checked> Student <br>
+		  	<input type="radio" name="role" value="teacher"> Teacher <br>
+		  	<input type="radio" name="role" value="volunteer" checked> Volunteer <br>
+		  	<input type="radio" name="role" value="staff"> Staff <br>
+			<input type="submit" value="Submit"> <br>
+		</form>
+	</div>
+
+</body>
+</html>
