@@ -1,6 +1,7 @@
 {% extends "home/home.html" %}
 {% load crispy_forms_tags %}
 
+{% block content %}
 {% if messages %}
 {% for message in messages %}
 	<div class = "alert alert-{{message.tags}}">
@@ -9,7 +10,6 @@
 {% endfor %}
 {% endif %}
 
-{% block content %}
 <h4>Please Log In Or Register</h4>
 <div class='content-section'>	
 	  <a href="{% url 'login' %}">Log In</a><br>	

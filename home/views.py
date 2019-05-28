@@ -91,8 +91,8 @@ def register_as_student(request):
 			form.save()
 			first_name = form.cleaned_data.get('first_name')
 			messages.success(request, f'Student Account Successfully Created For {first_name}, please log in')
-			return redirect('home-login')
-		return render(request, 'home/register.html', {'form': form})
+			return redirect('login')
+		return render(request, 'home/register_as_student.html', {'form': form})
 	else:
 		form = UserRegisterForm()
 		return render(request, 'home/register_as_student.html', {'form' : form})
@@ -112,8 +112,8 @@ def register_as_volunteer(request):
 			form.save()
 			first_name = form.cleaned_data.get('first_name')
 			messages.success(request, f'Volunteer Account Successfully Created For {first_name}, please log in')
-			return redirect('home-login')
-		return render(request, 'home/register.html', {'form': form})
+			return redirect('login')
+		return render(request, 'home/register_as_volunteer.html', {'form': form})
 	else:
 		form = UserRegisterForm()
 		return render(request, 'home/register_as_volunteer.html', {'form' : form})

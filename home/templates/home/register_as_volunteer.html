@@ -2,6 +2,14 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+	{% if messages %}
+	{% for message in messages %}
+		<div class = "alert alert-{{message.tags}}">
+			{{ message }}
+		</div>
+	{% endfor %}
+	{% endif %}
+	
 	<h3>Register As Mission Bit Volunteer</h3>
 	<form method="post">
     {% csrf_token %}

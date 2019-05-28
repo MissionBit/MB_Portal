@@ -1,7 +1,14 @@
 {% extends "home/home.html" %}
 
 {% block content %}
-
+	{% if messages %}
+	{% for message in messages %}
+		<div class = "alert alert-{{message.tags}}">
+			{{ message }}
+		</div>
+	{% endfor %}
+	{% endif %}
+	
 	<h4>Please Complete Registration</h4>
 	<form method = "POST">
 		{% csrf_token %}

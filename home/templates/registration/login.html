@@ -1,16 +1,15 @@
 {% extends "home/home.html" %}
 {% load crispy_forms_tags %}
 
-{% if messages %}
-{% for message in messages %}
-	<div class = "alert alert-{{message.tags}}">
-		{{ message }}
-	</div>
-{% endfor %}
-{% endif %}
-
 {% block content %}
-
+	{% if messages %}
+	{% for message in messages %}
+		<div class = "alert alert-{{message.tags}}">
+			{{ message }}
+		</div>
+	{% endfor %}
+	{% endif %}
+	
 	<h4>Please Log In</h4>
 	<form method = "POST">
 			{% csrf_token %}
