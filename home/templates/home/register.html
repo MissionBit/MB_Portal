@@ -1,25 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-</head>
-<body>
-	<h1>Please Register</h1>
+{% extends "home/home.html" %}
 
-	<div class = "content-section">	
-		<form method = "POST">
-			{% csrf_token %}
-			First Name: <br>
-			<input type="text" name="first_name">  <br>
-			Last Name: <br>
-			<input type="text" name="last_name"> <br>
-			<input type="radio" name="role" value="student" checked> Student <br>
-		  	<input type="radio" name="role" value="teacher"> Teacher <br>
-		  	<input type="radio" name="role" value="volunteer" checked> Volunteer <br>
-		  	<input type="radio" name="role" value="staff"> Staff <br>
-			<input type="submit" value="Submit"> <br>
-		</form>
-	</div>
-
-</body>
-</html>
+{% block content %}
+	<h3>Register with Mission Bit</h3>
+     <a href="{% url 'home-register_as_student' %}">Register As Student</a><br>
+      <a href="{% url 'home-register_as_volunteer' %}">Register As Volunteer</a><br>
+  </form>
+{% endblock content %}

@@ -20,5 +20,5 @@ from django.conf.urls import url
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('home.urls')),
-    url(r'^auth/', include('social_django.urls', namespace='social')),  # <- Here
+    url(r'^auth/', include('social_django.urls', namespace='social')),
 ]

@@ -5,18 +5,17 @@
 	<title></title>
 </head>
 <body>
-	
-	{% if user.is_authenticated %}
-             <p class="display-4">Hello, {{ user.email }} </p>
-             {{ useremail }}
-	{% else %}
-             <a class="lead" href="{% url 'social:begin' 'google-oauth2' %}">Log in</a>
-	{% endif %}
+	<img src="https://www.missionbit.com/images/logo-fb.png" height="55" width="125">
 
 	<div>
 		{% block content %}{% endblock %}	
 	</div>
 	
+	{% if user.is_authenticated %}
+             <p class="display-4">Hello, {{ user.email }} </p>
+             {{ useremail }}
+         	 <a class="nav-item nav-link" href="{% url 'home-logout' %}">Logout</a>
+    {% endif %}
 
 </body>
 </html>

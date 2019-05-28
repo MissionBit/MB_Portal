@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social_django', # <- Social Django Oauth Google
+    'crispy_forms', # <- Crispy forms
 ]
 
 MIDDLEWARE = [
@@ -141,8 +142,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-LOGIN_URL = 'http://localhost:8000/auth/login/google-oauth2/'
+LOGIN_URL = ''
 
 LOGIN_REDIRECT_URL = 'home-home'
 
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
