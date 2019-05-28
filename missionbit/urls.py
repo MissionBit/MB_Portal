@@ -20,5 +20,6 @@ from django.conf.urls import url
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('home.urls')),
+    path('staff/', include('staff.urls')),
     url(r'^auth/', include('social_django.urls', namespace='social')),
 ]

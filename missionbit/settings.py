@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-
+from dotenv import load_dotenv
+load_dotenv()
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -31,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'staff.apps.StaffConfig',
     'home.apps.HomeConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -75,17 +77,21 @@ TEMPLATES = [
 WSGI_APPLICATION = 'missionbit.wsgi.application'
 
 
-# Database
+# Postgres Database Setup
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
+NAME = os.getenv("NAME")
+USER = os.getenv("USER")
+PASSWORD = os.getenv("PASSWORD")
+HOST = os.getenv("HOST")
+PORT = os.getenv("PORT")
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # <- Postgeres Setup
-        'NAME' : 'mbdb', # <- Postgeres Setup (source into bash later)
-        'USER' : 'mbadmin', # <- Postgeres Setup (source into bash later)
-        'PASSWORD': 'missionbit', # <- Postgeres Setup (source into bash later)
-        'HOST': 'localhost', # <- Postgeres Setup 
-        'PORT': '5432' # <- Postgeres Setup 
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', 
+        'NAME' : NAME, 
+        'USER' : USER, 
+        'PASSWORD': PASSWORD, 
+        'HOST': HOST, 
+        'PORT': PORT 
     }
 }
 
@@ -117,11 +123,11 @@ AUTHENTICATION_BACKENDS = (
      'django.contrib.auth.backends.ModelBackend',
 )
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '800804488579-hd1dq4ksund5uhbmpt0s3f1bg05pt6qa.apps.googleusercontent.com'
+KEY=os.getenv("KEY")
+SECRET=os.getenv("SECRET")
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = KEY
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = SECRET
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'iOAPQ19BBcRoWPeM9Hy7OHCZ'
-
-## End Google Auth backend
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/

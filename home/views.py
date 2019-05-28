@@ -27,7 +27,7 @@ def home(request):
 			# User should only be able to get here if they logged in with google AND they haven't registered with MB yet
 			return render(request, 'home/register_after_oauth.html')
 		elif user.role == 'staff':
-			return redirect('home-staff')
+			return redirect('staff')
 		elif user.role == 'student':
 			return redirect('home-student')
 		elif user.role == 'teacher':
@@ -40,11 +40,6 @@ def home(request):
 			}
 			return render(request, 'home/home.html', context)
 
-@login_required
-def staff(request):
-	if Users.objects.filter(email = str(request.user.email)).first().role != 'staff':
-		return HttpResponse('Unauthorized', status=401)
-	return render(request, 'home/staff.html')
 
 @login_required
 def student(request):
