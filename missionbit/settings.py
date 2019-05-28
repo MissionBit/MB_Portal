@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'social_django', # <- Social Django Oauth Google
     'crispy_forms', # <- Crispy forms
+    'coverage' # <- for testing
 ]
 
 MIDDLEWARE = [
