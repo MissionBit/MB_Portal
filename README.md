@@ -3,13 +3,13 @@
 <img src="https://avatars3.githubusercontent.com/u/5872193?s=280&v=4" align="right"
      title="Mission Bit Logo" width="120" height="120">
 
-This project will become an interactive web portal system for Mission Bit staff, students, teachers, and volunteers.
+This project will become an interactive web portal system for Mission Bit staff, students, teachers, and volunteers.  This branch is for authorization system setup.  Users will be able to login to the system with their Gmail account, or login with a username and password.  When a user logs into the system with their Gmail account for the first time, they will complete registration and be able to use their Gmail to login thereafter.  A user can also register as either a student or a volunteer
 
 ## Getting Started
 
 ### Prerequisites
 
-The following are the libraries you'll need in order for this to work on your machine and the commands necessary to install each of them, ommitted but necessary are python, pip and postgresql. 
+The following are the libraries you'll need in order for this to work on your machine and the commands necessary to install each of them, ommitted but necessary are `python`, `pip` and `postgresql`. 
 
 ```
 certifi==2019.3.9
@@ -36,98 +36,89 @@ urllib3==1.25.3
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
-
-First install django, this will collect django, pytz and sqlparse
+First clone the project, and navigate to your project folder:
 
 ```
-pip install django
+https://github.com/tylerIams/MB_Portal.git
+cd MB_Portal
 ```
 
-Next install dotenv
+Next, create your virtual environment, and activate it:
 
 ```
-pip install python-dotenv
+virtualenv <name>
+source <name>/bin/activate
 ```
 
-Next install social-auth for google authentication
+Next, (also in your project folder) install all of the necessary dependencies from the project `requirements.txt` file:
 
 ```
-pip install social-auth-core
-pip install social-auth-app-django
+pip install -r requirements.txt 
 ```
 
-Next install crispy forms, for the forms of course
+Finally run the application on your local machine with:
 
 ```
-pip install django-crispy-forms
+python manage.py runserver
 ```
 
-Next install coverage for testing
+Navigate in your browser to:
 
 ```
-pip install coverage
+localhost:8000/
 ```
 
-Finally, install psycopg2 as your postgres driver
-
-```
-pip install psycopg2
-```
-
-End with an example of getting some data out of the system or using it for a little demo
+And Bob's your uncle.
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
+Your requirements.txt file has installed the `coverage` package for you, which provides a nice coverage report for all the tests.
 
-### Break down into end to end tests
+### Run tests
 
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
+To run tests with the `coverage` library, in your project directory run:
 
 ```
-Give an example
+coverage run manage.py test tests -v 2
 ```
 
-## Deployment
+After the tests have run, generate a `coverage` report with:
 
-Add additional notes about how to deploy this on a live system
+```
+coverage html
+```
+
+A directory has been created with your `coverage` report called `htmlcov`, to view the coverage run:
+
+```
+open htmlcov/index.html
+```
+
+Click into any of the modules for a detailed report on the coverage of the tests.  Enjoy!
 
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+* [Django](https://docs.djangoproject.com/en/2.2/) - Django - the web framework used
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+NA
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+NA
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **Tyler Iams** - *Initial work* 
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/tylerIams/MB_Portal/contributors) who participated in this project.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+NA
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+* Thank you Bob Ipollito and Juliana De Heer
 
