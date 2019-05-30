@@ -9,7 +9,7 @@ This project will become an interactive web portal system for Mission Bit staff,
 
 ### Prerequisites
 
-The following are the libraries you'll need in order for this to work on your machine and the commands necessary to install each of them, ommitted but necessary are python and pip. 
+The following are the libraries you'll need in order for this to work on your machine and the commands necessary to install each of them, ommitted but necessary are python, pip and postgresql. 
 
 ```
 certifi==2019.3.9
@@ -38,16 +38,41 @@ urllib3==1.25.3
 
 A step by step series of examples that tell you how to get a development env running
 
-Say what the step will be
+First install django, this will collect django, pytz and sqlparse
 
 ```
 pip install django
 ```
 
-And repeat
+Next install dotenv
 
 ```
-until finished
+pip install python-dotenv
+```
+
+Next install social-auth for google authentication
+
+```
+pip install social-auth-core
+pip install social-auth-app-django
+```
+
+Next install crispy forms, for the forms of course
+
+```
+pip install django-crispy-forms
+```
+
+Next install coverage for testing
+
+```
+pip install coverage
+```
+
+Finally, install psycopg2 as your postgres driver
+
+```
+pip install psycopg2
 ```
 
 End with an example of getting some data out of the system or using it for a little demo
