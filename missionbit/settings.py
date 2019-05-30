@@ -32,6 +32,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'student.apps.StudentConfig',
+    'teacher.apps.TeacherConfig',
+    'volunteer.apps.VolunteerConfig',
     'staff.apps.StaffConfig',
     'home.apps.HomeConfig',
     'django.contrib.admin',
@@ -149,7 +152,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-LOGIN_URL = ''
+LOGIN_URL = 'home-landing_page'
 
 LOGIN_REDIRECT_URL = 'home-home'
 

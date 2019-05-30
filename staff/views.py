@@ -3,7 +3,6 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from home.models import Users
 
-# Create your views here.
 @login_required
 def staff(request):
 	if Users.objects.filter(email = str(request.user.email)).first().role != 'staff':
