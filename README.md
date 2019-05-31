@@ -41,6 +41,7 @@ First clone the project, and navigate to your project folder:
 ```
 git clone https://github.com/tylerIams/MB_Portal.git
 cd MB_Portal
+git checkout auth
 ```
 
 Next, create your virtual environment, and activate it:
