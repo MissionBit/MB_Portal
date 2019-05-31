@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from .forms import UserRegisterForm
@@ -21,7 +22,8 @@ def home(request):
     else: #user.role == 'volunteer'
         return redirect('volunteer')
 
-def logout(request):
+def logout_view(request):
+    logout(request)
     return render(request, 'home/logout.html')
 
 def login(request):

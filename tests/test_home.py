@@ -49,10 +49,16 @@ class HomeViewsTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
     def test_logout(self):
-        request = RequestFactory().get(reverse('home-home'))
-        request.user = mixer.blend(User)
-        response = logout(request)
+        self.client.force_login(
+            User.objects.create_user(
+                username='testuser',
+                email='testuser.example.com',
+                password='top_secret'
+            )
+        )
+        response = self.client.get(reverse('home-logout'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.wsgi_request.user.is_authenticated, False)
 
     def test_login(self):
         request = RequestFactory().get(reverse('home-home'))
