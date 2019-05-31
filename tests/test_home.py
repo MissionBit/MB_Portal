@@ -41,53 +41,49 @@ class HomeViewsTest(TestCase):
         response = home(request)
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
-    def test_home_post(self):
-        request = RequestFactory().post(reverse('home-home'), HomeModelsTest.create_valid_form(self, firstname="missionbit"))
-        request.user = HomeModelsTest.create_authenticated_user(self)
-        self.assertEqual(Users.objects.count(), 1) # Confirm before call the database is empty
-        response = home(request)
-        self.assertEqual(Users.objects.count(), 2) # Confirm there will be exactly 1 user created
-        self.assertEqual(Users.objects.filter(first_name = "missionbit").first().first_name, "missionbit") # Confirm it's the right one
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND) # Confirm we got status via render
-        self.assertEqual(response.url, reverse('home-home')) # Confirm redirected correctly
- 
     def test_home_no_matching_user(self):
         request = RequestFactory().get(reverse('home-home'))
         request.user = mixer.blend(User)
         response = home(request)
         self.assertEqual(response.url, reverse('home-register_after_oauth'))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-    
+
     def test_logout(self):
-        request = RequestFactory().get(reverse('home-home'))
-        request.user = mixer.blend(User)
-        response = logout(request)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)    
+        self.client.force_login(
+            User.objects.create_user(
+                username='testuser',
+                email='testuser.example.com',
+                password='top_secret'
+            )
+        )
+        response = self.client.get(reverse('home-logout'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.wsgi_request.user.is_authenticated, False)
 
     def test_login(self):
         request = RequestFactory().get(reverse('home-home'))
         request.user = mixer.blend(User)
         response = login(request)
         self.assertEqual(response.url, reverse('login'))
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)  
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
     def test_register(self):
         request = RequestFactory().get(reverse('home-home'))
         request.user = mixer.blend(User)
         response = register(request)
-        self.assertEqual(response.status_code, status.HTTP_200_OK) 
-  
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_landing_page(self):
         request = RequestFactory().get(reverse('home-home'))
         request.user = mixer.blend(User)
         response = landing_page(request)
-        self.assertEqual(response.status_code, status.HTTP_200_OK) 
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_register_after_oauth(self):
         request = RequestFactory().get(reverse('home-home'))
         request.user = mixer.blend(User)
         response = register_after_oauth(request)
-        self.assertEqual(response.status_code, status.HTTP_200_OK) 
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_register_as_student(self):
         request = RequestFactory().get(reverse('home-home'))
@@ -103,7 +99,7 @@ class HomeViewsTest(TestCase):
         setattr(request, '_messages', messages)
         self.assertEqual(Users.objects.count(), 1)
         response = register_as_student(request)
-        self.assertEqual(Users.objects.count(), 2) 
+        self.assertEqual(Users.objects.count(), 2)
         self.assertEqual(Users.objects.filter(first_name = "missionbit").first().first_name, "missionbit")
         self.assertEqual(response.url, reverse('login'))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
@@ -122,7 +118,7 @@ class HomeViewsTest(TestCase):
         request = RequestFactory().get(reverse('home-home'))
         request.user = HomeModelsTest.create_user(self)
         response = register_as_volunteer(request)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)	
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_register_as_volunteer_post(self):
         request = RequestFactory().post(reverse('home-home'), HomeModelsTest.create_valid_form(self, firstname="missionbit",
@@ -133,7 +129,7 @@ class HomeViewsTest(TestCase):
         setattr(request, '_messages', messages)
         self.assertEqual(Users.objects.count(), 1)
         response = register_as_volunteer(request)
-        self.assertEqual(Users.objects.count(), 2) 
+        self.assertEqual(Users.objects.count(), 2)
         self.assertEqual(Users.objects.filter(first_name = "missionbit").first().first_name, "missionbit")
         self.assertEqual(response.url, reverse('login'))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
