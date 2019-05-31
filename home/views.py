@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from .forms import UserRegisterForm
@@ -9,21 +8,34 @@ from django.contrib import messages
 
 @login_required
 def home(request):
-    user = Users.objects.filter(email = str(request.user.email)).first()
-    if user == None:
-        # User should only be able to get here if they logged in with google AND they haven't registered with MB yet
-        return redirect('home-register_after_oauth')
-    elif user.role == 'staff':
-        return redirect('staff')
-    elif user.role == 'student':
-        return redirect('student')
-    elif user.role == 'teacher':
-        return redirect('teacher')
-    else: #user.role == 'volunteer'
-        return redirect('volunteer')
+    if (request.method == 'POST'):
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        role = request.POST['role']
+        new_user = Users(
+                username = request.user.username,
+                email = request.user.email,
+                first_name = first_name,
+                last_name = last_name,
+                role = role
+                )
+        new_user.save()
+        return redirect('home-home')
+    else:
+        user = Users.objects.filter(email = str(request.user.email)).first()
+        if user == None:
+            # User should only be able to get here if they logged in with google AND they haven't registered with MB yet
+            return redirect('home-register_after_oauth')
+        elif user.role == 'staff':
+            return redirect('staff')
+        elif user.role == 'student':
+            return redirect('student')
+        elif user.role == 'teacher':
+            return redirect('teacher')
+        else: #user.role == 'volunteer'
+            return redirect('volunteer')
 
-def logout_view(request):
-    logout(request)
+def logout(request):
     return render(request, 'home/logout.html')
 
 def login(request):

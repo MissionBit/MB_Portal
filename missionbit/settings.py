@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-import dj_database_url
 from dotenv import load_dotenv
 load_dotenv()
 import os
@@ -27,7 +26,7 @@ SECRET_KEY = 'h7ti$^0sg*9vmi^2r)%t+o-%3-aa$!f+xsn5ckag@8g8osuz8n'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '').split()
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -84,13 +83,22 @@ WSGI_APPLICATION = 'missionbit.wsgi.application'
 
 # Postgres Database Setup
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-# Using DATABASE_URL for configuration
+NAME = os.getenv("NAME")
+USER = os.getenv("USER")
+PASSWORD = os.getenv("PASSWORD")
+HOST = os.getenv("HOST")
+PORT = os.getenv("PORT")
 DATABASES = {
-    'default': dj_database_url.config(
-        default='postgres://localhost/mb_portal',
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', 
+        'NAME' : NAME, 
+        'USER' : USER, 
+        'PASSWORD': PASSWORD, 
+        'HOST': HOST, 
+        'PORT': PORT 
+    }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -114,15 +122,16 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.open_id.OpenIdAuth',
-    'social_core.backends.google.GoogleOpenId',
-    'social_core.backends.google.GoogleOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
+     'social_core.backends.google.GoogleOpenId',
+     'social_core.backends.google.GoogleOAuth2',
+     'django.contrib.auth.backends.ModelBackend',
 )
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY")
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET")
-SOCIAL_AUTH_URL_NAMESPACE = 'social'
-SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+KEY=os.getenv("KEY")
+SECRET=os.getenv("SECRET")
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = KEY
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = SECRET
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -146,5 +155,7 @@ STATIC_URL = '/static/'
 LOGIN_URL = 'home-landing_page'
 
 LOGIN_REDIRECT_URL = 'home-home'
+
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
