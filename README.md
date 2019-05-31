@@ -55,6 +55,13 @@ Next, (also in your project folder) install all of the necessary dependencies fr
 
 ```
 sudo install django
+```
+
+```
+sudo pip install psycopg2-binary
+```
+
+```
 pip install -r requirements.txt 
 ```
 
