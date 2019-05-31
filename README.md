@@ -54,15 +54,15 @@ source <name>/bin/activate
 Next, (also in your project folder) install all of the necessary dependencies from the project `requirements.txt` file:
 
 ```
-sudo install django
+sudo pip3 install django
 ```
 
 ```
-sudo pip install psycopg2-binary
+sudo pip3 install psycopg2-binary
 ```
 
 ```
-sudo pip install -r requirements.txt 
+sudo pip3 install -r requirements.txt 
 ```
 
 Finally run the application on your local machine with:
