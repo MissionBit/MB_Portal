@@ -39,7 +39,7 @@ urllib3==1.25.3
 First clone the project, and navigate to your project folder:
 
 ```
-https://github.com/tylerIams/MB_Portal.git
+git clone https://github.com/tylerIams/MB_Portal.git
 cd MB_Portal
 ```
 
