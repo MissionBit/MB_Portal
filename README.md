@@ -62,7 +62,7 @@ sudo pip install psycopg2-binary
 ```
 
 ```
-pip install -r requirements.txt 
+sudo pip install -r requirements.txt 
 ```
 
 Finally run the application on your local machine with:
