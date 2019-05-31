@@ -9,7 +9,7 @@ This project will become an interactive web portal system for Mission Bit staff,
 
 ### Prerequisites
 
-The following are the libraries you'll need in order for this to work on your machine and the commands necessary to install each of them, ommitted but necessary are `python`, `pip` and `postgresql`. 
+The following are the libraries you'll need in order for this to work on your machine and the commands necessary to install each of them, ommitted but necessary are `python`, `pip` and `postgresql`.  If you're brand new to python, see the `Getting Started With Mission Bit and Python` section for a list of commands that will get you set up properly. 
 
 ```
 certifi==2019.3.9
