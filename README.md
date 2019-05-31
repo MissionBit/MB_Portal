@@ -54,6 +54,7 @@ source <name>/bin/activate
 Next, (also in your project folder) install all of the necessary dependencies from the project `requirements.txt` file:
 
 ```
+sudo install django
 pip install -r requirements.txt 
 ```
 
