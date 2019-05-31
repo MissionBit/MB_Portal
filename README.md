@@ -9,7 +9,7 @@ This project will become an interactive web portal system for Mission Bit staff,
 
 ### Prerequisites
 
-The following are the libraries you'll need in order for this to work on your machine and the commands necessary to install each of them, ommitted but necessary are `python`, `pip` and `postgresql`.  If you're brand new to python, see the `Getting Started With Mission Bit and Python` section for a list of commands that will get you set up properly. 
+The following are the libraries you'll need in order for this to work on your machine and the commands necessary to install each of them, ommitted but necessary are `python`, `pip` and `postgresql`.  If you're brand new to python, see the `Getting Started With Mission Bit and Python Django` section for a list of commands that will get you set up properly. 
 
 ```
 certifi==2019.3.9
@@ -121,4 +121,36 @@ NA
 ## Acknowledgments
 
 * Thank you Bob Ipollito and Juliana De Heer
+
+# Getting Started With Mission Bit and Python-Django
+
+Welcome!  These instructions will help you get started with Python Django and use our Mission Bit web app all in one.  Use these if you've never used Python before on your computer!  Be excited!
+
+First, open a `Terminal` window on your computer.  This will start you off in your computer's home directory (folder), and this is precisely where we want to be to set up the app.  Copy this command and press `return` (enter), then enter again when you're prompted to complete Homebrew installation, which will help you install python:
+
+```
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+
+Next, install `Python` on your computer (the latest version is called `Python3`) by copying and running this command:
+
+```
+brew install python
+```
+
+Next, install `pip` which will help you install your virtual environment to run your app (when prompted enter your password for your computer)
+
+```
+sudo easy_install pip
+```
+
+Next, install `virtualenv`, the package that will allow you to create virtual environments :
+
+```
+sudo pip install virtualenv
+```
+
+Now you should be ready to start the `Installing` section, only a few commands away from using the Mission Bit web portal!
+
+
 
