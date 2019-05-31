@@ -9,30 +9,7 @@ This project will become an interactive web portal system for Mission Bit staff,
 
 ### Prerequisites
 
-The following are the libraries you'll need in order for this to work on your machine and the commands necessary to install each of them, ommitted but necessary are `python`, `pip` and `postgresql`.  If you're brand new to python, see the `Getting Started With Mission Bit and Python Django` section for a list of commands that will get you set up properly. 
-
-```
-certifi==2019.3.9
-chardet==3.0.4
-coverage==4.5.3
-defusedxml==0.6.0
-Django==2.2.1
-django-crispy-forms==1.7.2
-idna==2.8
-oauthlib==3.0.1
-psycopg2==2.8.2
-PyJWT==1.7.1
-python-dotenv==0.10.2
-python3-openid==3.1.0
-pytz==2019.1
-requests==2.22.0
-requests-oauthlib==1.2.0
-six==1.12.0
-social-auth-app-django==3.1.0
-social-auth-core==3.2.0
-sqlparse==0.3.0
-urllib3==1.25.3
-```
+`python`, `pip` and `postgresql` are prerequisites to installing. Python dependencies will be installed from `requirements.txt` using `pip`. If you're brand new to python, see [Getting Started With Mission Bit and Python Django](#getting-started-with-mission-bit-and-python-django).
 
 ### Installing
 
@@ -54,15 +31,13 @@ source <name>/bin/activate
 Next, (also in your project folder) install all of the necessary dependencies from the project `requirements.txt` file:
 
 ```
-sudo pip3 install django
+pip install -r requirements.txt
 ```
 
-```
-sudo pip3 install psycopg2-binary
-```
+Create the database and apply any necessary migrations:
 
 ```
-sudo pip3 install -r requirements.txt 
+python manage.py migrate
 ```
 
 Finally run the application on your local machine with:
@@ -119,7 +94,7 @@ NA
 
 ## Authors
 
-* **Tyler Iams** - *Initial work* 
+* **Tyler Iams** - *Initial work*
 
 See also the list of [contributors](https://github.com/tylerIams/MB_Portal/contributors) who participated in this project.
 
@@ -129,7 +104,7 @@ NA
 
 ## Acknowledgments
 
-* Thank you Bob Ipollito and Juliana De Heer
+* Thank you Bob Ippolito and Juliana de Heer
 
 # Getting Started With Mission Bit and Python-Django
 
