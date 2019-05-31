@@ -1,7 +1,5 @@
-from dotenv import load_dotenv, find_dotenv
-load_dotenv(find_dotenv())
 """
-WSGI config for missionbit project.
+WSGI config for missionbit_portal project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -13,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'missionbit.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'missionbit_portal.settings')
 
 application = get_wsgi_application()
