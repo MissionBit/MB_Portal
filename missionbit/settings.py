@@ -121,7 +121,8 @@ AUTHENTICATION_BACKENDS = (
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY")
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET")
-
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -145,7 +146,5 @@ STATIC_URL = '/static/'
 LOGIN_URL = 'home-landing_page'
 
 LOGIN_REDIRECT_URL = 'home-home'
-
-SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
