@@ -95,6 +95,8 @@ NA
 ## Authors
 
 * **Tyler Iams** - *Initial work*
+* **Bob Ippolito** - *Initial editing*
+* **Juliana de Heer** - *Editing*
 
 See also the list of [contributors](https://github.com/tylerIams/MB_Portal/contributors) who participated in this project.
 
@@ -104,7 +106,7 @@ NA
 
 ## Acknowledgments
 
-* Thank you Bob Ippolito and Juliana de Heer
+* Thank you Bob Ippolito and Juliana de Heer for their ideation and guidance on this project.
 
 # Getting Started With Mission Bit and Python-Django
 
