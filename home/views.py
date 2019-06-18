@@ -82,8 +82,8 @@ def register_as_volunteer(request):
                 last_name = form.cleaned_data.get('last_name'),
                 password = form.cleaned_data.get('password1')
                 )
-            student_group = Group.objects.get(name = 'volunteer')
-            student_group.user_set.add(new_user)
+            volunteer_group = Group.objects.get(name = 'volunteer')
+            volunteer_group.user_set.add(new_user)
             first_name = form.cleaned_data.get('first_name')
             messages.success(request, f'Volunteer Account Successfully Created For {first_name}, please log in')
             return redirect('login')

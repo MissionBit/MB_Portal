@@ -95,7 +95,7 @@ DATABASES = {
         'ENGINE': '',
         'CONSUMER_KEY': '',
         'CONSUMER_SECRET': '',
-        'USER': '',
+        'USER': 'tyler@missionbit.com.mbportal',
         'PASSWORD': '',
         'HOST': 'https://test.salesforce.com',
     }
