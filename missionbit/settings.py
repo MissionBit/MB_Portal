@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'social_django', # <- Social Django Oauth Google
     'crispy_forms', # <- Crispy forms
-    'coverage' # <- for testing
+    'coverage', # <- for testing
+    'salesforce' # <- salesforce database
 ]
 
 MIDDLEWARE = [
@@ -87,10 +88,22 @@ WSGI_APPLICATION = 'missionbit.wsgi.application'
 # Using DATABASE_URL for configuration
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgres://localhost/mb_portal',
+        default='postgres://localhost/mbdb',
         conn_max_age=600
-    )
+    ),
+    'salesforce': {
+        'ENGINE': '',
+        'CONSUMER_KEY': '',
+        'CONSUMER_SECRET': '',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': 'https://test.salesforce.com',
+    }
 }
+
+DATABASE_ROUTERS = [
+    "salesforce.router.ModelRouter"
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

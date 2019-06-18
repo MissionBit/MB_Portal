@@ -1,11 +1,11 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from home.models import Users
+from django.contrib.auth.models import User, Group
 from django.shortcuts import render
 
 @login_required
 def volunteer(request):
-	if Users.objects.filter(email = str(request.user.email)).first().role != 'volunteer':
-		return HttpResponse('Unauthorized', status=401)
-	return render(request, 'volunteer.html')
+    if not request.user.groups.filter(name = 'volunteer').exists():
+        return HttpResponse('Unauthorized', status=401)
+    return render(request, 'volunteer.html')
