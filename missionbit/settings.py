@@ -92,12 +92,12 @@ DATABASES = {
         conn_max_age=600
     ),
     'salesforce': {
-        'ENGINE': '',
-        'CONSUMER_KEY': '',
-        'CONSUMER_SECRET': '',
-        'USER': 'tyler@missionbit.com.mbportal',
-        'PASSWORD': '',
-        'HOST': 'https://test.salesforce.com',
+        'ENGINE': 'salesforce.backend',
+        'CONSUMER_KEY': os.getenv("SALESFORCE_CONSUMER_KEY"),
+        'CONSUMER_SECRET': os.getenv("SALESFORCE_CONSUMER_SECRET"),
+        'USER': os.getenv("SALESFORCE_USER"),
+        'PASSWORD': os.getenv("SALESFORCE_PASSWORD"),
+        'HOST': os.getenv("SALESFORCE_HOST"),
     }
 }
 
