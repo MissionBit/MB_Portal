@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect
+from __future__ import unicode_literals
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import logout
 from django.contrib.auth.models import User, Group, Permission
@@ -8,6 +9,32 @@ from .forms import UserRegisterForm
 from django.contrib import messages
 from urllib.parse import urlencode
 from django.urls import reverse
+from .models import Contact, User, Individual, ClassOffering
+
+
+'''
+**THIS index() method WILL NOT BE USED IN PRODUCTION: **
+it is a method that was added to test the mb-salesforce database 
+connection during development
+This method should be used to test our database, we can push data to it through here via a
+post request and we can query the database from here as well.  Leave this method here for
+ease of fxnality testing purposes
+until we are ready to deploy in production. 
+'''
+def index(request):
+    # Get ten Contacts
+    contacts = Contact.objects.all()
+    users = User.objects.all()
+    individuals = Individual.objects.all()
+    classes = ClassOffering.objects.all()
+    context = {
+        'contacts': contacts,
+        'users' : users,
+        'individuals' : individuals,
+        'classes' : classes
+    }
+    
+    return render(request, 'home/index.html', context)
 
 '''
 If the request's user already has a tag they are redirected to the correct page.  When a user
