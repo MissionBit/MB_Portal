@@ -2,6 +2,14 @@
 
 {% block content %}
 
+{% if messages %}
+{% for message in messages %}
+	<div class = "alert alert-{{message.tags}}">
+		{{ message }}
+	</div>
+{% endfor %}
+{% endif %}
+
 <h1> Staff User Home </h1>
 
 <a href="{% url 'user_management' %}">Manage Users</a><br>

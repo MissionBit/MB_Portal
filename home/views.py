@@ -9,8 +9,7 @@ from .forms import UserRegisterForm
 from django.contrib import messages
 from urllib.parse import urlencode
 from django.urls import reverse
-from .models import Contact, User, Individual, ClassOffering
-
+from .models import Contact, User, Individual, ClassOffering, ClassEnrollment
 
 '''
 **THIS index() method WILL NOT BE USED IN PRODUCTION: **
@@ -27,13 +26,14 @@ def index(request):
     users = User.objects.all()
     individuals = Individual.objects.all()
     classes = ClassOffering.objects.all()
+    enrollments = ClassEnrollment.objects.all()
     context = {
         'contacts': contacts,
         'users' : users,
         'individuals' : individuals,
-        'classes' : classes
+        'classes' : classes,
+        'enrollments' : enrollments
     }
-    
     return render(request, 'home/index.html', context)
 
 '''

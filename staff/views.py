@@ -3,6 +3,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
+from home.forms import CreateStaffForm
+from home.models import Contact, User
 
 '''
 
@@ -20,10 +22,35 @@ def user_management(request):
     return render(request, 'user_management.html')
 
 @login_required
+def contact_management(request):
+    if not request.user.groups.filter(name = 'staff').exists():
+        return HttpResponse('Unauthorized', status=401)
+    return render(request, 'contact_management.html')
+
+@login_required
 def create_staff_user(request):
     if not request.user.groups.filter(name = 'staff').exists():
         return HttpResponse('Unauthorized', status=401)
-    return render(request, 'create_staff_user.html')
+    if request.method == 'POST':
+        form = CreateStaffForm(request.POST)
+        if form.is_valid():
+            setattr(form, 'OwnerId', User.objects.all()[:1])
+            form.save()
+            new_user = User.objects.create_user(
+                username = "%s.%s" (form.cleaned_data.get('first_name'), form.cleaned_data.get('last_name')),
+                email = form.cleaned_data.get('email'),
+                first_name = form.cleaned_data.get('first_name'),
+                last_name = form.cleaned_data.get('last_name'),
+                password = 'missionbit'
+                )
+            staff_group = Group.objects.get(name = 'staff')
+            staff_group.user_set.add(new_user)
+            first_name = form.cleaned_data.get('first_name')
+            messages.success(request, f'Staff Account Successfully Created For {first_name}')
+            return redirect('staff')
+        return render(request, 'home/register_as_student.html', {'form': form})
+    form = CreateStaffForm()
+    return render(request, 'create_staff_user.html', {'form' : form})
 
 @login_required
 def create_teacher_user(request):

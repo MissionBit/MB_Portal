@@ -24,7 +24,7 @@ class Contact(models.Model):
     title = models.CharField(max_length=128, blank=True, null=True)
     department = models.CharField(max_length=80, blank=True, null=True)
     birthdate = models.DateField(blank=True, null=True)
-    owner = models.ForeignKey('User', models.DO_NOTHING, related_name='contact_owner_set')
+    owner = models.ForeignKey('User', models.DO_NOTHING, related_name='contact_owner_set', blank=True)
     created_date = models.DateTimeField(sf_read_only=models.READ_ONLY)
     created_by = models.ForeignKey('User', models.DO_NOTHING, related_name='contact_createdby_set', sf_read_only=models.READ_ONLY)
     last_modified_date = models.DateTimeField(sf_read_only=models.READ_ONLY)
@@ -180,6 +180,7 @@ class ClassEnrollment(models.Model):
     origin_school = models.CharField(custom=True, db_column='Origin_School__c', max_length=1300, verbose_name='School attended by this student', sf_read_only=models.READ_ONLY, blank=True, null=True)
     parent_phone = models.CharField(custom=True, db_column='Parent_Phone__c', max_length=1300, verbose_name='Parent Phone', sf_read_only=models.READ_ONLY, blank=True, null=True)
     parent_email = models.CharField(custom=True, db_column='Parent_Email__c', max_length=1300, verbose_name='Parent Email', sf_read_only=models.READ_ONLY, blank=True, null=True)
+
     class Meta(models.Model.Meta):
         db_table = 'Class_Enrollment__c'
         verbose_name = 'Class Enrollment'

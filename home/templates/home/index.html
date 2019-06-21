@@ -7,7 +7,7 @@
 <body>
 	<img src="https://www.missionbit.com/images/logo-fb.png" height="55" width="105">
 
-	<h1>Use This Page to Test Django-Salesforce Functionality</h1>
+	<h3>Use This Page to Test Mission Bit Django-Salesforce Functionality</h3>
 	
 	{% if contacts %}
 		<p> Contacts </p>
@@ -51,6 +51,17 @@
 		</ul>
 	{% else %}
 	 	<p>No Salesforce Class Offerings</p>
+	{% endif %}
+
+	{% if enrollments %}
+		<p> Class Enrollments </p>
+		<ul>
+		{% for enrollment in enrollments %}
+			<li> {{ enrollment.name }} {{ enrollment.contact.name }} </li>
+		{% endfor %}
+		</ul>
+	{% else %}
+	 	<p>No Salesforce Class Enrollments</p>
 	{% endif %}
 
 </body>
