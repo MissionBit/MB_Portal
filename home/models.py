@@ -64,12 +64,20 @@ class User(models.Model):
     state = models.CharField(max_length=80, verbose_name='State/Province', blank=True, null=True)
     postal_code = models.CharField(max_length=20, verbose_name='Zip/Postal Code', blank=True, null=True)
     country = models.CharField(max_length=80, blank=True, null=True)
+    is_active = models.BooleanField(verbose_name='Active', default=models.DEFAULTED_ON_CREATE)
 
     class Meta(models.Model.Meta):
         db_table = 'User'
         verbose_name = 'User'
         verbose_name_plural = 'Users'
         # keyPrefix = '003'
+
+    def __str__(self):
+        if self.is_active:
+            active = "active"
+        else:
+            active = "inactive"
+        return "%s %s -- %s" % (self.first_name, self.last_name, active)   
 
 class Individual(models.Model):
     owner = models.ForeignKey('User', models.DO_NOTHING, related_name='individual_owner_set')  # Master Detail Relationship *

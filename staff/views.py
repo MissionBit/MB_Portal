@@ -1,10 +1,11 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
+from django.contrib import messages
 from home.forms import CreateStaffForm
-from home.models import Contact, User
+from home.models import Contact
 
 '''
 
@@ -34,10 +35,9 @@ def create_staff_user(request):
     if request.method == 'POST':
         form = CreateStaffForm(request.POST)
         if form.is_valid():
-            setattr(form, 'OwnerId', User.objects.all()[:1])
             form.save()
             new_user = User.objects.create_user(
-                username = "%s.%s" (form.cleaned_data.get('first_name'), form.cleaned_data.get('last_name')),
+                username = "%s.%s" % (form.cleaned_data.get('first_name'), form.cleaned_data.get('last_name')),
                 email = form.cleaned_data.get('email'),
                 first_name = form.cleaned_data.get('first_name'),
                 last_name = form.cleaned_data.get('last_name'),
