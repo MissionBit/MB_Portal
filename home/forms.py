@@ -1,16 +1,18 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
+from django.contrib.auth.models import User as DjangoUser
 from .models import Contact, User, Account
 from home.choices import *
 
 
 class UserRegisterForm(UserCreationForm):
+    username = forms.CharField(label='Choose Username', max_length=100)
     email = forms.EmailField(label='email', max_length=100)
     first_name = forms.CharField(label='First name', max_length=100)
     last_name = forms.CharField(label='Last name', max_length=100)
 
     class Meta:
-        model = User
+        model = DjangoUser
         fields = ['username', 'email', 'first_name', 'last_name', 'password1', 'password2']
 
 
@@ -86,6 +88,7 @@ class CreateVolunteerForm(forms.ModelForm):
     class Meta:
         model = Contact
         fields = ['email', 'first_name', 'last_name', 'birthdate', 'owner', 'title']
+
 
 class ChangePwdForm(PasswordChangeForm):
     old_password = forms.CharField(widget = forms.PasswordInput, initial = "missionbit")
