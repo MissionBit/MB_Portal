@@ -12,11 +12,7 @@
 	<h4>Please Complete Registration</h4>
 	<form method = "POST">
 		{% csrf_token %}
-		First name:<br>
-		<input type="text" name="firstname"><br>
-		Last name:<br>
-		<input type="text" name="lastname"><br><br>
-		Role:<br>
+		Choose Your Role:<br><br>
 		<input type="radio" name="role" value="student" checked>Student<br>
   		<input type="radio" name="role" value="volunteer">Volunteer<br><br>
 		<button class = "btn btn-outline-info" type="submit">Finish Registration</button>

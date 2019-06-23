@@ -30,6 +30,7 @@ def contact_management(request):
 
 @login_required
 def create_staff_user(request):
+    print("LAST NAME: %s" % request.user.last_name)
     if not request.user.groups.filter(name = 'staff').exists():
         return HttpResponse('Unauthorized', status=401)
     if request.method == 'POST':
@@ -43,6 +44,8 @@ def create_staff_user(request):
                 last_name = form.cleaned_data.get('last_name'),
                 password = 'missionbit'
                 )
+            new_user.userprofile.change_pwd = True
+            new_user.save()
             staff_group = Group.objects.get(name = 'staff')
             staff_group.user_set.add(new_user)
             first_name = form.cleaned_data.get('first_name')

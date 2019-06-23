@@ -2,14 +2,16 @@ from __future__ import unicode_literals
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import logout
-from django.contrib.auth.models import User, Group, Permission
+from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import User as django_user
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
-from .forms import UserRegisterForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
+from .forms import UserRegisterForm, ChangePwdForm
 from django.contrib import messages
 from urllib.parse import urlencode
 from django.urls import reverse
 from .models import Contact, User, Individual, ClassOffering, ClassEnrollment
+from django.contrib.auth import update_session_auth_hash
 
 '''
 **THIS index() method WILL NOT BE USED IN PRODUCTION: **
@@ -47,11 +49,13 @@ https://realpython.com/django-redirects/#django-redirects-a-super-simple-example
 '''
 @login_required
 def home(request):
+    if request.user.userprofile.change_pwd:
+        return redirect('change_pwd')
     if request.GET.get('tag') != None:
         return redirect(str(request.GET.get('tag')))
     else:
         if request.user.groups.all().count() == 0:
-            return redirect('login') # TEMPORARY
+            return redirect('home-register_after_oauth') # TEMPORARY
         elif request.user.groups.filter(name = 'staff').exists(): 
             return redirect('staff')
         elif request.user.groups.filter(name = 'teacher').exists():
@@ -60,6 +64,22 @@ def home(request):
             return redirect('volunteer')
         else: #request.user.groups.filter(name = 'student').exists()    
             return redirect('student')
+
+@login_required
+def change_pwd(request):
+    if request.method == 'POST':
+        form = ChangePwdForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            request.user.userprofile.change_pwd = False
+            request.user.userprofile.save()
+            return redirect('home-home')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    form = ChangePwdForm(request.user)
+    return render(request, 'home/change_pwd.html', { 'form' : form })
 
 def logout_view(request):
     logout(request)
@@ -74,7 +94,44 @@ def register(request):
 def landing_page(request):
     return render(request, 'home/landing_page.html')
 
+@login_required
 def register_after_oauth(request):
+    if request.method == 'POST':
+        if request.POST.get('role') == 'student':
+            student_group = Group.objects.get(name = 'student')
+            student_group.user_set.add(request.user)
+            return redirect('home-home')
+        elif request.POST.get('role') == 'volunteer':
+            volunteer_group = Group.objects.get(name = 'volunteer')
+            volunteer_group.user_set.add(request.user)
+            return redirect('home-home')
+        else:
+            messages.error(request, 'Please correct the error below.')
+            return redirect('register_after_oauth')
+    if django_user.objects.filter(email=request.user.email).count() == 2:
+        user_1 = django_user.objects.filter(email = request.user.email)[0]
+        user_2 = django_user.objects.filter(email = request.user.email)[1]
+        staff_group = Group.objects.get(name='staff')
+        student_group = Group.objects.get(name='student')
+        teacher_group = Group.objects.get(name='teacher')
+        volunteer_group = Group.objects.get(name = 'volunteer')
+        if user_1.groups.filter(name='staff'):
+            staff_group.user_set.add(user_2)
+        elif user_1.groups.filter(name='student'):
+            student_group.user_set.add(user_2)
+        elif user_1.groups.filter(name='teacher'):
+            teacher_group.user_set.add(user_2)
+        elif user_1.groups.filter(name='volunteer'):
+            volunteer_group.user_set.add(user_2)
+        elif user_2.groups.filter(name='staff'):
+            staff_group.user_set.add(user_1)
+        elif user_2.groups.filter(name='student'):
+            student_group.user_set.add(user_1)
+        elif user_2.groups.filter(name='teacher'):
+            teacher_group.user_set.add(user_1)
+        elif user_2.groups.filter(name='volunteer'):
+            volunteer_group.user_set.add(user_1)
+        return redirect('home-home')
     return render(request, 'home/register_after_oauth.html')
 
 def register_as_student(request):

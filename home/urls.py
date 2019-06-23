@@ -11,5 +11,6 @@ urlpatterns = [
         path('register_as_volunteer/', views.register_as_volunteer, name='home-register_as_volunteer'),
         path('register_after_oauth', views.register_after_oauth, name='home-register_after_oauth'),
         path('login/', include('django.contrib.auth.urls')),
-        path('index/', views.index, name='index')
+        path('index/', views.index, name='index'),
+        path('change_pwd', views.change_pwd, name='change_pwd')
 ]

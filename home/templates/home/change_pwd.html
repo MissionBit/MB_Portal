@@ -1,0 +1,23 @@
+{% extends "home/home.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+	<h3>Change your Password</h3>
+
+	{% if messages %}
+	{% for message in messages %}
+		<div class = "alert alert-{{message.tags}}">
+			{{ message }}
+		</div>
+	{% endfor %}
+	{% endif %}
+	
+	<form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <br>
+    <button type="submit" class="btn btn-primary">Change Password</button> 
+  	</form>
+     
+  </form>
+{% endblock content %}

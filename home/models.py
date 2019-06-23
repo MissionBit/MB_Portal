@@ -1,5 +1,25 @@
 from salesforce import models
 
+from django.db import models as mdls 
+from django.contrib.auth.models import User as django_user
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+
+class UserProfile(mdls.Model):
+    user = mdls.OneToOneField(django_user, on_delete=mdls.CASCADE)
+    change_pwd = mdls.BooleanField(default=False)
+
+    @receiver(post_save, sender=django_user)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            UserProfile.objects.create(user=instance)
+
+    @receiver(post_save, sender=django_user)
+    def save_user_profile(sender, instance, **kwargs):
+        instance.userprofile.save()        
+
+
 class Contact(models.Model):
     is_deleted = models.BooleanField(verbose_name='Deleted', sf_read_only=models.READ_ONLY, default=False)
     master_record = models.ForeignKey('self', models.DO_NOTHING, related_name='contact_masterrecord_set', sf_read_only=models.READ_ONLY, blank=True, null=True)
@@ -74,9 +94,9 @@ class User(models.Model):
 
     def __str__(self):
         if self.is_active:
-            active = "active"
+            active = "Active"
         else:
-            active = "inactive"
+            active = "Inactive"
         return "%s %s -- %s" % (self.first_name, self.last_name, active)   
 
 class Individual(models.Model):
