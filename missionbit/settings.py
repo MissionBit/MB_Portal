@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'teacher.apps.TeacherConfig',
     'volunteer.apps.VolunteerConfig',
     'staff.apps.StaffConfig',
+    'donor.apps.DonorConfig',
     'home.apps.HomeConfig',
     'django.contrib.admin',
     'django.contrib.auth',
