@@ -5,6 +5,10 @@ from django.contrib.auth.models import User as django_user
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+'''
+Django Postgres Models
+'''
+
 
 class UserProfile(mdls.Model):
     user = mdls.OneToOneField(django_user, on_delete=mdls.CASCADE)
@@ -20,10 +24,38 @@ class UserProfile(mdls.Model):
         instance.userprofile.save()        
 
 
+'''
+Salesforce Models
+'''
+
+
+class Account(models.Model):
+    is_deleted = models.BooleanField(verbose_name='Deleted', sf_read_only=models.READ_ONLY, default=False)
+    master_record = models.ForeignKey('self', models.DO_NOTHING, related_name='account_masterrecord_set', sf_read_only=models.READ_ONLY, blank=True, null=True)
+    name = models.CharField(max_length=255, verbose_name='Account Name')
+    type = models.CharField(max_length=40, verbose_name='Account Type', choices=[('School', 'School'), ('Foundation', 'Foundation'), ('Government', 'Government'), ('Business', 'Business'), ('Nonprofit', 'Nonprofit')], blank=True, null=True)
+    parent = models.ForeignKey('self', models.DO_NOTHING, related_name='account_parent_set', blank=True, null=True)
+    billing_street = models.TextField(blank=True, null=True)
+    billing_city = models.CharField(max_length=40, blank=True, null=True)
+    billing_state = models.CharField(max_length=80, verbose_name='Billing State/Province', blank=True, null=True)
+    billing_postal_code = models.CharField(max_length=20, verbose_name='Billing Zip/Postal Code', blank=True, null=True)
+    billing_country = models.CharField(max_length=80, blank=True, null=True)
+    npe01_systemis_individual = models.BooleanField(db_column='npe01__SYSTEMIsIndividual__c', custom=True, verbose_name='_SYSTEM: IsIndividual', default=models.DEFAULTED_ON_CREATE, help_text='Indicates whether or not this Account is special for Contacts (Household, One-to-One, Individual) vs a normal Account.') 
+
+    class Meta(models.Model.Meta):
+        db_table = 'Account'
+        verbose_name = 'Account'
+        verbose_name_plural = 'Accounts'
+        # keyPrefix = '001'
+
+    def __str__(self):
+        return "%s" % (self.name)    
+
+
 class Contact(models.Model):
     is_deleted = models.BooleanField(verbose_name='Deleted', sf_read_only=models.READ_ONLY, default=False)
     master_record = models.ForeignKey('self', models.DO_NOTHING, related_name='contact_masterrecord_set', sf_read_only=models.READ_ONLY, blank=True, null=True)
-    #account = models.ForeignKey(Account, models.DO_NOTHING, related_name='contact_account_set', blank=True, null=True)  # Master Detail Relationship *
+    account = models.ForeignKey(Account, models.DO_NOTHING, related_name='contact_account_set', blank=True, null=True)  # Master Detail Relationship *
     last_name = models.CharField(max_length=80)
     first_name = models.CharField(max_length=40, blank=True, null=True)
     salutation = models.CharField(max_length=40, choices=[('Mr.', 'Mr.'), ('Ms.', 'Ms.'), ('Mrs.', 'Mrs.'), ('Dr.', 'Dr.'), ('Prof.', 'Prof.')], blank=True, null=True)
@@ -61,12 +93,30 @@ class Contact(models.Model):
     photo_url = models.URLField(verbose_name='Photo URL', sf_read_only=models.READ_ONLY, blank=True, null=True)
     jigsaw_contact_id = models.CharField(max_length=20, verbose_name='Jigsaw Contact ID', sf_read_only=models.READ_ONLY, blank=True, null=True)
     individual = models.ForeignKey('Individual', models.DO_NOTHING, blank=True, null=True)
+    race = models.CharField(custom=True, max_length=255, verbose_name='Which best describes your race?', choices=[('American Indian/Alaskan Native', 'American Indian/Alaskan Native'), ('Asian', 'Asian'), ('Black/African American', 'Black/African American'), ('Native Hawaiian/Other Pacific Islander', 'Native Hawaiian/Other Pacific Islander'), ('White', 'White'), ('American Indian/Alaskan Native AND Black/African American', 'American Indian/Alaskan Native AND Black/African American'), ('American Indian/Alaskan Native AND White', 'American Indian/Alaskan Native AND White'), ('Asian AND White', 'Asian AND White'), ('Black/African American AND White', 'Black/African American AND White'), ('Other/Multiracial', 'Other/Multiracial')], blank=True, null=True)
+    gender = models.CharField(custom=True, max_length=255, choices=[('Female', 'Female'), ('Male', 'Male'), ('Genderqueer/Gender Non-binary', 'Genderqueer/Gender Non-binary'), ('Trans Female', 'Trans Female'), ('Trans Male', 'Trans Male'), ('Other', 'Not Listed')], blank=True, null=True)
+    which_best_describes_your_ethnicity = models.CharField(custom=True, db_column='Which_best_describes_your_ethnicity__c', max_length=255, verbose_name='Which best describes your ethnicity?', choices=[('Hispanic/Latinx', 'Hispanic/Latinx'), ('Not Hispanic/Latinx', 'Not Hispanic/Latinx')], blank=True, null=True)
+    expected_graduation_year = models.CharField(custom=True, db_column='Expected_graduation_year__c', max_length=4, verbose_name='Expected graduation year', help_text='Enter the year this contact is expected to graduate.  For example, 2020', blank=True, null=True)
+    current_grade_level = models.CharField(custom=True, db_column='Current_grade_level__c', max_length=1300, verbose_name='Current grade level', sf_read_only=models.READ_ONLY, blank=True, null=True)
+    volunteer_area_s_of_interest = models.CharField(custom=True, db_column='Volunteer_area_s_of_interest__c', max_length=4099, verbose_name='Volunteer area(s) of interest', choices=[('Classroom', 'Classroom'), ('Event', 'Event'), ('Other', 'Other')], blank=True, null=True)
+    enrollments_this_semester_applied = models.DecimalField(custom=True, db_column='enrollments_this_semester_Applied__c', max_digits=2, decimal_places=0, verbose_name='# enrollments this semester - Applied', help_text='DO NOT EDIT - AUTO-POPULATED BY SYSTEM', blank=True, null=True)
+    enrollments_this_semester_waitlisted = models.DecimalField(custom=True, db_column='enrollments_this_semester_Waitlisted__c', max_digits=2, decimal_places=0, verbose_name='# enrollments this semester - Waitlisted', help_text='DO NOT EDIT - AUTO-POPULATED BY SYSTEM', blank=True, null=True)
+    enrollments_this_semester_rejected = models.DecimalField(custom=True, db_column='enrollments_this_semester_Rejected__c', max_digits=2, decimal_places=0, verbose_name='# enrollments this semester - Rejected', help_text='DO NOT EDIT - AUTO-POPULATED BY SYSTEM', blank=True, null=True)
+    enrollments_this_semester_drop_out = models.DecimalField(custom=True, db_column='enrollments_this_semester_Drop_out__c', max_digits=2, decimal_places=0, verbose_name='# enrollments this semester - Drop out', help_text='DO NOT EDIT - AUTO-POPULATED BY SYSTEM', blank=True, null=True)
+    race_other = models.CharField(custom=True, db_column='Race_Other__c', max_length=100, verbose_name='Which best describes your race? (Other)', blank=True, null=True)
+    gender_other = models.CharField(custom=True, db_column='Gender_Other__c', max_length=50, verbose_name='Gender (Other)', blank=True, null=True)
+    parent_guardian_first_name = models.CharField(custom=True, db_column='Parent_Guardian_first_name__c', max_length=100, verbose_name='Parent/Guardian first name', blank=True, null=True)
+    parent_guardian_last_name = models.CharField(custom=True, db_column='Parent_Guardian_last_name__c', max_length=100, verbose_name='Parent/Guardian last name', blank=True, null=True)
+    parent_guardian_phone = models.CharField(custom=True, db_column='Parent_Guardian_phone__c', max_length=40, verbose_name='Parent/Guardian phone', blank=True, null=True)
+    parent_guardian_email = models.EmailField(custom=True, db_column='Parent_Guardian_email__c', verbose_name='Parent/Guardian email', blank=True, null=True)
+    dm_current_grade = models.CharField(custom=True, db_column='DM_Current_grade__c', max_length=255, verbose_name='DM - Current grade', help_text='Need this for data migration to calculate Expected Graduation Year?  If not, delete this field.', choices=[('Graduating 8th', 'Graduating 8th'), ('Freshman, 9th', 'Freshman, 9th'), ('Sophomore, 10th', 'Sophomore, 10th'), ('Junior, 11th', 'Junior, 11th'), ('Senior, 12th', 'Senior, 12th')], blank=True, null=True)
 
     class Meta(models.Model.Meta):
         db_table = 'Contact'
         verbose_name = 'Contact'
         verbose_name_plural = 'Contacts'
         # keyPrefix = '003'
+
 
 class User(models.Model):
     username = models.CharField(max_length=80)
@@ -99,6 +149,7 @@ class User(models.Model):
             active = "Inactive"
         return "%s %s -- %s" % (self.first_name, self.last_name, active)   
 
+
 class Individual(models.Model):
     owner = models.ForeignKey('User', models.DO_NOTHING, related_name='individual_owner_set')  # Master Detail Relationship *
     is_deleted = models.BooleanField(verbose_name='Deleted', sf_read_only=models.READ_ONLY, default=False)
@@ -107,7 +158,7 @@ class Individual(models.Model):
     salutation = models.CharField(max_length=40, choices=[('Mr.', 'Mr.'), ('Ms.', 'Ms.'), ('Mrs.', 'Mrs.'), ('Dr.', 'Dr.'), ('Prof.', 'Prof.')], blank=True, null=True)
     middle_name = models.CharField(max_length=40, blank=True, null=True)
     suffix = models.CharField(max_length=40, blank=True, null=True)
-    name = models.CharField(max_length=121, sf_read_only=models.READ_ONLY)
+    name = models.CharField(max_length=121, sf_read_only=models.READ_ONLY) 
 
     class Meta(models.Model.Meta):
         db_table = 'Individual'
@@ -115,23 +166,6 @@ class Individual(models.Model):
         verbose_name_plural = 'Individuals'
         # keyPrefix = '003'
 
-class Account(models.Model):
-    is_deleted = models.BooleanField(verbose_name='Deleted', sf_read_only=models.READ_ONLY, default=False)
-    master_record = models.ForeignKey('self', models.DO_NOTHING, related_name='account_masterrecord_set', sf_read_only=models.READ_ONLY, blank=True, null=True)
-    name = models.CharField(max_length=255, verbose_name='Account Name')
-    type = models.CharField(max_length=40, verbose_name='Account Type', choices=[('School', 'School'), ('Foundation', 'Foundation'), ('Government', 'Government'), ('Business', 'Business'), ('Nonprofit', 'Nonprofit')], blank=True, null=True)
-    parent = models.ForeignKey('self', models.DO_NOTHING, related_name='account_parent_set', blank=True, null=True)
-    billing_street = models.TextField(blank=True, null=True)
-    billing_city = models.CharField(max_length=40, blank=True, null=True)
-    billing_state = models.CharField(max_length=80, verbose_name='Billing State/Province', blank=True, null=True)
-    billing_postal_code = models.CharField(max_length=20, verbose_name='Billing Zip/Postal Code', blank=True, null=True)
-    billing_country = models.CharField(max_length=80, blank=True, null=True)
-    
-    class Meta(models.Model.Meta):
-        db_table = 'Account'
-        verbose_name = 'Account'
-        verbose_name_plural = 'Accounts'
-        # keyPrefix = '001'
 
 class ClassOffering(models.Model):
     #owner = models.ForeignKey('Group', models.DO_NOTHING)  # Reference to tables [Group, User]
@@ -166,6 +200,7 @@ class ClassOffering(models.Model):
         verbose_name = 'Class Offering'
         verbose_name_plural = 'Class Offerings'
         # keyPrefix = 'a0h'
+
 
 class ClassEnrollment(models.Model):
     is_deleted = models.BooleanField(verbose_name='Deleted', sf_read_only=models.READ_ONLY, default=False)
