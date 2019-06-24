@@ -24,6 +24,21 @@ class UserProfile(mdls.Model):
         instance.userprofile.save()        
 
 
+class Classroom(mdls.Model):
+    course = mdls.CharField(max_length=255, choices=[('Android Game Design', 'Android Game Design'),
+                                                     ('Intro to Web Programming', 'Intro to Web Programming'),
+                                                     ('Field Trips', 'Field Trips'),
+                                                     ('Intro to Game Design with Unity', 'Intro to Game Design with Unity'),
+                                                     ('Web Design 101', 'Web Design 101'),
+                                                     ('Mobile App Dev with Ionic', 'Mobile App Dev with Ionic'),
+                                                     ('MB Internship', 'MB Internship'),
+                                                     ('Structured Study Program', 'Structured Study Program')])
+    teacher = mdls.ForeignKey(DjangoUser, related_name='classroom_lead_teacher', on_delete=mdls.CASCADE)
+    teacher_assistant = mdls.ForeignKey(DjangoUser, related_name='classroom_teacher_assistant', on_delete=mdls.CASCADE)
+    volunteers = mdls.ManyToManyField(DjangoUser, related_name='classroom_volunteers')
+    students = mdls.ManyToManyField(DjangoUser, related_name='classroom_students')
+
+
 '''
 Salesforce Models
 '''

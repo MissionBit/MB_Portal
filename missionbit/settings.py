@@ -45,10 +45,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'social_django', # <- Social Django Oauth Google
-    'crispy_forms', # <- Crispy forms
-    'coverage', # <- for testing
-    'salesforce' # <- salesforce database
+    'social_django',  # <- Social Django Oauth Google
+    'crispy_forms',  # <- Crispy forms
+    'coverage',  # <- for testing
+    'salesforce'  # <- salesforce database
 ]
 
 MIDDLEWARE = [
@@ -124,7 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-#Google authentication backend
+# Google authentication backend
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.open_id.OpenIdAuth',

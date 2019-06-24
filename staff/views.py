@@ -135,6 +135,13 @@ def create_volunteer_user(request):
 
 
 @login_required
+def create_classroom(request):
+    if not request.user.groups.filter(name='staff').exists():
+        return HttpResponse('Unauthorized', status=401)
+    form = CreateClassroomForm()
+
+
+@login_required
 def my_account_staff(request):
     if not request.user.groups.filter(name='staff').exists():
         return HttpResponse('Unauthorized', status=401)
