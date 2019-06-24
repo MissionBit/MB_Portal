@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
+from home.models import UserProfile
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib import messages
 
@@ -38,22 +39,15 @@ def create_staff_user(request):
         form = CreateStaffForm(request.POST)
         if form.is_valid():
             form.save()
-            new_user = DjangoUser.objects.create_user(
-                username="%s.%s" % (form.cleaned_data.get('first_name'), form.cleaned_data.get('last_name')),
-                email=form.cleaned_data.get('email'),
-                first_name=form.cleaned_data.get('first_name'),
-                last_name=form.cleaned_data.get('last_name'),
-                password='missionbit'
-                )
-            new_user.userprofile.change_pwd = True
-            new_user.save()
+            new_user = create_user_with_profile(form)
             staff_group = Group.objects.get(name='staff')
             staff_group.user_set.add(new_user)
             first_name = form.cleaned_data.get('first_name')
             messages.success(request, f'Staff Account Successfully Created For {first_name}')
             return redirect('staff')
-        messages.error(request, 'Staff User NOT created, your form was not valid, please try again.')
-        return redirect(request, 'staff')
+        else:
+            messages.error(request, 'Staff User NOT created, your form was not valid, please try again.')
+            return redirect(request, 'staff')
     form = CreateStaffForm()
     return render(request, 'create_staff_user.html', {'form': form})
 
@@ -66,20 +60,15 @@ def create_teacher_user(request):
         form = CreateTeacherForm(request.POST)
         if form.is_valid():
             form.save()
-            new_user = DjangoUser.objects.create_user(
-                username="%s.%s" % (form.cleaned_data.get('first_name'), form.cleaned_data.get('last_name')),
-                email=form.cleaned_data.get('email'),
-                first_name=form.cleaned_data.get('first_name'),
-                last_name=form.cleaned_data.get('last_name'),
-                password='missionbit'
-                )
-            new_user.userprofile.change_pwd = True
-            new_user.save()
+            new_user = create_user_with_profile(form)
             teacher_group = Group.objects.get(name='teacher')
             teacher_group.user_set.add(new_user)
             first_name = form.cleaned_data.get('first_name')
             messages.success(request, f'Teacher Account Successfully Created For {first_name}')
             return redirect('staff')
+        else:
+            messages.error(request, 'Teacher User NOT created, your form was not valid, please try again.')
+            return redirect(request, 'staff')
     form = CreateTeacherForm()
     return render(request, 'create_teacher_user.html', {'form': form})
 
@@ -92,20 +81,15 @@ def create_student_user(request):
         form = CreateStudentForm(request.POST)
         if form.is_valid():
             form.save()
-            new_user = DjangoUser.objects.create_user(
-                username="%s.%s" % (form.cleaned_data.get('first_name'), form.cleaned_data.get('last_name')),
-                email=form.cleaned_data.get('email'),
-                first_name=form.cleaned_data.get('first_name'),
-                last_name=form.cleaned_data.get('last_name'),
-                password='missionbit'
-                )
-            new_user.userprofile.change_pwd = True
-            new_user.save()
+            new_user = create_user_with_profile(form)
             student_group = Group.objects.get(name='student')
             student_group.user_set.add(new_user)
             first_name = form.cleaned_data.get('first_name')
             messages.success(request, f'Student Account Successfully Created For {first_name}')
             return redirect('staff')
+        else:
+            messages.error(request, 'Student User NOT created, your form was not valid, please try again.')
+            return redirect(request, 'staff')
     form = CreateStudentForm()
     return render(request, 'create_student_user.html', {'form': form})
 
@@ -118,22 +102,38 @@ def create_volunteer_user(request):
         form = CreateVolunteerForm(request.POST)
         if form.is_valid():
             form.save()
-            new_user = DjangoUser.objects.create_user(
-                username="%s.%s" % (form.cleaned_data.get('first_name'), form.cleaned_data.get('last_name')),
-                email=form.cleaned_data.get('email'),
-                first_name=form.cleaned_data.get('first_name'),
-                last_name=form.cleaned_data.get('last_name'),
-                password='missionbit'
-                )
-            new_user.userprofile.change_pwd = True
-            new_user.save()
+            new_user = create_user_with_profile(form)
             volunteer_group = Group.objects.get(name='volunteer')
             volunteer_group.user_set.add(new_user)
             first_name = form.cleaned_data.get('first_name')
-            messages.success(request, f'Student Account Successfully Created For {first_name}')
+            messages.success(request, f'Volunteer Account Successfully Created For {first_name}')
             return redirect('staff')
+        else:
+            messages.error(request, 'Volunteer User NOT created, your form was not valid, please try again.')
+            return redirect(request, 'staff')
     form = CreateVolunteerForm()
     return render(request, 'create_volunteer_user.html', {'form': form})
+
+
+def create_user_with_profile(form):
+    new_user = DjangoUser.objects.create_user(
+        username="%s.%s" % (form.cleaned_data.get('first_name'), form.cleaned_data.get('last_name')),
+        email=form.cleaned_data.get('email'),
+        first_name=form.cleaned_data.get('first_name'),
+        last_name=form.cleaned_data.get('last_name'),
+        password='missionbit'
+    )
+    birthdate = str(form.cleaned_data.get('birthdate')).replace(r'/', '')
+    birthdate_year = birthdate[0:4]
+    birthdate_m = birthdate[8:]
+    birthdate_d = birthdate[5:7]
+    new_user.userprofile.change_pwd = True
+    new_user.userprofile.salesforce_id = "%s%s%s%s%s" % (form.cleaned_data.get('first_name')[:3],
+                                                         form.cleaned_data.get('last_name')[:3],
+                                                         birthdate_year, birthdate_d, birthdate_m)
+    new_user.userprofile.date_of_birth = "%s-%s-%s" % (birthdate_year, birthdate_d, birthdate_m)
+    new_user.save()
+    return new_user
 
 
 @login_required
@@ -146,14 +146,16 @@ def create_classroom(request):
             classroom = setup_classroom_teachers(form)
             for volunteer in form.cleaned_data.get('volunteers'):
                 enroll_in_class(form, volunteer)
-                django_user = DjangoUser.objects.filter(email=volunteer.email).first()
+                django_user = UserProfile.objects.filter(salesforce_id=volunteer.client_id).first().user_id
+                print("volid: %s" % volunteer.id)
                 classroom.volunteers.add(django_user)
             for student in form.cleaned_data.get('students'):
                 enroll_in_class(form, student)
-                django_user = DjangoUser.objects.filter(email=student.email).first()
+                django_user = UserProfile.objects.filter(salesforce_id=student.client_id).first().user_id
+                print("student id: %s" % student.id)
                 print("got user %s from salesforce: " % student)
                 classroom.students.add(django_user)
-            # messages.success(request, f'Classroom Successfully Created For {}')
+            messages.success(request, f'Classroom {form.cleaned_data.get("course")} Successfully Created')
             classroom.save()
             return redirect('staff')
     form = CreateClassroomForm()
@@ -171,9 +173,11 @@ def enroll_in_class(form, user):
 
 
 def setup_classroom_teachers(form):
+    print("teach id: %s" % form.cleaned_data.get('teacher').client_id)
+    print("teach id: %s" % form.cleaned_data.get('teacher_assistant').client_id)
     classroom = Classroom.objects.create(
-        teacher_id=DjangoUser.objects.filter(email=form.cleaned_data.get('teacher').email).first().id,
-        teacher_assistant_id=DjangoUser.objects.filter(email=form.cleaned_data.get('teacher_assistant').email).first().id,
+        teacher_id=UserProfile.objects.filter(salesforce_id=form.cleaned_data.get('teacher').client_id).first().user_id,
+        teacher_assistant_id=UserProfile.objects.filter(salesforce_id=form.cleaned_data.get('teacher_assistant').client_id).first().user_id,
         course=form.cleaned_data.get('course').name
     )
     enroll_in_class(form, form.cleaned_data.get('teacher'))

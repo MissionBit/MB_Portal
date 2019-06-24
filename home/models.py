@@ -127,7 +127,9 @@ class Contact(models.Model):
     parent_guardian_phone = models.CharField(custom=True, db_column='Parent_Guardian_phone__c', max_length=40, verbose_name='Parent/Guardian phone', blank=True, null=True)
     parent_guardian_email = models.EmailField(custom=True, db_column='Parent_Guardian_email__c', verbose_name='Parent/Guardian email', blank=True, null=True)
     dm_current_grade = models.CharField(custom=True, db_column='DM_Current_grade__c', max_length=255, verbose_name='DM - Current grade', help_text='Need this for data migration to calculate Expected Graduation Year?  If not, delete this field.', choices=[('Graduating 8th', 'Graduating 8th'), ('Freshman, 9th', 'Freshman, 9th'), ('Sophomore, 10th', 'Sophomore, 10th'), ('Junior, 11th', 'Junior, 11th'), ('Senior, 12th', 'Senior, 12th')], blank=True, null=True)
-
+    client_id = models.CharField(custom=True, db_column='Client_ID__c', max_length=14, verbose_name='Client ID',
+                                 help_text='3 first letters of first name, 3 first letters of last name, and birthdate "AAABBB00000000" (Only used for students and parents). This field is auto-populated by FormAssembly.', blank=True,
+                                 null=True)
     class Meta(models.Model.Meta):
         db_table = 'Contact'
         verbose_name = 'Contact'
@@ -272,4 +274,3 @@ class ClassEnrollment(models.Model):
         verbose_name = 'Class Enrollment'
         verbose_name_plural = 'Class Enrollments'
         # keyPrefix = 'a0i'
-
