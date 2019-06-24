@@ -92,10 +92,10 @@ class CreateVolunteerForm(forms.ModelForm):
 
 class CreateClassroomForm(forms.ModelForm):
     course = forms.ModelChoiceField(queryset=ClassOffering.objects.all())
-    teacher = forms.ModelChoiceField(queryset=Contact.objects.filter(title='Teacher'))
-    teacher_assistant = forms.ModelChoiceField(queryset=Contact.objects.filter(title='Teacher'))
-    volunteers = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(title='Volunteer'))
-    students = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(title='Student'))
+    teacher = forms.ModelChoiceField(queryset=Contact.objects.filter(title='Teacher', is_deleted=False))
+    teacher_assistant = forms.ModelChoiceField(queryset=Contact.objects.filter(title='Teacher', is_deleted=False))
+    volunteers = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(title='Volunteer', is_deleted=False))
+    students = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(title='Student', is_deleted=False))
     created_by = forms.ModelChoiceField(queryset=User.objects.filter(is_active=True))
 
     class Meta:
