@@ -13,6 +13,8 @@ Django Postgres Models
 class UserProfile(mdls.Model):
     user = mdls.OneToOneField(DjangoUser, on_delete=mdls.CASCADE)
     change_pwd = mdls.BooleanField(default=False)
+    date_of_birth = mdls.DateField(default='1901-01-01')
+    salesforce_id = mdls.CharField(default='xxxxxx01011901', max_length=14)
 
     @receiver(post_save, sender=DjangoUser)
     def create_user_profile(sender, instance, created, **kwargs):
@@ -64,7 +66,7 @@ class Account(models.Model):
         # keyPrefix = '001'
 
     def __str__(self):
-        return "%s" % (self.name)    
+        return "%s" % self.name
 
 
 class Contact(models.Model):
@@ -131,6 +133,9 @@ class Contact(models.Model):
         verbose_name = 'Contact'
         verbose_name_plural = 'Contacts'
         # keyPrefix = '003'
+
+    def __str__(self):
+        return "%s %s" % (self.first_name, self.last_name)
 
 
 class User(models.Model):
@@ -215,6 +220,9 @@ class ClassOffering(models.Model):
         verbose_name = 'Class Offering'
         verbose_name_plural = 'Class Offerings'
         # keyPrefix = 'a0h'
+
+    def __str__(self):
+        return "%s" % self.name
 
 
 class ClassEnrollment(models.Model):

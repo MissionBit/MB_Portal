@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
+from django.contrib.auth.models import User as DjangoUser
 from django.contrib import messages
 
-from home.forms import CreateStaffForm, CreateStudentForm, CreateTeacherForm, CreateVolunteerForm
+from home.forms import CreateStaffForm, CreateClassroomForm, CreateTeacherForm, CreateVolunteerForm, CreateStudentForm
+from home.models import Contact, ClassEnrollment, ClassOffering, Classroom
 
 
 @login_required
@@ -36,7 +38,7 @@ def create_staff_user(request):
         form = CreateStaffForm(request.POST)
         if form.is_valid():
             form.save()
-            new_user = User.objects.create_user(
+            new_user = DjangoUser.objects.create_user(
                 username="%s.%s" % (form.cleaned_data.get('first_name'), form.cleaned_data.get('last_name')),
                 email=form.cleaned_data.get('email'),
                 first_name=form.cleaned_data.get('first_name'),
@@ -64,7 +66,7 @@ def create_teacher_user(request):
         form = CreateTeacherForm(request.POST)
         if form.is_valid():
             form.save()
-            new_user = User.objects.create_user(
+            new_user = DjangoUser.objects.create_user(
                 username="%s.%s" % (form.cleaned_data.get('first_name'), form.cleaned_data.get('last_name')),
                 email=form.cleaned_data.get('email'),
                 first_name=form.cleaned_data.get('first_name'),
@@ -90,7 +92,7 @@ def create_student_user(request):
         form = CreateStudentForm(request.POST)
         if form.is_valid():
             form.save()
-            new_user = User.objects.create_user(
+            new_user = DjangoUser.objects.create_user(
                 username="%s.%s" % (form.cleaned_data.get('first_name'), form.cleaned_data.get('last_name')),
                 email=form.cleaned_data.get('email'),
                 first_name=form.cleaned_data.get('first_name'),
@@ -116,7 +118,7 @@ def create_volunteer_user(request):
         form = CreateVolunteerForm(request.POST)
         if form.is_valid():
             form.save()
-            new_user = User.objects.create_user(
+            new_user = DjangoUser.objects.create_user(
                 username="%s.%s" % (form.cleaned_data.get('first_name'), form.cleaned_data.get('last_name')),
                 email=form.cleaned_data.get('email'),
                 first_name=form.cleaned_data.get('first_name'),
@@ -138,7 +140,45 @@ def create_volunteer_user(request):
 def create_classroom(request):
     if not request.user.groups.filter(name='staff').exists():
         return HttpResponse('Unauthorized', status=401)
+    if request.method == 'POST':
+        form = CreateClassroomForm(request.POST)
+        if form.is_valid():
+            classroom = setup_classroom_teachers(form)
+            for volunteer in form.cleaned_data.get('volunteers'):
+                enroll_in_class(form, volunteer)
+                django_user = DjangoUser.objects.filter(email=volunteer.email).first()
+                classroom.volunteers.add(django_user)
+            for student in form.cleaned_data.get('students'):
+                enroll_in_class(form, student)
+                django_user = DjangoUser.objects.filter(email=student.email).first()
+                print("got user %s from salesforce: " % student)
+                classroom.students.add(django_user)
+            # messages.success(request, f'Classroom Successfully Created For {}')
+            classroom.save()
+            return redirect('staff')
     form = CreateClassroomForm()
+    return render(request, 'create_classroom.html', {'form': form})
+
+
+def enroll_in_class(form, user):
+    ClassEnrollment.objects.get_or_create(
+        name=form.cleaned_data.get('course'),
+        created_by=form.cleaned_data.get('created_by'),
+        contact=user,
+        status='Enrolled',
+        class_offering=form.cleaned_data.get('course')
+    )
+
+
+def setup_classroom_teachers(form):
+    classroom = Classroom.objects.create(
+        teacher_id=DjangoUser.objects.filter(email=form.cleaned_data.get('teacher').email).first().id,
+        teacher_assistant_id=DjangoUser.objects.filter(email=form.cleaned_data.get('teacher_assistant').email).first().id,
+        course=form.cleaned_data.get('course').name
+    )
+    enroll_in_class(form, form.cleaned_data.get('teacher'))
+    enroll_in_class(form, form.cleaned_data.get('teacher_assistant'))
+    return classroom
 
 
 @login_required

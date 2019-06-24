@@ -3,12 +3,12 @@
 
 {% block content %}
 
-<h1> Create Staff User </h1>
+<h1> Create Classroom </h1>
 
 <form method="post">
     {% csrf_token %}
     {{ form|crispy }}
 <br>
-<button type="submit" class="btn btn-primary">Create User</button>
+<button type="submit" class="btn btn-primary">Create Classroom</button>
 </form>
 {% endblock content %}

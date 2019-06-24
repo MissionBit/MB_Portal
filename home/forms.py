@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.models import User as DjangoUser
-from .models import Contact, User, Account
+from .models import Contact, User, Account, Classroom, ClassOffering, ClassEnrollment
 from home.choices import *
 
 
@@ -23,7 +23,7 @@ class CreateStaffForm(forms.ModelForm):
     birthdate = forms.DateField(label='birthday')
     title = forms.CharField(initial='Staff', disabled=True)
     owner = forms.ModelChoiceField(queryset =User.objects.filter(is_active=True))
-    account = forms.ModelChoiceField(queryset=Account.objects.all())
+    account = forms.ModelChoiceField(queryset=Account.objects.all(), required=False)
 
     class Meta:
         model = Contact  
@@ -88,6 +88,19 @@ class CreateVolunteerForm(forms.ModelForm):
     class Meta:
         model = Contact
         fields = ['email', 'first_name', 'last_name', 'birthdate', 'owner', 'title']
+
+
+class CreateClassroomForm(forms.ModelForm):
+    course = forms.ModelChoiceField(queryset=ClassOffering.objects.all())
+    teacher = forms.ModelChoiceField(queryset=Contact.objects.filter(title='Teacher'))
+    teacher_assistant = forms.ModelChoiceField(queryset=Contact.objects.filter(title='Teacher'))
+    volunteers = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(title='Volunteer'))
+    students = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(title='Student'))
+    created_by = forms.ModelChoiceField(queryset=User.objects.filter(is_active=True))
+
+    class Meta:
+        model = ClassEnrollment
+        fields = ['course', 'teacher', 'teacher_assistant', 'volunteers', 'students']
 
 
 class ChangePwdForm(PasswordChangeForm):
