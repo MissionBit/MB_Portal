@@ -6,8 +6,8 @@ from home.models import UserProfile
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib import messages
 
-from home.forms import CreateStaffForm, CreateClassroomForm, CreateTeacherForm, CreateVolunteerForm, CreateStudentForm
-from home.models import Contact, ClassEnrollment, ClassOffering, Classroom
+from home.forms import CreateStaffForm, CreateClassroomForm, CreateTeacherForm, CreateVolunteerForm, CreateStudentForm, CreateClassOfferingForm
+from home.models import Contact, ClassEnrollment, ClassOffering, Classroom, User, Account
 
 
 @login_required
@@ -183,6 +183,19 @@ def setup_classroom_teachers(form):
     enroll_in_class(form, form.cleaned_data.get('teacher'))
     enroll_in_class(form, form.cleaned_data.get('teacher_assistant'))
     return classroom
+
+
+@login_required
+def create_class_offering(request):
+    if not request.user.groups.filter(name='staff').exists():
+        return HttpResponse('Unauthorized', status=401)
+    if request.method == 'POST':
+        form = CreateClassOfferingForm(request.POST)
+        form.save()
+        print("FUCK YEAH!!!")
+        return redirect('staff')
+    form = CreateClassOfferingForm()
+    return render(request, 'create_class_offering.html', {'form': form})
 
 
 @login_required

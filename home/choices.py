@@ -34,4 +34,5 @@ COURSE_CHOICES = (('Android Game Design', 'Android Game Design'),
  ('Mobile App Dev with Ionic', 'Mobile App Dev with Ionic'),
  ('MB Internship', 'MB Internship'),
  ('Structured Study Program', 'Structured Study Program'))
+MEETING_DAYS_CHOICES = (('M/W', 'M/W'), ('T/R', 'T/R'), ('M-F', 'M-F'))
 

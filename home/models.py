@@ -130,6 +130,8 @@ class Contact(models.Model):
     client_id = models.CharField(custom=True, db_column='Client_ID__c', max_length=14, verbose_name='Client ID',
                                  help_text='3 first letters of first name, 3 first letters of last name, and birthdate "AAABBB00000000" (Only used for students and parents). This field is auto-populated by FormAssembly.', blank=True,
                                  null=True)
+    npsp_primary_affiliation = models.ForeignKey(Account, models.DO_NOTHING, db_column='npsp__Primary_Affiliation__c', custom=True, related_name='contact_npspprimaryaffiliation_set', blank=True, null=True)
+
     class Meta(models.Model.Meta):
         db_table = 'Contact'
         verbose_name = 'Contact'
@@ -208,7 +210,6 @@ class ClassOffering(models.Model):
     instructor = models.ForeignKey('Contact', models.DO_NOTHING, custom=True, blank=True, null=True)
     academic_semester = models.CharField(custom=True, db_column='Academic_semester__c', max_length=1300, verbose_name='Academic semester', sf_read_only=models.READ_ONLY, blank=True, null=True)
     meeting_days = models.CharField(custom=True, db_column='Meeting_Days__c', max_length=255, verbose_name='Meeting Days', choices=[('M/W', 'M/W'), ('T/R', 'T/R'), ('M-F', 'M-F')], blank=True, null=True)
-    course_short_name = models.CharField(custom=True, db_column='Course_short_name__c', max_length=1300, verbose_name='Course short name', sf_read_only=models.READ_ONLY, blank=True, null=True)
     count_total_female_students = models.DecimalField(custom=True, db_column='Count_total_female_students__c', max_digits=18, decimal_places=0, verbose_name='Count - Total Female Students', sf_read_only=models.READ_ONLY, blank=True, null=True)
     count_total_latino_african_american = models.DecimalField(custom=True, db_column='Count_total_latino_african_american__c', max_digits=18, decimal_places=0, verbose_name='Count - Total African American', sf_read_only=models.READ_ONLY, blank=True, null=True)
     count_total_latino_students = models.DecimalField(custom=True, db_column='Count_Total_Latino_Students__c', max_digits=18, decimal_places=0, verbose_name='Count - Total Latino Students', sf_read_only=models.READ_ONLY, blank=True, null=True)
@@ -216,7 +217,7 @@ class ClassOffering(models.Model):
     latino_african_american = models.DecimalField(custom=True, db_column='Latino_African_American__c', max_digits=18, decimal_places=1, verbose_name='% Latino/African American', sf_read_only=models.READ_ONLY, blank=True, null=True)
     current_academic_semester = models.CharField(custom=True, db_column='Current_academic_semester__c', max_length=1300, verbose_name='Current academic semester', sf_read_only=models.READ_ONLY, blank=True, null=True)
     in_current_semester = models.BooleanField(custom=True, db_column='In_current_semester__c', verbose_name='In current semester?', sf_read_only=models.READ_ONLY)
-    
+
     class Meta(models.Model.Meta):
         db_table = 'Class_Offering__c'
         verbose_name = 'Class Offering'

@@ -37,7 +37,6 @@ class CreateStudentForm(forms.ModelForm):
     birthdate = forms.DateField(label='birthday')
     title = forms.CharField(initial='Student', disabled=True)
     owner = forms.ModelChoiceField(queryset=User.objects.filter(is_active=True))
-    account = forms.ModelChoiceField(queryset=Account.objects.all(), required=False)
     which_best_describes_your_ethnicity = forms.ChoiceField(
         label='Which best describes the Student\'s ethnicity? - Optional',
         choices=ETHNICITY_CHOICES, required=False)
@@ -46,7 +45,7 @@ class CreateStudentForm(forms.ModelForm):
     gender = forms.ChoiceField(label = 'Gender - Optional', choices=GENDER_CHOICES, required=False)
     expected_graduation_year = forms.ChoiceField(label='Expected graduation year', choices=GRAD_YEAR_CHOICES,
                                                  required=False)
-
+    npsp_primary_affiliation = forms.ModelChoiceField(label='Affiliated Account', queryset=Account.objects.all(), required=False)
     class Meta:
         model = Contact  
         fields = ['email', 'first_name', 'last_name', 'birthdate', 'owner', 'title']
@@ -103,8 +102,26 @@ class CreateClassroomForm(forms.ModelForm):
         fields = ['course', 'teacher', 'teacher_assistant', 'volunteers', 'students']
 
 
+class CreateClassOfferingForm(forms.ModelForm):
+    name = forms.CharField(max_length='80')
+    location = forms.ModelChoiceField(queryset=Account.objects.filter(npe01_systemis_individual=False))
+    created_by = forms.ModelChoiceField(queryset=User.objects.filter(is_active=True))
+    start_date = forms.DateField(label='Start Date')
+    end_date = forms.DateField(label='End Date')
+    description = forms.CharField(label='Description', max_length=100)
+    instructor = forms.ModelChoiceField(queryset=Contact.objects.filter(title='Teacher', is_deleted=False))
+    meeting_days = forms.ChoiceField(label='Meeting Days', choices=MEETING_DAYS_CHOICES)
+
+    class Meta:
+        model = ClassOffering
+        fields = ['name', 'location', 'created_by', 'start_date', 'end_date', 'description',  'instructor', 'meeting_days']
+
+    def __str__(self):
+        return "%s" % self.name
+
+
 class ChangePwdForm(PasswordChangeForm):
-    old_password = forms.CharField(widget = forms.PasswordInput, initial = "missionbit")
+    old_password = forms.CharField(widget=forms.PasswordInput, initial='missionbit')
 
     class Meta:
         model = User
