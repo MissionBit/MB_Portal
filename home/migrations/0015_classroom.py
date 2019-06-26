@@ -9,19 +9,69 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('home', '0014_auto_20190623_1816'),
+        ("home", "0014_auto_20190623_1816"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Classroom',
+            name="Classroom",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('course', models.CharField(choices=[('Android Game Design', 'Android Game Design'), ('Intro to Web Programming', 'Intro to Web Programming'), ('Field Trips', 'Field Trips'), ('Intro to Game Design with Unity', 'Intro to Game Design with Unity'), ('Web Design 101', 'Web Design 101'), ('Mobile App Dev with Ionic', 'Mobile App Dev with Ionic'), ('MB Internship', 'MB Internship'), ('Structured Study Program', 'Structured Study Program')], max_length=255)),
-                ('students', models.ManyToManyField(related_name='classroom_students', to=settings.AUTH_USER_MODEL)),
-                ('teacher', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='classroom_lead_teacher', to=settings.AUTH_USER_MODEL)),
-                ('teacher_assistant', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='classroom_teacher_assistant', to=settings.AUTH_USER_MODEL)),
-                ('volunteers', models.ManyToManyField(related_name='classroom_volunteers', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "course",
+                    models.CharField(
+                        choices=[
+                            ("Android Game Design", "Android Game Design"),
+                            ("Intro to Web Programming", "Intro to Web Programming"),
+                            ("Field Trips", "Field Trips"),
+                            (
+                                "Intro to Game Design with Unity",
+                                "Intro to Game Design with Unity",
+                            ),
+                            ("Web Design 101", "Web Design 101"),
+                            ("Mobile App Dev with Ionic", "Mobile App Dev with Ionic"),
+                            ("MB Internship", "MB Internship"),
+                            ("Structured Study Program", "Structured Study Program"),
+                        ],
+                        max_length=255,
+                    ),
+                ),
+                (
+                    "students",
+                    models.ManyToManyField(
+                        related_name="classroom_students", to=settings.AUTH_USER_MODEL
+                    ),
+                ),
+                (
+                    "teacher",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="classroom_lead_teacher",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "teacher_assistant",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="classroom_teacher_assistant",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "volunteers",
+                    models.ManyToManyField(
+                        related_name="classroom_volunteers", to=settings.AUTH_USER_MODEL
+                    ),
+                ),
             ],
-        ),
+        )
     ]

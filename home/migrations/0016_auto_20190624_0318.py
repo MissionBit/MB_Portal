@@ -5,19 +5,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0015_classroom'),
-    ]
+    dependencies = [("home", "0015_classroom")]
 
     operations = [
         migrations.AddField(
-            model_name='userprofile',
-            name='date_of_birth',
-            field=models.DateField(default='1901-01-01'),
+            model_name="userprofile",
+            name="date_of_birth",
+            field=models.DateField(default="1901-01-01"),
         ),
         migrations.AddField(
-            model_name='userprofile',
-            name='salesforce_id',
-            field=models.CharField(default='xxxxxx01011901', max_length=14),
+            model_name="userprofile",
+            name="salesforce_id",
+            field=models.CharField(default="xxxxxx01011901", max_length=14),
         ),
     ]

@@ -7,14 +7,18 @@ import salesforce.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0025_remove_classoffering_course_short_name'),
-    ]
+    dependencies = [("home", "0025_remove_classoffering_course_short_name")]
 
     operations = [
         migrations.AlterField(
-            model_name='classoffering',
-            name='name',
-            field=salesforce.fields.CharField(blank=True, default=salesforce.backend.operations.DefaultedOnCreate(), max_length=80, null=True, verbose_name='Class Offering Name'),
-        ),
+            model_name="classoffering",
+            name="name",
+            field=salesforce.fields.CharField(
+                blank=True,
+                default=salesforce.backend.operations.DefaultedOnCreate(),
+                max_length=80,
+                null=True,
+                verbose_name="Class Offering Name",
+            ),
+        )
     ]

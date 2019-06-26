@@ -5,13 +5,8 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0024_auto_20190625_0437'),
-    ]
+    dependencies = [("home", "0024_auto_20190625_0437")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='classoffering',
-            name='course_short_name',
-        ),
+        migrations.RemoveField(model_name="classoffering", name="course_short_name")
     ]

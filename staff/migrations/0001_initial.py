@@ -7,19 +7,40 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Contact',
+            name="Contact",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('last_name', models.CharField(max_length=80)),
-                ('first_name', models.CharField(blank=True, max_length=40, null=True)),
-                ('salutation', models.CharField(blank=True, choices=[('Mr.', 'Mr.'), ('Ms.', 'Ms.'), ('Mrs.', 'Mrs.'), ('Dr.', 'Dr.'), ('Prof.', 'Prof.')], max_length=40, null=True)),
-                ('middle_name', models.CharField(blank=True, max_length=40, null=True)),
-                ('suffix', models.CharField(blank=True, max_length=40, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("last_name", models.CharField(max_length=80)),
+                ("first_name", models.CharField(blank=True, max_length=40, null=True)),
+                (
+                    "salutation",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("Mr.", "Mr."),
+                            ("Ms.", "Ms."),
+                            ("Mrs.", "Mrs."),
+                            ("Dr.", "Dr."),
+                            ("Prof.", "Prof."),
+                        ],
+                        max_length=40,
+                        null=True,
+                    ),
+                ),
+                ("middle_name", models.CharField(blank=True, max_length=40, null=True)),
+                ("suffix", models.CharField(blank=True, max_length=40, null=True)),
             ],
-        ),
+        )
     ]

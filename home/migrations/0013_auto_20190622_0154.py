@@ -7,14 +7,14 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0012_userprofile'),
-    ]
+    dependencies = [("home", "0012_userprofile")]
 
     operations = [
         migrations.AlterField(
-            model_name='userprofile',
-            name='user',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
-        ),
+            model_name="userprofile",
+            name="user",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+            ),
+        )
     ]

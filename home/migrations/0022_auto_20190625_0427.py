@@ -7,19 +7,29 @@ import salesforce.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0021_auto_20190625_0415'),
-    ]
+    dependencies = [("home", "0021_auto_20190625_0415")]
 
     operations = [
         migrations.AlterField(
-            model_name='classoffering',
-            name='course_short_name',
-            field=salesforce.fields.CharField(blank=True, db_column='Course_short_name__c', max_length=80, null=True, verbose_name='Course short name'),
+            model_name="classoffering",
+            name="course_short_name",
+            field=salesforce.fields.CharField(
+                blank=True,
+                db_column="Course_short_name__c",
+                max_length=80,
+                null=True,
+                verbose_name="Course short name",
+            ),
         ),
         migrations.AlterField(
-            model_name='classoffering',
-            name='name',
-            field=salesforce.fields.CharField(blank=True, default=salesforce.backend.operations.DefaultedOnCreate(), max_length=80, null=True, verbose_name='Class Offering Name'),
+            model_name="classoffering",
+            name="name",
+            field=salesforce.fields.CharField(
+                blank=True,
+                default=salesforce.backend.operations.DefaultedOnCreate(),
+                max_length=80,
+                null=True,
+                verbose_name="Class Offering Name",
+            ),
         ),
     ]

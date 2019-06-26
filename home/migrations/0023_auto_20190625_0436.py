@@ -6,14 +6,18 @@ import salesforce.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0022_auto_20190625_0427'),
-    ]
+    dependencies = [("home", "0022_auto_20190625_0427")]
 
     operations = [
         migrations.AlterField(
-            model_name='classoffering',
-            name='name',
-            field=salesforce.fields.CharField(blank=True, default='Nada', max_length=80, null=True, verbose_name='Class Offering Name'),
-        ),
+            model_name="classoffering",
+            name="name",
+            field=salesforce.fields.CharField(
+                blank=True,
+                default="Nada",
+                max_length=80,
+                null=True,
+                verbose_name="Class Offering Name",
+            ),
+        )
     ]

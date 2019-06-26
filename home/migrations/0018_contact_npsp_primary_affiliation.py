@@ -7,14 +7,19 @@ import salesforce.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0017_contact_client_id'),
-    ]
+    dependencies = [("home", "0017_contact_client_id")]
 
     operations = [
         migrations.AddField(
-            model_name='contact',
-            name='npsp_primary_affiliation',
-            field=salesforce.fields.ForeignKey(blank=True, db_column='npsp__Primary_Affiliation__c', null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='contact_npspprimaryaffiliation_set', to='home.Account'),
-        ),
+            model_name="contact",
+            name="npsp_primary_affiliation",
+            field=salesforce.fields.ForeignKey(
+                blank=True,
+                db_column="npsp__Primary_Affiliation__c",
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="contact_npspprimaryaffiliation_set",
+                to="home.Account",
+            ),
+        )
     ]

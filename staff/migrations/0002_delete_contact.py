@@ -5,12 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('staff', '0001_initial'),
-    ]
+    dependencies = [("staff", "0001_initial")]
 
-    operations = [
-        migrations.DeleteModel(
-            name='Contact',
-        ),
-    ]
+    operations = [migrations.DeleteModel(name="Contact")]

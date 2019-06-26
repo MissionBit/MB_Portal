@@ -5,14 +5,21 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0005_users_username'),
-    ]
+    dependencies = [("home", "0005_users_username")]
 
     operations = [
         migrations.AlterField(
-            model_name='users',
-            name='role',
-            field=models.CharField(choices=[('STA', 'Staff'), ('TEA', 'Teacher'), ('STU', 'Student'), ('VOL', 'Volunteer')], default='STU', max_length=3),
-        ),
+            model_name="users",
+            name="role",
+            field=models.CharField(
+                choices=[
+                    ("STA", "Staff"),
+                    ("TEA", "Teacher"),
+                    ("STU", "Student"),
+                    ("VOL", "Volunteer"),
+                ],
+                default="STU",
+                max_length=3,
+            ),
+        )
     ]

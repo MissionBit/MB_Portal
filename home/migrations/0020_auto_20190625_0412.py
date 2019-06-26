@@ -7,20 +7,28 @@ import salesforce.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0019_auto_20190625_0321'),
-    ]
+    dependencies = [("home", "0019_auto_20190625_0321")]
 
     operations = [
         migrations.AlterField(
-            model_name='classoffering',
-            name='course_short_name',
-            field=salesforce.fields.CharField(blank=True, db_column='Course_short_name__c', max_length=1300, null=True, verbose_name='Course short name'),
+            model_name="classoffering",
+            name="course_short_name",
+            field=salesforce.fields.CharField(
+                blank=True,
+                db_column="Course_short_name__c",
+                max_length=1300,
+                null=True,
+                verbose_name="Course short name",
+            ),
         ),
         migrations.AlterField(
-            model_name='classoffering',
-            name='name',
-            field=salesforce.fields.CharField(default=django.utils.timezone.now, max_length=80, verbose_name='Class Offering Name'),
+            model_name="classoffering",
+            name="name",
+            field=salesforce.fields.CharField(
+                default=django.utils.timezone.now,
+                max_length=80,
+                verbose_name="Class Offering Name",
+            ),
             preserve_default=False,
         ),
     ]

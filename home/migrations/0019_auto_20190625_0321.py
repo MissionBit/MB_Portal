@@ -6,14 +6,18 @@ import salesforce.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0018_contact_npsp_primary_affiliation'),
-    ]
+    dependencies = [("home", "0018_contact_npsp_primary_affiliation")]
 
     operations = [
         migrations.AlterField(
-            model_name='classoffering',
-            name='course_short_name',
-            field=salesforce.fields.CharField(blank=True, db_column='Course_short_name__c', max_length=80, null=True, verbose_name='Course short name'),
-        ),
+            model_name="classoffering",
+            name="course_short_name",
+            field=salesforce.fields.CharField(
+                blank=True,
+                db_column="Course_short_name__c",
+                max_length=80,
+                null=True,
+                verbose_name="Course short name",
+            ),
+        )
     ]

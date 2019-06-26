@@ -5,6 +5,6 @@ from django.shortcuts import render
 
 @login_required
 def donor(request):
-    if not request.user.groups.filter(name='donor').exists():
-        return HttpResponse('Unauthorized', status=401)
-    return render(request, 'donor.html')
+    if not request.user.groups.filter(name="donor").exists():
+        return HttpResponse("Unauthorized", status=401)
+    return render(request, "donor.html")

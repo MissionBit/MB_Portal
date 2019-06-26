@@ -7,14 +7,15 @@ import salesforce.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0010_auto_20190621_2148'),
-    ]
+    dependencies = [("home", "0010_auto_20190621_2148")]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='is_active',
-            field=salesforce.fields.BooleanField(default=salesforce.backend.operations.DefaultedOnCreate(), verbose_name='Active'),
-        ),
+            model_name="user",
+            name="is_active",
+            field=salesforce.fields.BooleanField(
+                default=salesforce.backend.operations.DefaultedOnCreate(),
+                verbose_name="Active",
+            ),
+        )
     ]
