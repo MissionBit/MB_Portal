@@ -5,6 +5,7 @@ from django.contrib.auth.models import Group
 from home.models import UserProfile
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib import messages
+from home.decorators import *
 
 from home.forms import (
     CreateStaffForm,
@@ -24,31 +25,23 @@ from home.models import (
 )
 
 
-@login_required
+@group_required('staff')
 def staff(request):
-    if not request.user.groups.filter(name="staff").exists():
-        return HttpResponse("Unauthorized", status=401)
     return render(request, "staff.html")
 
 
-@login_required
+@group_required('staff')
 def user_management(request):
-    if not request.user.groups.filter(name="staff").exists():
-        return HttpResponse("Unauthorized", status=401)
     return render(request, "user_management.html")
 
 
-@login_required
+@group_required('staff')
 def contact_management(request):
-    if not request.user.groups.filter(name="staff").exists():
-        return HttpResponse("Unauthorized", status=401)
     return render(request, "contact_management.html")
 
 
-@login_required
+@group_required('staff')
 def create_staff_user(request):
-    if not request.user.groups.filter(name="staff").exists():
-        return HttpResponse("Unauthorized", status=401)
     if request.method == "POST":
         form = CreateStaffForm(request.POST)
         if form.is_valid():
@@ -71,10 +64,8 @@ def create_staff_user(request):
     return render(request, "create_staff_user.html", {"form": form})
 
 
-@login_required
+@group_required('staff')
 def create_teacher_user(request):
-    if not request.user.groups.filter(name="staff").exists():
-        return HttpResponse("Unauthorized", status=401)
     if request.method == "POST":
         form = CreateTeacherForm(request.POST)
         if form.is_valid():
@@ -97,10 +88,8 @@ def create_teacher_user(request):
     return render(request, "create_teacher_user.html", {"form": form})
 
 
-@login_required
+@group_required('staff')
 def create_student_user(request):
-    if not request.user.groups.filter(name="staff").exists():
-        return HttpResponse("Unauthorized", status=401)
     if request.method == "POST":
         form = CreateStudentForm(request.POST)
         if form.is_valid():
@@ -123,10 +112,8 @@ def create_student_user(request):
     return render(request, "create_student_user.html", {"form": form})
 
 
-@login_required
+@group_required('staff')
 def create_volunteer_user(request):
-    if not request.user.groups.filter(name="staff").exists():
-        return HttpResponse("Unauthorized", status=401)
     if request.method == "POST":
         form = CreateVolunteerForm(request.POST)
         if form.is_valid():
@@ -179,10 +166,8 @@ def create_user_with_profile(form):
     return new_user
 
 
-@login_required
+@group_required('staff')
 def create_classroom(request):
-    if not request.user.groups.filter(name="staff").exists():
-        return HttpResponse("Unauthorized", status=401)
     if request.method == "POST":
         form = CreateClassroomForm(request.POST)
         if form.is_valid():
@@ -247,10 +232,8 @@ def setup_classroom_teachers(form):
     return classroom
 
 
-@login_required
+@group_required('staff')
 def create_class_offering(request):
-    if not request.user.groups.filter(name="staff").exists():
-        return HttpResponse("Unauthorized", status=401)
     if request.method == "POST":
         form = CreateClassOfferingForm(request.POST)
         form.save()
@@ -260,8 +243,7 @@ def create_class_offering(request):
     return render(request, "create_class_offering.html", {"form": form})
 
 
-@login_required
+@group_required('staff')
 def my_account_staff(request):
-    if not request.user.groups.filter(name="staff").exists():
-        return HttpResponse("Unauthorized", status=401)
     return render(request, "my_account_staff.html")
+
