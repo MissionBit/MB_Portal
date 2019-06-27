@@ -1,12 +1,10 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
-from home.models import UserProfile
+from home.models.models import UserProfile, Classroom
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib import messages
-from home.decorators import *
-
+from home.decorators import group_required
+from home.models.salesforce import ClassEnrollment
 from home.forms import (
     CreateStaffForm,
     CreateClassroomForm,
@@ -15,32 +13,24 @@ from home.forms import (
     CreateStudentForm,
     CreateClassOfferingForm,
 )
-from home.models import (
-    Contact,
-    ClassEnrollment,
-    ClassOffering,
-    Classroom,
-    User,
-    Account,
-)
 
 
-@group_required('staff')
+@group_required("staff")
 def staff(request):
     return render(request, "staff.html")
 
 
-@group_required('staff')
+@group_required("staff")
 def user_management(request):
     return render(request, "user_management.html")
 
 
-@group_required('staff')
+@group_required("staff")
 def contact_management(request):
     return render(request, "contact_management.html")
 
 
-@group_required('staff')
+@group_required("staff")
 def create_staff_user(request):
     if request.method == "POST":
         form = CreateStaffForm(request.POST)
@@ -64,7 +54,7 @@ def create_staff_user(request):
     return render(request, "create_staff_user.html", {"form": form})
 
 
-@group_required('staff')
+@group_required("staff")
 def create_teacher_user(request):
     if request.method == "POST":
         form = CreateTeacherForm(request.POST)
@@ -88,7 +78,7 @@ def create_teacher_user(request):
     return render(request, "create_teacher_user.html", {"form": form})
 
 
-@group_required('staff')
+@group_required("staff")
 def create_student_user(request):
     if request.method == "POST":
         form = CreateStudentForm(request.POST)
@@ -112,7 +102,7 @@ def create_student_user(request):
     return render(request, "create_student_user.html", {"form": form})
 
 
-@group_required('staff')
+@group_required("staff")
 def create_volunteer_user(request):
     if request.method == "POST":
         form = CreateVolunteerForm(request.POST)
@@ -166,7 +156,7 @@ def create_user_with_profile(form):
     return new_user
 
 
-@group_required('staff')
+@group_required("staff")
 def create_classroom(request):
     if request.method == "POST":
         form = CreateClassroomForm(request.POST)
@@ -232,7 +222,7 @@ def setup_classroom_teachers(form):
     return classroom
 
 
-@group_required('staff')
+@group_required("staff")
 def create_class_offering(request):
     if request.method == "POST":
         form = CreateClassOfferingForm(request.POST)
@@ -243,7 +233,6 @@ def create_class_offering(request):
     return render(request, "create_class_offering.html", {"form": form})
 
 
-@group_required('staff')
+@group_required("staff")
 def my_account_staff(request):
     return render(request, "my_account_staff.html")
-

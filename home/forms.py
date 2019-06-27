@@ -1,8 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.models import User as DjangoUser
-from .models import Contact, User, Account, Classroom, ClassOffering, ClassEnrollment
-from home.choices import *
+from .models import Contact, User, Account, ClassOffering, ClassEnrollment
 
 
 class UserRegisterForm(UserCreationForm):

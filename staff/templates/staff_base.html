@@ -2,20 +2,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+    <title></title>
 </head>
 <body>
-	<img src="https://www.missionbit.com/images/logo-fb.png" height="55" width="105">
-	{% if user.is_authenticated %}
+    <img src="https://www.missionbit.com/images/logo-fb.png" height="55" width="105">
+    {% if user.is_authenticated %}
              <p class="display-4">Logged in as: {{ user.username }} </p>
              {{ useremail }}
-         	 <a class="nav-item nav-link" href="{% url 'home-logout' %}">Logout</a>
+              <a class="nav-item nav-link" href="{% url 'home-logout' %}">Logout</a>
     {% endif %}
 
-	<div>
-		{% block content %}{% endblock %}	
-	</div>
-	
+    <div>
+        {% block content %}{% endblock %}
+    </div>
+
 
 </body>
 </html>

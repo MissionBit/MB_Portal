@@ -1,12 +1,10 @@
 from django.test import TestCase, RequestFactory
-from home.views import *
-from home.forms import UserRegisterForm
 from mixer.backend.django import mixer
 from django.contrib.auth.models import User, AnonymousUser, Group
 from django.urls import reverse
 from rest_framework import status
-from django.contrib import messages
 from django.contrib.messages.storage.fallback import FallbackStorage
+from home.views import *
 
 
 class BaseTestCase(TestCase):
@@ -122,13 +120,13 @@ class HomeViewsTest(BaseTestCase):
         response = landing_page(request)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    '''
+    """
     NEEDS TO BE REWRITTEN
     def test_register_after_oauth(self):
         request = RequestFactory().get(reverse("home-home"))
         response = register_after_oauth(request)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-    '''
+    """
 
     def test_register_as_student(self):
         request = RequestFactory().get(reverse("home-home"))

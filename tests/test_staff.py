@@ -1,8 +1,6 @@
 from django.test import TestCase, RequestFactory
 from staff.views import *
-from home.forms import UserRegisterForm
-from mixer.backend.django import mixer
-from django.contrib.auth.models import User, AnonymousUser
+from django.contrib.auth.models import User
 from django.urls import reverse
 from rest_framework import status
 

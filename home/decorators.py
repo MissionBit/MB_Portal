@@ -8,5 +8,7 @@ def group_required(group):
                 return func(request, *args, **kwargs)
             else:
                 raise PermissionDenied
+
         return wrapper
+
     return user_in_group
