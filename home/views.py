@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User as DjangoUser
+from home.models.models import UserProfile
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, ChangePwdForm
 from django.contrib import messages
@@ -15,18 +16,16 @@ from home.models.salesforce import (
 from django.contrib.auth import update_session_auth_hash
 
 
-"""
-**THIS index() method WILL NOT BE USED IN PRODUCTION: **
-it is a method that was added to test the mb-salesforce database 
-connection during development
-This method should be used to test our database, we can push data to it through here via a
-post request and we can query the database from here as well.  Leave this method here for
-ease of fxnality testing purposes
-until we are ready to deploy in production. 
-"""
-
-
 def index(request):
+    """
+    **THIS index() method WILL NOT BE USED IN PRODUCTION: **
+    it is a method that was added to test the mb-salesforce database
+    connection during development
+    This method should be used to test our database, we can push data to it through here via a
+    post request and we can query the database from here as well.  Leave this method here for
+    ease of fxnality testing purposes
+    until we are ready to deploy in production.
+    """
     contacts = Contact.objects.all()
     users = User.objects.all()
     individuals = Individual.objects.all()
@@ -42,26 +41,24 @@ def index(request):
     return render(request, "home/index.html", context)
 
 
-"""
-If the request's user already has a tag they are redirected to the correct page.  When a user
-first logs in they don't have a tag and they are directed based on the group they belong to with
-approximately the highest permission level.  If the user wants to use the app as a member of
-a different group, they can change in their profile, their tag will be changed and this method 
-will be called with a reqeust.user with a tag.
-redirects ref:
-https://realpython.com/django-redirects/#django-redirects-a-super-simple-example
-"""
-
-
 @login_required
 def home(request):
+    """
+    If the request's user already has a tag they are redirected to the correct page.  When a user
+    first logs in they don't have a tag and they are directed based on the group they belong to with
+    approximately the highest permission level.  If the user wants to use the app as a member of
+    a different group, they can change in their profile, their tag will be changed and this method
+    will be called with a reqeust.user with a tag.
+    redirects ref:
+    https://realpython.com/django-redirects/#django-redirects-a-super-simple-example
+    """
     if request.user.userprofile.change_pwd:
         return redirect("change_pwd")
     if request.GET.get("tag") is not None:
         return redirect(str(request.GET.get("tag")))
     else:
         if request.user.groups.all().count() == 0:
-            return redirect("home-register_after_oauth")  # TEMPORARY
+            return redirect("home-register_after_oauth")
         elif request.user.groups.filter(name="staff").exists():
             return redirect("staff")
         elif request.user.groups.filter(name="teacher").exists():
@@ -110,6 +107,15 @@ def landing_page(request):
 
 @login_required
 def register_after_oauth(request):
+    """
+    This method catches a user who logs in with no groups, this may happen in two scenarios.
+    Scenario 1: A user logs in with gmail who has never logged in before.  In that situation,
+    the user is required to choose a group to complete registration, and is allowed to proceed.
+    Scenario 2: A user logs in with gmail who has an account already, but has never logged in
+    with gmail.  In that situation, our API auto-generates a new user account, creating a
+    duplicate entry.  This method takes care of that by adding the new user to the old user's
+    groups, and deleting the old user.
+    """
     if request.method == "POST":
         if request.POST.get("role") == "student":
             student_group = Group.objects.get(name="student")
@@ -122,31 +128,45 @@ def register_after_oauth(request):
         else:
             messages.error(request, "Please correct the error below.")
             return redirect("register_after_oauth")
-    if DjangoUser.objects.filter(email=request.user.email).count() == 2:
-        user_1 = DjangoUser.objects.filter(email=request.user.email)[0]
-        user_2 = DjangoUser.objects.filter(email=request.user.email)[1]
-        staff_group = Group.objects.get(name="staff")
-        student_group = Group.objects.get(name="student")
-        teacher_group = Group.objects.get(name="teacher")
-        volunteer_group = Group.objects.get(name="volunteer")
-        if user_1.groups.filter(name="staff"):
-            staff_group.user_set.add(user_2)
-        elif user_1.groups.filter(name="student"):
-            student_group.user_set.add(user_2)
-        elif user_1.groups.filter(name="teacher"):
-            teacher_group.user_set.add(user_2)
-        elif user_1.groups.filter(name="volunteer"):
-            volunteer_group.user_set.add(user_2)
-        elif user_2.groups.filter(name="staff"):
-            staff_group.user_set.add(user_1)
-        elif user_2.groups.filter(name="student"):
-            student_group.user_set.add(user_1)
-        elif user_2.groups.filter(name="teacher"):
-            teacher_group.user_set.add(user_1)
-        elif user_2.groups.filter(name="volunteer"):
-            volunteer_group.user_set.add(user_1)
+    user_count = DjangoUser.objects.filter(email=request.user.email).count()
+    if user_count == 2:
+        add_user_to_correct_group_and_delete_duplicate(request)
         return redirect("home-home")
+    elif user_count > 2:
+        messages.error(request, "Error, multiple users with that email - please contact  Mission Bit Staff")
+        logout(request)
+        return render(request, "home/logout.html")
     return render(request, "home/register_after_oauth.html")
+
+
+def add_user_to_correct_group_and_delete_duplicate(request):
+    user_1 = DjangoUser.objects.filter(email=request.user.email)[0]
+    user_2 = DjangoUser.objects.filter(email=request.user.email)[1]
+    if user_1.groups.count() == 0:
+        copy_attributes_and_delete(user_1, user_2)
+        return
+    elif user_2.groups.count() == 0:
+        copy_attributes_and_delete(user_2, user_1)
+        return
+
+
+def copy_attributes_and_delete(social_user, duplicate_user):
+    duplicate_user_profile = UserProfile.objects.get(user_id=duplicate_user.id)
+    social_user_profile = UserProfile.objects.get(user_id=social_user.id)
+    social_user_profile.salesforce_id = duplicate_user_profile.salesforce_id
+    social_user_profile.date_of_birth = duplicate_user_profile.date_of_birth
+    social_user_profile.change_pwd = False
+    social_user_profile.save()
+    social_user.username = duplicate_user.username
+    social_user.first_name = duplicate_user.first_name
+    social_user.last_name = duplicate_user.last_name
+    social_user.date_joined = duplicate_user.date_joined
+    social_user.is_superuser = duplicate_user.is_superuser
+    for group in duplicate_user.groups.all():
+        group.user_set.add(social_user)
+    duplicate_user.delete()
+    social_user.save()
+    return
 
 
 def register_as_student(request):

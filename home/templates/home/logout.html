@@ -1,11 +1,18 @@
 {% extends "home/home.html" %}
 
 {% block content %}
-        <header>Logout</header>
-        <h1>You have been logged out</h1>
-        <div class="border-top pt-3">
-            <small class="text-muted">
-                <a href="{% url 'social:begin' 'google-oauth2' %}">Sign In</a>
-            </small>
+    {% if messages %}
+    {% for message in messages %}
+        <div class = "alert alert-{{message.tags}}">
+            {{ message }}
         </div>
+    {% endfor %}
+    {% endif %}
+    <header>Logout</header>
+    <h1>You have been logged out</h1>
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            <a href="{% url 'social:begin' 'google-oauth2' %}">Sign In</a>
+        </small>
+    </div>
 {% endblock content %}

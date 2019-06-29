@@ -18,12 +18,13 @@ RACE_CHOICES = (
     ("Asian AND White", "Asian AND White"),
     ("Black/African American AND White", "Black/African American AND White"),
     ("Other/Multiracial", "Other/Multiracial"),
+    ("Politely Decline", "Politely Decline"),
 )
 
 ETHNICITY_CHOICES = (
-    ("Politely Decline", "Politely Decline"),
     ("Hispanic/Latinx", "Hispanic/Latinx"),
     ("Not Hispanic/Latinx", "Not Hispanic/Latinx"),
+    ("Politely Decline", "Politely Decline"),
 )
 
 GENDER_CHOICES = (

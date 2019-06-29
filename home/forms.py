@@ -1,7 +1,14 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.models import User as DjangoUser
-from .models import Contact, User, Account, ClassOffering, ClassEnrollment
+from home.models.salesforce import (
+    Contact,
+    User,
+    Account,
+    ClassOffering,
+    ClassEnrollment,
+)
+from home.choices import *
 
 
 class UserRegisterForm(UserCreationForm):
@@ -22,40 +29,45 @@ class UserRegisterForm(UserCreationForm):
         ]
 
 
-class CreateStaffForm(forms.ModelForm):
-    email = forms.EmailField(label="email", max_length=100)
+class MissionBitUserCreationForm(forms.ModelForm):
+    account = forms.ModelChoiceField(queryset=Account.objects.all(), required=False)
     first_name = forms.CharField(label="First name", max_length=100)
     last_name = forms.CharField(label="Last name", max_length=100)
+    email = forms.EmailField(label="email", max_length=100)
     birthdate = forms.DateField(label="birthday")
-    title = forms.CharField(initial="Staff", disabled=True)
     owner = forms.ModelChoiceField(queryset=User.objects.filter(is_active=True))
-    account = forms.ModelChoiceField(queryset=Account.objects.all(), required=False)
 
     class Meta:
         model = Contact
-        fields = ["email", "first_name", "last_name", "birthdate", "owner", "title"]
+        fields = []
 
 
-class CreateStudentForm(forms.ModelForm):
-    email = forms.EmailField(label="email", max_length=100)
-    first_name = forms.CharField(label="First name", max_length=100)
-    last_name = forms.CharField(label="Last name", max_length=100)
-    birthdate = forms.DateField(label="birthday")
-    title = forms.CharField(initial="Student", disabled=True)
-    owner = forms.ModelChoiceField(queryset=User.objects.filter(is_active=True))
+class RaceGenderEthnicityForm(forms.ModelForm):
     which_best_describes_your_ethnicity = forms.ChoiceField(
-        label="Which best describes the Student's ethnicity? - Optional",
-        choices=ETHNICITY_CHOICES,
-        required=False,
+        label="Ethnicity - Optional", choices=ETHNICITY_CHOICES, required=False
     )
     race = forms.ChoiceField(
-        label="Which best describes the Student's race? - Optional",
-        choices=RACE_CHOICES,
-        required=False,
+        label="Race - Optional", choices=RACE_CHOICES, required=False
     )
     gender = forms.ChoiceField(
         label="Gender - Optional", choices=GENDER_CHOICES, required=False
     )
+
+    class Meta:
+        model = Contact
+        fields = []
+
+
+class CreateStaffForm(MissionBitUserCreationForm):
+    title = forms.CharField(initial="Staff", disabled=True)
+
+    class Meta:
+        model = Contact
+        fields = ["account", "first_name", "last_name", "email", "birthdate", "owner", "title"]
+
+
+class CreateStudentForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
+    title = forms.CharField(initial="Student", disabled=True)
     expected_graduation_year = forms.ChoiceField(
         label="Expected graduation year", choices=GRAD_YEAR_CHOICES, required=False
     )
@@ -65,59 +77,58 @@ class CreateStudentForm(forms.ModelForm):
 
     class Meta:
         model = Contact
-        fields = ["email", "first_name", "last_name", "birthdate", "owner", "title"]
+        fields = [
+            "account",
+            "first_name",
+            "last_name",
+            "email",
+            "birthdate",
+            "owner",
+            "title",
+            "expected_graduation_year",
+            "npsp_primary_affiliation",
+            "which_best_describes_your_ethnicity",
+            "race",
+            "gender"
+        ]
 
 
-class CreateTeacherForm(forms.ModelForm):
-    email = forms.EmailField(label="email", max_length=100)
-    first_name = forms.CharField(label="First name", max_length=100)
-    last_name = forms.CharField(label="Last name", max_length=100)
-    birthdate = forms.DateField(label="birthday")
+class CreateTeacherForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
     title = forms.CharField(initial="Teacher", disabled=True)
-    owner = forms.ModelChoiceField(queryset=User.objects.filter(is_active=True))
-    which_best_describes_your_ethnicity = forms.ChoiceField(
-        label="Which best describes the Teacher's ethnicity? - Optional",
-        choices=ETHNICITY_CHOICES,
-        required=False,
-    )
-    race = forms.ChoiceField(
-        label="Which best describes the Teacher's race? - Optional",
-        choices=RACE_CHOICES,
-        required=False,
-    )
-    gender = forms.ChoiceField(
-        label="Gender - Optional", choices=GENDER_CHOICES, required=False
-    )
 
     class Meta:
         model = Contact
-        fields = ["email", "first_name", "last_name", "birthdate", "owner", "title"]
+        fields = [
+            "account",
+            "first_name",
+            "last_name",
+            "email",
+            "birthdate",
+            "owner",
+            "title",
+            "which_best_describes_your_ethnicity",
+            "race",
+            "gender"
+        ]
 
 
-class CreateVolunteerForm(forms.ModelForm):
-    email = forms.EmailField(label="email", max_length=100)
-    first_name = forms.CharField(label="First name", max_length=100)
-    last_name = forms.CharField(label="Last name", max_length=100)
-    birthdate = forms.DateField(label="birthday")
+class CreateVolunteerForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
     title = forms.CharField(initial="Volunteer", disabled=True)
-    owner = forms.ModelChoiceField(queryset=User.objects.filter(is_active=True))
-    which_best_describes_your_ethnicity = forms.ChoiceField(
-        label="Which best describes the Volunteer's ethnicity? - Optional",
-        choices=ETHNICITY_CHOICES,
-        required=False,
-    )
-    race = forms.ChoiceField(
-        label="Which best describes the Volunteer's race? - Optional",
-        choices=RACE_CHOICES,
-        required=False,
-    )
-    gender = forms.ChoiceField(
-        label="Gender - Optional", choices=GENDER_CHOICES, required=False
-    )
 
     class Meta:
         model = Contact
-        fields = ["email", "first_name", "last_name", "birthdate", "owner", "title"]
+        fields = [
+            "account",
+            "first_name",
+            "last_name",
+            "email",
+            "birthdate",
+            "owner",
+            "title",
+            "which_best_describes_your_ethnicity",
+            "race",
+            "gender"
+        ]
 
 
 class CreateClassroomForm(forms.ModelForm):

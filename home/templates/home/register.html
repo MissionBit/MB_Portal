@@ -1,6 +1,14 @@
 {% extends "home/home.html" %}
 
 {% block content %}
+    {% if messages %}
+    {% for message in messages %}
+        <div class = "alert alert-{{message.tags}}">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
     <h3>Register with Mission Bit</h3>
     <a href="{% url 'home-register_as_student' %}">Register As Student</a><br>
     <a href="{% url 'home-register_as_volunteer' %}">Register As Volunteer</a><br>
