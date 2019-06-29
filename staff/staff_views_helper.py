@@ -2,6 +2,8 @@ from django.contrib.auth.models import User as DjangoUser
 from home.models.salesforce import ClassEnrollment
 from home.models.models import UserProfile, Classroom
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from django.conf import settings
 from django.contrib import messages
 
@@ -98,27 +100,35 @@ def add_volunteers_and_students_to_classroom(request, form, classroom):
     email_classroom(request, email_list, classroom.course)
 
 
-def email_new_user(request, first_name, account_type, username, password):
-    subject = "%s - Your Mission Bit %s Account Has Been Set Up" % (first_name, account_type)
-    message = "%s -\n\n\t Welcome to Mission Bit, you are officially our newest %s." \
-              "We look forward to introducing you to the rest of your team!  " \
-              "You can now log in to your account at: %s.\nYour password has been" \
-              "randomly generated, please use it to create your own password, or login with" \
-              "your GMAIL account.\n\n\nHere's your username: %s \nHere's your password: %s"\
-              % (first_name, account_type, "localhost:8000/", username, password)
-    email_from = settings.EMAIL_HOST_USER
-    recipient_list = ['tyler.iams@gmail.com']
-    send_mail(subject, message, email_from, recipient_list)
+def email_new_user(request, email, first_name, account_type, username, password):
+    subject="%s - Your new %s account has been set up" % (first_name, account_type)
+    msg_html = render_to_string('email_templates/new_user_email.html', {'first_name': first_name,
+                                                                        'email': email,
+                                                                        'username': username,
+                                                                        'password': password,
+                                                                        'account_type': account_type}
+                                )
+    from_user = settings.EMAIL_HOST_USER
+    send_mail(
+        subject=subject,
+        message=strip_tags(msg_html),
+        from_email=from_user,
+        recipient_list=['tyler.iams@gmail.com'],  # Will replace with email
+        html_message=msg_html
+    )
     messages.add_message(request, messages.SUCCESS, "Email sent successfully")
 
 
 def email_classroom(request, email_list, classroom_name):
     subject = "Your Mission Bit %s Classroom Has Been Created" % classroom_name
-    message = "Hello,\n" \
-              "\tYour %s classroom has been created. Log in to your Mission Bit Web Portal to view!\n\n" \
-              "\tSigned, \n\t\t The Mission Bit Web Portal" % classroom_name
-    email_from = settings.EMAIL_HOST_USER
-    recipient_list = ['tyler.iams@gmail.com', 'iams.sophia@gmail.com']  # REPLACE WITH email_list
-    send_mail(subject, message, email_from, recipient_list)
+    msg_html = render_to_string('email_templates/new_classroom_email.html', {'classroom_name': classroom_name})
+    from_user = settings.EMAIL_HOST_USER
+    recipient_list = ['tyler.iams@gmail.com', 'iams.sophia@gmail.com']  # Will replace with email_list
+    send_mail(
+        subject=subject,
+        message=strip_tags(msg_html),
+        from_email=from_user,
+        recipient_list=recipient_list,
+        html_message=msg_html
+    )
     messages.add_message(request, messages.SUCCESS, "Email sent successfully")
-

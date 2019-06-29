@@ -35,13 +35,14 @@ def create_staff_user(request):
             form.save()
             random_password = DjangoUser.objects.make_random_password()
             new_user = create_user_with_profile(form, random_password)
+            email = form.cleaned_data.get("email")
             staff_group = Group.objects.get(name="staff")
             staff_group.user_set.add(new_user)
             first_name = form.cleaned_data.get("first_name")
             messages.success(
                 request, f"Staff Account Successfully Created For {first_name}"
             )
-            email_new_user(request, first_name, 'staff', new_user.username, random_password)
+            email_new_user(request, email, first_name, 'staff', new_user.username, random_password)
             return redirect("staff")
         else:
             messages.error(
@@ -61,13 +62,14 @@ def create_teacher_user(request):
             form.save()
             random_password = DjangoUser.objects.make_random_password()
             new_user = create_user_with_profile(form)
+            email = form.cleaned_data.get("email")
             teacher_group = Group.objects.get(name="teacher")
             teacher_group.user_set.add(new_user)
             first_name = form.cleaned_data.get("first_name")
             messages.success(
                 request, f"Teacher Account Successfully Created For {first_name}"
             )
-            email_new_user(request, first_name, 'teacher', new_user.username, random_password)
+            email_new_user(request, email, first_name, 'teacher', new_user.username, random_password)
             return redirect("staff")
         else:
             messages.error(
@@ -87,13 +89,14 @@ def create_student_user(request):
             form.save()
             random_password = DjangoUser.objects.make_random_password()
             new_user = create_user_with_profile(form)
+            email = form.cleaned_data.get("email")
             student_group = Group.objects.get(name="student")
             student_group.user_set.add(new_user)
             first_name = form.cleaned_data.get("first_name")
             messages.success(
                 request, f"Student Account Successfully Created For {first_name}"
             )
-            email_new_user(request, first_name, 'student', new_user.username, random_password)
+            email_new_user(request, email, first_name, 'student', new_user.username, random_password)
             return redirect("staff")
         else:
             messages.error(
@@ -113,13 +116,14 @@ def create_volunteer_user(request):
             form.save()
             random_password = DjangoUser.objects.make_random_password()
             new_user = create_user_with_profile(form)
+            email = form.cleaned_data.get("email")
             volunteer_group = Group.objects.get(name="volunteer")
             volunteer_group.user_set.add(new_user)
             first_name = form.cleaned_data.get("first_name")
             messages.success(
                 request, f"Volunteer Account Successfully Created For {first_name}"
             )
-            email_new_user(request, first_name, 'volunteer', new_user.username, random_password)
+            email_new_user(request, email, first_name, 'volunteer', new_user.username, random_password)
             return redirect("staff")
         else:
             messages.error(
