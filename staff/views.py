@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import Group
-from django.contrib import messages
 from home.decorators import group_required
 from home.forms import (
     CreateStaffForm,
@@ -34,13 +33,15 @@ def create_staff_user(request):
         form = CreateStaffForm(request.POST)
         if form.is_valid():
             form.save()
-            new_user = create_user_with_profile(form)
+            random_password = DjangoUser.objects.make_random_password()
+            new_user = create_user_with_profile(form, random_password)
             staff_group = Group.objects.get(name="staff")
             staff_group.user_set.add(new_user)
             first_name = form.cleaned_data.get("first_name")
             messages.success(
                 request, f"Staff Account Successfully Created For {first_name}"
             )
+            email_new_user(request, first_name, 'staff', new_user.username, random_password)
             return redirect("staff")
         else:
             messages.error(
@@ -58,6 +59,7 @@ def create_teacher_user(request):
         form = CreateTeacherForm(request.POST)
         if form.is_valid():
             form.save()
+            random_password = DjangoUser.objects.make_random_password()
             new_user = create_user_with_profile(form)
             teacher_group = Group.objects.get(name="teacher")
             teacher_group.user_set.add(new_user)
@@ -65,6 +67,7 @@ def create_teacher_user(request):
             messages.success(
                 request, f"Teacher Account Successfully Created For {first_name}"
             )
+            email_new_user(request, first_name, 'teacher', new_user.username, random_password)
             return redirect("staff")
         else:
             messages.error(
@@ -82,6 +85,7 @@ def create_student_user(request):
         form = CreateStudentForm(request.POST)
         if form.is_valid():
             form.save()
+            random_password = DjangoUser.objects.make_random_password()
             new_user = create_user_with_profile(form)
             student_group = Group.objects.get(name="student")
             student_group.user_set.add(new_user)
@@ -89,6 +93,7 @@ def create_student_user(request):
             messages.success(
                 request, f"Student Account Successfully Created For {first_name}"
             )
+            email_new_user(request, first_name, 'student', new_user.username, random_password)
             return redirect("staff")
         else:
             messages.error(
@@ -106,6 +111,7 @@ def create_volunteer_user(request):
         form = CreateVolunteerForm(request.POST)
         if form.is_valid():
             form.save()
+            random_password = DjangoUser.objects.make_random_password()
             new_user = create_user_with_profile(form)
             volunteer_group = Group.objects.get(name="volunteer")
             volunteer_group.user_set.add(new_user)
@@ -113,6 +119,7 @@ def create_volunteer_user(request):
             messages.success(
                 request, f"Volunteer Account Successfully Created For {first_name}"
             )
+            email_new_user(request, first_name, 'volunteer', new_user.username, random_password)
             return redirect("staff")
         else:
             messages.error(
@@ -129,8 +136,8 @@ def create_classroom(request):
     if request.method == "POST":
         form = CreateClassroomForm(request.POST)
         if form.is_valid():
-            classroom = setup_classroom_teachers(form)
-            add_volunteers_and_students_to_classroom(form)
+            classroom = setup_classroom_teachers(request, form)
+            add_volunteers_and_students_to_classroom(request, form, classroom)
             messages.success(
                 request,
                 f'Classroom {form.cleaned_data.get("course")} Successfully Created',
@@ -168,5 +175,3 @@ def create_class_offering(request):
 @group_required("staff")
 def my_account_staff(request):
     return render(request, "my_account_staff.html")
-
-
