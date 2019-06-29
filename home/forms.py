@@ -63,7 +63,15 @@ class CreateStaffForm(MissionBitUserCreationForm):
 
     class Meta:
         model = Contact
-        fields = ["account", "first_name", "last_name", "email", "birthdate", "owner", "title"]
+        fields = [
+            "account",
+            "first_name",
+            "last_name",
+            "email",
+            "birthdate",
+            "owner",
+            "title",
+        ]
 
 
 class CreateStudentForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
@@ -89,7 +97,7 @@ class CreateStudentForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
             "npsp_primary_affiliation",
             "which_best_describes_your_ethnicity",
             "race",
-            "gender"
+            "gender",
         ]
 
 
@@ -108,7 +116,7 @@ class CreateTeacherForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
             "title",
             "which_best_describes_your_ethnicity",
             "race",
-            "gender"
+            "gender",
         ]
 
 
@@ -127,7 +135,7 @@ class CreateVolunteerForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
             "title",
             "which_best_describes_your_ethnicity",
             "race",
-            "gender"
+            "gender",
         ]
 
 

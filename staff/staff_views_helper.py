@@ -11,7 +11,7 @@ from django.contrib import messages
 def create_user_with_profile(form, random_password):
     new_user = DjangoUser.objects.create_user(
         username="%s.%s"
-                 % (form.cleaned_data.get("first_name"), form.cleaned_data.get("last_name")),
+        % (form.cleaned_data.get("first_name"), form.cleaned_data.get("last_name")),
         email=form.cleaned_data.get("email"),
         first_name=form.cleaned_data.get("first_name"),
         last_name=form.cleaned_data.get("last_name"),
@@ -69,7 +69,7 @@ def setup_classroom_teachers(request, form):
     )
     teacher_email_list = [
         DjangoUser.objects.get(id=classroom.teacher_id).email,
-        DjangoUser.objects.get(id=classroom.teacher_assistant_id).email
+        DjangoUser.objects.get(id=classroom.teacher_assistant_id).email,
     ]
     enroll_in_class(form, form.cleaned_data.get("teacher"))
     enroll_in_class(form, form.cleaned_data.get("teacher_assistant"))
@@ -83,17 +83,15 @@ def add_volunteers_and_students_to_classroom(request, form, classroom):
         enroll_in_class(form, volunteer)
         django_user = (
             UserProfile.objects.filter(salesforce_id=volunteer.client_id)
-                .first()
-                .user_id
+            .first()
+            .user_id
         )
         classroom.volunteers.add(django_user)
         email_list.append(DjangoUser.objects.get(id=django_user).email)
     for student in form.cleaned_data.get("students"):
         enroll_in_class(form, student)
         django_user = (
-            UserProfile.objects.filter(salesforce_id=student.client_id)
-                .first()
-                .user_id
+            UserProfile.objects.filter(salesforce_id=student.client_id).first().user_id
         )
         classroom.students.add(django_user)
         email_list.append(DjangoUser.objects.get(id=django_user).email)
@@ -101,34 +99,43 @@ def add_volunteers_and_students_to_classroom(request, form, classroom):
 
 
 def email_new_user(request, email, first_name, account_type, username, password):
-    subject="%s - Your new %s account has been set up" % (first_name, account_type)
-    msg_html = render_to_string('email_templates/new_user_email.html', {'first_name': first_name,
-                                                                        'email': email,
-                                                                        'username': username,
-                                                                        'password': password,
-                                                                        'account_type': account_type}
-                                )
+    subject = "%s - Your new %s account has been set up" % (first_name, account_type)
+    msg_html = render_to_string(
+        "email_templates/new_user_email.html",
+        {
+            "first_name": first_name,
+            "email": email,
+            "username": username,
+            "password": password,
+            "account_type": account_type,
+        },
+    )
     from_user = settings.EMAIL_HOST_USER
     send_mail(
         subject=subject,
         message=strip_tags(msg_html),
         from_email=from_user,
-        recipient_list=['tyler.iams@gmail.com'],  # Will replace with email
-        html_message=msg_html
+        recipient_list=["tyler.iams@gmail.com"],  # Will replace with email
+        html_message=msg_html,
     )
     messages.add_message(request, messages.SUCCESS, "Email sent successfully")
 
 
 def email_classroom(request, email_list, classroom_name):
     subject = "Your Mission Bit %s Classroom Has Been Created" % classroom_name
-    msg_html = render_to_string('email_templates/new_classroom_email.html', {'classroom_name': classroom_name})
+    msg_html = render_to_string(
+        "email_templates/new_classroom_email.html", {"classroom_name": classroom_name}
+    )
     from_user = settings.EMAIL_HOST_USER
-    recipient_list = ['tyler.iams@gmail.com', 'iams.sophia@gmail.com']  # Will replace with email_list
+    recipient_list = [
+        "tyler.iams@gmail.com",
+        "iams.sophia@gmail.com",
+    ]  # Will replace with email_list
     send_mail(
         subject=subject,
         message=strip_tags(msg_html),
         from_email=from_user,
         recipient_list=recipient_list,
-        html_message=msg_html
+        html_message=msg_html,
     )
     messages.add_message(request, messages.SUCCESS, "Email sent successfully")

@@ -133,7 +133,10 @@ def register_after_oauth(request):
         add_user_to_correct_group_and_delete_duplicate(request)
         return redirect("home-home")
     elif user_count > 2:
-        messages.error(request, "Error, multiple users with that email - please contact  Mission Bit Staff")
+        messages.error(
+            request,
+            "Error, multiple users with that email - please contact  Mission Bit Staff",
+        )
         logout(request)
         return render(request, "home/logout.html")
     return render(request, "home/register_after_oauth.html")

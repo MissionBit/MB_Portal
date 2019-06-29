@@ -42,7 +42,9 @@ def create_staff_user(request):
             messages.success(
                 request, f"Staff Account Successfully Created For {first_name}"
             )
-            email_new_user(request, email, first_name, 'staff', new_user.username, random_password)
+            email_new_user(
+                request, email, first_name, "staff", new_user.username, random_password
+            )
             return redirect("staff")
         else:
             messages.error(
@@ -69,7 +71,14 @@ def create_teacher_user(request):
             messages.success(
                 request, f"Teacher Account Successfully Created For {first_name}"
             )
-            email_new_user(request, email, first_name, 'teacher', new_user.username, random_password)
+            email_new_user(
+                request,
+                email,
+                first_name,
+                "teacher",
+                new_user.username,
+                random_password,
+            )
             return redirect("staff")
         else:
             messages.error(
@@ -96,7 +105,14 @@ def create_student_user(request):
             messages.success(
                 request, f"Student Account Successfully Created For {first_name}"
             )
-            email_new_user(request, email, first_name, 'student', new_user.username, random_password)
+            email_new_user(
+                request,
+                email,
+                first_name,
+                "student",
+                new_user.username,
+                random_password,
+            )
             return redirect("staff")
         else:
             messages.error(
@@ -123,7 +139,14 @@ def create_volunteer_user(request):
             messages.success(
                 request, f"Volunteer Account Successfully Created For {first_name}"
             )
-            email_new_user(request, email, first_name, 'volunteer', new_user.username, random_password)
+            email_new_user(
+                request,
+                email,
+                first_name,
+                "volunteer",
+                new_user.username,
+                random_password,
+            )
             return redirect("staff")
         else:
             messages.error(
