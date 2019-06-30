@@ -1,0 +1,34 @@
+{% extends "staff_base.html" %}
+
+{% block content %}
+
+<style>
+.container{
+    display: grid;
+    grid-auto-columns: fit-content(75%);
+}
+</style>
+<div class="container" style="padding-left: 50px; padding-bottom: 100px">
+{% if classrooms %}
+{% for class, class_dict in classrooms.items %}
+    <div style="border-style: groove; border-color: darkslateblue; width: 350px; padding-left: 10px; padding-bottom: 20px;">
+        <h3><a href="./{{ class_dict.id }}">{{ class }}</a></h3>
+        {% for theclassdict, classmember in class_dict.items %}
+            {% if theclassdict == 'student_list' or theclassdict == 'volunteer_list' %}
+                <strong>{{ theclassdict }}</strong> : <br>
+                {% for peopleinclass, person in classmember.items %}
+                    {{ person }} <br>
+                {% endfor %}
+            {% elif theclassdict != 'id' %}
+                <strong>{{ theclassdict }}</strong> : {{ classmember }} <br>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <br>
+{% endfor %}
+{% endif %}
+</div>
+
+
+{% endblock content %}
+

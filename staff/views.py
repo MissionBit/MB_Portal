@@ -1,3 +1,4 @@
+from django.views.generic import DetailView, ListView
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import Group
 from home.decorators import group_required
@@ -20,6 +21,33 @@ def staff(request):
 @group_required("staff")
 def user_management(request):
     return render(request, "user_management.html")
+
+
+def classroom_management(request):
+    all_classrooms = {}
+    for classroom in Classroom.objects.all():
+        teacher_user = DjangoUser.objects.get(id=classroom.teacher_id)
+        teacher_assistant_user = DjangoUser.objects.get(id=classroom.teacher_assistant_id)
+        student_list = {}
+        x = 1
+        for student in classroom.students.all():
+            student_user = DjangoUser.objects.get(id=student.id)
+            student_list['student%s' % x] = "%s %s" % (student_user.first_name, student_user.last_name)
+            x += 1
+        x = 1
+        volunteer_list = {}
+        for volunteer in classroom.volunteers.all():
+            volunteer_user = DjangoUser.objects.get(id=volunteer.id)
+            volunteer_list['volunteer%s' % x] = "%s %s" % (volunteer_user.first_name, volunteer_user.last_name)
+        class_dict = {'id': classroom.id,
+                      'teacher': "%s %s" % (teacher_user.first_name, teacher_user.last_name),
+                      'teacher_assistant': "%s %s" % (teacher_assistant_user.first_name, teacher_assistant_user.last_name),
+                      'student_list': student_list,
+                      'volunteer_list': volunteer_list
+                      }
+        all_classrooms[str(classroom.course)] = class_dict
+
+    return render(request, "classroom_management.html", {'classrooms': all_classrooms})
 
 
 @group_required("staff")
@@ -202,3 +230,14 @@ def create_class_offering(request):
 @group_required("staff")
 def my_account_staff(request):
     return render(request, "my_account_staff.html")
+
+
+class ClassroomDetailView(DetailView):
+    model = Classroom
+
+
+class ClassroomListView(ListView):
+    model = Classroom
+    template_name = 'classroom_management.html'
+    context_object_name = 'classrooms'
+

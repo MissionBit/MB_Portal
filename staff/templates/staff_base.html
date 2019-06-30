@@ -2,19 +2,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 </head>
-<body>
-    <img src="https://www.missionbit.com/images/logo-fb.png" height="55" width="105">
-    {% if user.is_authenticated %}
-             <p class="display-4">Logged in as: {{ user.username }} </p>
-             {{ useremail }}
-              <a class="nav-item nav-link" href="{% url 'home-logout' %}">Logout</a>
-    {% endif %}
 
-    <div>
-        {% block content %}{% endblock %}
+<nav class="navbar navbar-default">
+  <div style="height: 80px" class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">
+        <img src="https://www.missionbit.com/images/logo-fb.png" height="55" width="105">
+      </a>
     </div>
+    <ul style="padding-top: 17px" class="nav navbar-nav">
+      <li><a href="#">{{ user.username }}</a></li>
+      <li><a href="{% url 'home-logout' %}">Logout</a></li>
+    </ul>
+  </div>
+</nav>
+
+<body>
+
+{% block content %}
+
+
+{% endblock %}
 
 
 </body>

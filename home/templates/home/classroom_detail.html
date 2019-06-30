@@ -1,0 +1,32 @@
+{%  extends "home/home.html" %}
+
+{% block content %}
+<style>
+h2 {
+    color: firebrick;
+    padding-left: 10px;
+}
+strong {
+    padding-left: 10px;
+}
+p {
+    padding-left: 20px;
+    padding-top: 2px;
+}
+</style>
+
+<h2>{{ object.course }}</h2>
+<strong> Teacher: </strong>
+<p>{{ object.teacher.first_name }}  {{ object.teacher.last_name }} </p>
+<strong> Teacher Assistant: </strong>
+<p>{{ object.teacher_assistant.first_name }} {{ object.teacher_assistant.last_name }}</p>
+<strong> Volunteers: </strong>
+    {% for volunteer in object.volunteers.all %}
+        <p>{{ volunteer.first_name }} {{ volunteer.last_name }} </p>
+    {% endfor %}
+<strong> Students :</strong>
+    {% for student in object.students.all %}
+        <p>{{ student.first_name }} {{ student.last_name }} </p>
+    {% endfor %}
+
+{% endblock content %}
