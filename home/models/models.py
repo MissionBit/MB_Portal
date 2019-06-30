@@ -1,5 +1,6 @@
 from django.db import models as mdls
 from django.contrib.auth.models import User as DjangoUser
+from django.contrib.auth.models import Group
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from home.choices import *
@@ -31,3 +32,10 @@ class Classroom(mdls.Model):
     )
     volunteers = mdls.ManyToManyField(DjangoUser, related_name="classroom_volunteers")
     students = mdls.ManyToManyField(DjangoUser, related_name="classroom_students")
+
+
+class Announcement(mdls.Model):
+    title = mdls.CharField(max_length=240, unique=True)
+    announcement = mdls.TextField(max_length=10000)
+    posted = mdls.DateTimeField(db_index=True, auto_now=True)
+    recipient_groups = mdls.ManyToManyField(Group, related_name="user_groups")

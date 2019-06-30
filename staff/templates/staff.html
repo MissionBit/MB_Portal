@@ -10,12 +10,12 @@
 {% endfor %}
 {% endif %}
 
-<h1 style="padding: 20px"> Staff User Home </h1>
+<h1> Staff User Home </h1>
 
-<a style="padding: 20px" href="{% url 'user_management' %}">Manage Users</a><br><br>
+<a href="{% url 'user_management' %}">Manage Users</a><br><br>
 
-<a style="padding: 20px" href="{% url 'classroom_management' %}">Classroom Management</a><br><br>
+<a href="{% url 'classroom_management' %}">Classroom Management</a><br><br>
 
-<a style="padding: 20px" href="{% url 'create_class_offering' %}">Create Class Offering</a><br><br>
+<a href="{% url 'create_class_offering' %}">Create Class Offering</a><br><br>
 
 {% endblock content %}

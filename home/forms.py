@@ -148,9 +148,11 @@ class CreateClassroomForm(forms.ModelForm):
         queryset=Contact.objects.filter(title="Teacher", is_deleted=False)
     )
     volunteers = forms.ModelMultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple(),
         queryset=Contact.objects.filter(title="Volunteer", is_deleted=False)
     )
     students = forms.ModelMultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple(),
         queryset=Contact.objects.filter(title="Student", is_deleted=False)
     )
     created_by = forms.ModelChoiceField(queryset=User.objects.filter(is_active=True))
