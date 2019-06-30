@@ -3,12 +3,14 @@
 {% block content %}
 
 <style>
-.container{
+.wrapper{
     display: grid;
-    grid-auto-columns: fit-content(75%);
+    grid-template-columns: repeat(4, .5fr);
+    grid-gap: 20px;
 }
 </style>
-<div class="container" style="padding-left: 50px; padding-bottom: 100px">
+
+<div class="wrapper" style="padding-left: 50px; padding-bottom: 100px">
 {% if classrooms %}
 {% for class, class_dict in classrooms.items %}
     <div style="border-style: groove; border-color: darkslateblue; width: 350px; padding-left: 10px; padding-bottom: 20px;">
