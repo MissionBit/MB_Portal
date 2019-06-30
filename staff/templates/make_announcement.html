@@ -1,0 +1,14 @@
+{% extends "staff_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<h1> Make Announcement </h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+<br>
+<button type="submit" class="btn btn-primary">Make Announcement</button>
+</form>
+{% endblock content %}

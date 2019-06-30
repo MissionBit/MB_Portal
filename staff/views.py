@@ -9,6 +9,7 @@ from home.forms import (
     CreateVolunteerForm,
     CreateStudentForm,
     CreateClassOfferingForm,
+    MakeAnnouncementForm,
 )
 from .staff_views_helper import *
 
@@ -225,6 +226,12 @@ def create_class_offering(request):
             return redirect(request, "staff")
     form = CreateClassOfferingForm()
     return render(request, "create_class_offering.html", {"form": form})
+
+
+@group_required("staff")
+def make_announcement(request):
+    form = MakeAnnouncementForm()
+    return render(request, "make_announcement.html", {"form": form})
 
 
 @group_required("staff")

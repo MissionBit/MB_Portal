@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.models import User as DjangoUser
+from django.contrib.auth.models import Group
+from home.models.models import Announcement, Classroom
 from home.models.salesforce import (
     Contact,
     User,
@@ -200,3 +202,16 @@ class ChangePwdForm(PasswordChangeForm):
         model = User
         fields = ["old_password", "new_password1", "new_password2"]
         widgets = {"password": forms.PasswordInput()}
+
+
+class MakeAnnouncementForm(forms.ModelForm):
+    title = forms.CharField(max_length=240)
+    announcement = forms.Textarea()
+    recipient_groups = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                                      queryset=Group.objects.all())
+    recipient_classrooms = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                                         queryset=Classroom.objects.all())
+
+    class Meta:
+        model = Announcement
+        fields = ["title", "announcement", "recipient_groups", "recipient_classrooms"]

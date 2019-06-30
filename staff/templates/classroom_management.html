@@ -5,12 +5,47 @@
 <style>
 .wrapper{
     display: grid;
-    grid-template-columns: repeat(4, .5fr);
+    grid-template-columns: repeat(4, .15fr);
     grid-gap: 20px;
+    padding-left: 300px;
+    padding-top: 120px;
+    padding-bottom: 200px;
 }
 </style>
 
-<div class="wrapper" style="padding-left: 50px; padding-bottom: 100px">
+<style>
+.sidenav {
+  height: 100%;
+  width: 240px;
+  position: fixed;
+  z-index: 1;
+  top: 80px;
+  left: 0;
+  background-color: whitesmoke;
+  overflow-x: hidden;
+  padding-top: 100px;
+}
+
+.sidenav a {
+  padding-top: 10px;
+  padding-left: 25px;
+  text-decoration: #333333;
+  font-size: 18px;
+  color: steelblue;
+  display: block;
+}
+
+.sidenav a:hover {
+  color: #666666;
+}
+</style>
+
+<div class="sidenav">
+  <a href="{% url 'create_classroom' %}">Create Classroom</a>
+  <a href="{% url 'create_class_offering' %}">Create Class Offering</a>
+</div>
+
+<div class="wrapper">
 {% if classrooms %}
 {% for class, class_dict in classrooms.items %}
     <div style="border-style: groove; border-color: darkslateblue; width: 350px; padding-left: 10px; padding-bottom: 20px;">

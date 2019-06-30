@@ -3,12 +3,19 @@
 
 {% block content %}
 
-<h1> Create Staff User </h1>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form|crispy }}
-<br>
-<button type="submit" class="btn btn-primary">Create User</button>
-</form>
+<div class="sidenav">
+
+</div>
+
+    <div class="main-container">
+    <h1 style="padding-bottom: 20px"> Create Staff User </h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+        <br>
+        <button type="submit" class="btn btn-primary">Create User</button>
+        </form>
+    </div>
+
 {% endblock content %}

@@ -33,9 +33,17 @@ class Classroom(mdls.Model):
     volunteers = mdls.ManyToManyField(DjangoUser, related_name="classroom_volunteers")
     students = mdls.ManyToManyField(DjangoUser, related_name="classroom_students")
 
+    def __str__(self):
+        return "%s - %s, %s" % (self.course, self.teacher.last_name, self.teacher.first_name)
+
 
 class Announcement(mdls.Model):
     title = mdls.CharField(max_length=240, unique=True)
-    announcement = mdls.TextField(max_length=10000)
+    announcement = mdls.TextField(max_length=2500)
     posted = mdls.DateTimeField(db_index=True, auto_now=True)
     recipient_groups = mdls.ManyToManyField(Group, related_name="user_groups")
+    recipient_classrooms = mdls.ManyToManyField(Classroom, related_name="classroom")
+
+    def __str__(self):
+        return "%s, %s" % (self.title, self.posted)
+

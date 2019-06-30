@@ -22,4 +22,5 @@ urlpatterns = [
         views.create_class_offering,
         name="create_class_offering",
     ),
+    path("make_announcement/", views.make_announcement, name="make_announcement"),
 ]
