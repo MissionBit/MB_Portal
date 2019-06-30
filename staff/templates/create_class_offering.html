@@ -3,12 +3,17 @@
 
 {% block content %}
 
-<h1> Create Class Offering </h1>
+<div class="sidenav">
 
-<form method="post">
-    {% csrf_token %}
-    {{ form|crispy }}
-<br>
-<button type="submit" class="btn btn-primary">Create Class Offering</button>
-</form>
+</div>
+
+    <div class="main-container">
+    <h1 style="padding-bottom: 20px"> Create Class Offering </h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+        <br>
+        <button type="submit" class="btn btn-primary">Create Class Offering</button>
+        </form>
+    </div>
 {% endblock content %}
