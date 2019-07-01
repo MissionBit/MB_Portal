@@ -5,8 +5,14 @@ from .views import ClassroomDetailView
 urlpatterns = [
     path("", views.staff, name="staff"),
     path("user_management/", views.user_management, name="user_management"),
-    path("classroom_management/", views.classroom_management, name="classroom_management"),
-    path("classroom_management/<int:pk>/", ClassroomDetailView.as_view(), name="classroom_detail"),
+    path(
+        "classroom_management/", views.classroom_management, name="classroom_management"
+    ),
+    path(
+        "classroom_management/<int:pk>/",
+        ClassroomDetailView.as_view(),
+        name="classroom_detail",
+    ),
     path("create_staff_user/", views.create_staff_user, name="create_staff_user"),
     path("create_teacher_user/", views.create_teacher_user, name="create_teacher_user"),
     path("create_student_user/", views.create_student_user, name="create_student_user"),

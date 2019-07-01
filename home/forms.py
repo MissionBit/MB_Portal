@@ -151,11 +151,11 @@ class CreateClassroomForm(forms.ModelForm):
     )
     volunteers = forms.ModelMultipleChoiceField(
         widget=forms.CheckboxSelectMultiple(),
-        queryset=Contact.objects.filter(title="Volunteer", is_deleted=False)
+        queryset=Contact.objects.filter(title="Volunteer", is_deleted=False),
     )
     students = forms.ModelMultipleChoiceField(
         widget=forms.CheckboxSelectMultiple(),
-        queryset=Contact.objects.filter(title="Student", is_deleted=False)
+        queryset=Contact.objects.filter(title="Student", is_deleted=False),
     )
     created_by = forms.ModelChoiceField(queryset=User.objects.filter(is_active=True))
 
@@ -207,14 +207,24 @@ class ChangePwdForm(PasswordChangeForm):
 class MakeAnnouncementForm(forms.ModelForm):
     title = forms.CharField(max_length=240)
     announcement = forms.Textarea()
-    recipient_groups = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                                      queryset=Group.objects.all(),
-                                                      required=False)
-    recipient_classrooms = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                                          queryset=Classroom.objects.all(),
-                                                          required=False)
+    recipient_groups = forms.ModelMultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        queryset=Group.objects.all(),
+        required=False,
+    )
+    recipient_classrooms = forms.ModelMultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        queryset=Classroom.objects.all(),
+        required=False,
+    )
     email_recipients = forms.BooleanField(initial=False, required=False)
 
     class Meta:
         model = Announcement
-        fields = ["title", "announcement", "recipient_groups", "recipient_classrooms", "email_recipients"]
+        fields = [
+            "title",
+            "announcement",
+            "recipient_groups",
+            "recipient_classrooms",
+            "email_recipients",
+        ]

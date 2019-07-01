@@ -29,18 +29,22 @@ def classroom_management(request):
     all_classrooms = {}
     for classroom in Classroom.objects.all():
         teacher_user = DjangoUser.objects.get(id=classroom.teacher_id)
-        teacher_assistant_user = DjangoUser.objects.get(id=classroom.teacher_assistant_id)
+        teacher_assistant_user = DjangoUser.objects.get(
+            id=classroom.teacher_assistant_id
+        )
         student_list = add_students_to_student_dict(classroom)
         volunteer_list = add_volunteers_to_volunteer_dict(classroom)
-        class_dict = {'id': classroom.id,
-                      'teacher': "%s %s" % (teacher_user.first_name, teacher_user.last_name),
-                      'teacher_assistant': "%s %s" % (teacher_assistant_user.first_name, teacher_assistant_user.last_name),
-                      'student_list': student_list,
-                      'volunteer_list': volunteer_list
-                      }
+        class_dict = {
+            "id": classroom.id,
+            "teacher": "%s %s" % (teacher_user.first_name, teacher_user.last_name),
+            "teacher_assistant": "%s %s"
+            % (teacher_assistant_user.first_name, teacher_assistant_user.last_name),
+            "student_list": student_list,
+            "volunteer_list": volunteer_list,
+        }
         all_classrooms[str(classroom.course)] = class_dict
 
-    return render(request, "classroom_management.html", {'classrooms': all_classrooms})
+    return render(request, "classroom_management.html", {"classrooms": all_classrooms})
 
 
 @group_required("staff")
@@ -226,7 +230,9 @@ def make_announcement(request):
         if form.is_valid():
             form.instance.created_by = DjangoUser.objects.get(id=request.user.id)
             form.save()
-            messages.add_message(request, messages.SUCCESS, "Successfully Made Announcement")
+            messages.add_message(
+                request, messages.SUCCESS, "Successfully Made Announcement"
+            )
             return redirect("staff")
         else:
             messages.error(
@@ -234,7 +240,9 @@ def make_announcement(request):
                 "Announcement NOT made, your announcement form was not valid, please try again.",
             )
             return redirect(request, "staff")
-    form = MakeAnnouncementForm(initial={'created_by': DjangoUser.objects.get(id=request.user.id)})
+    form = MakeAnnouncementForm(
+        initial={"created_by": DjangoUser.objects.get(id=request.user.id)}
+    )
     return render(request, "make_announcement.html", {"form": form})
 
 
@@ -249,6 +257,5 @@ class ClassroomDetailView(DetailView):
 
 class ClassroomListView(ListView):
     model = Classroom
-    template_name = 'classroom_management.html'
-    context_object_name = 'classrooms'
-
+    template_name = "classroom_management.html"
+    context_object_name = "classrooms"

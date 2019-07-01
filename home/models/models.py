@@ -34,7 +34,11 @@ class Classroom(mdls.Model):
     students = mdls.ManyToManyField(DjangoUser, related_name="classroom_students")
 
     def __str__(self):
-        return "%s - %s, %s" % (self.course, self.teacher.last_name, self.teacher.first_name)
+        return "%s - %s, %s" % (
+            self.course,
+            self.teacher.last_name,
+            self.teacher.first_name,
+        )
 
 
 class Announcement(mdls.Model):
@@ -44,7 +48,9 @@ class Announcement(mdls.Model):
     recipient_groups = mdls.ManyToManyField(Group, related_name="user_groups")
     recipient_classrooms = mdls.ManyToManyField(Classroom, related_name="classroom")
     email_recipients = mdls.BooleanField(null=False, default=False)
-    created_by = mdls.ForeignKey(DjangoUser, related_name="user", on_delete=mdls.CASCADE)
+    created_by = mdls.ForeignKey(
+        DjangoUser, related_name="user", on_delete=mdls.CASCADE
+    )
 
     def __str__(self):
         return "%s, %s" % (self.title, self.posted)
