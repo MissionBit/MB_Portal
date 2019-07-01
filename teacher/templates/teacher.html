@@ -2,6 +2,24 @@
 
 {% block content %}
 
-<h1> Teacher User Home </h1>
+<div class="sidenav">
+
+</div>
+
+<div class="main-container">
+    <h1> Teacher User Home </h1>
+    <h3> Announcements: </h3>
+    {% if announcements %}
+        {% for announcement in announcements %}
+        <div class="container">
+            <strong style="color: #666666;">Subject: {{ announcement.title }}</strong><br>
+            <p style="padding-left: 2pc">{{ announcement.announcement }}</p>
+            Author: {{ announcement.created_by }} on {{ announcement.posted.date }}<br><br>
+        </div>
+
+        {% endfor %}
+    {% endif %}
+</div>
+
 
 {% endblock content %}

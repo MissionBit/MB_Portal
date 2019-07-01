@@ -10,6 +10,23 @@
 {% endfor %}
 {% endif %}
 
+    <div class="sidenav">
+
+    </div>
+
+    <div class="main-container">
+        <h4>Please Log In Or Register</h4>
+        <div class='content-section'>
+              <a href="{% url 'login' %}">Log In</a><br>
+              <br>
+              <p><strong>-- OR --</strong></p>
+              <a href="{% url 'social:begin' 'google-oauth2' %}">Login with Google</a><br>
+              <br>
+              <p><strong>-- OR --</strong></p>
+              <a href="{% url 'home-register' %}">Register</a><br>
+        </div>
+    </div>
+
 <h4>Please Log In Or Register</h4>
 <div class='content-section'>
       <a href="{% url 'login' %}">Log In</a><br>

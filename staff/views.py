@@ -24,22 +24,14 @@ def user_management(request):
     return render(request, "user_management.html")
 
 
+@group_required("staff")
 def classroom_management(request):
     all_classrooms = {}
     for classroom in Classroom.objects.all():
         teacher_user = DjangoUser.objects.get(id=classroom.teacher_id)
         teacher_assistant_user = DjangoUser.objects.get(id=classroom.teacher_assistant_id)
-        student_list = {}
-        x = 1
-        for student in classroom.students.all():
-            student_user = DjangoUser.objects.get(id=student.id)
-            student_list['student%s' % x] = "%s %s" % (student_user.first_name, student_user.last_name)
-            x += 1
-        x = 1
-        volunteer_list = {}
-        for volunteer in classroom.volunteers.all():
-            volunteer_user = DjangoUser.objects.get(id=volunteer.id)
-            volunteer_list['volunteer%s' % x] = "%s %s" % (volunteer_user.first_name, volunteer_user.last_name)
+        student_list = add_students_to_student_dict()
+        volunteer_list = add_volunteers_to_volunteer_dict()
         class_dict = {'id': classroom.id,
                       'teacher': "%s %s" % (teacher_user.first_name, teacher_user.last_name),
                       'teacher_assistant': "%s %s" % (teacher_assistant_user.first_name, teacher_assistant_user.last_name),
@@ -215,7 +207,6 @@ def create_class_offering(request):
     if request.method == "POST":
         form = CreateClassOfferingForm(request.POST)
         if form.is_valid():
-            form = CreateClassOfferingForm(request.POST)
             form.save()
             return redirect("staff")
         else:
@@ -230,7 +221,20 @@ def create_class_offering(request):
 
 @group_required("staff")
 def make_announcement(request):
-    form = MakeAnnouncementForm()
+    if request.method == "POST":
+        form = MakeAnnouncementForm(request.POST)
+        if form.is_valid():
+            form.instance.created_by = DjangoUser.objects.get(id=request.user.id)
+            form.save()
+            messages.add_message(request, messages.SUCCESS, "Successfully Made Announcement")
+            return redirect("staff")
+        else:
+            messages.error(
+                request,
+                "Announcement NOT made, your announcement form was not valid, please try again.",
+            )
+            return redirect(request, "staff")
+    form = MakeAnnouncementForm(initial={'created_by': DjangoUser.objects.get(id=request.user.id)})
     return render(request, "make_announcement.html", {"form": form})
 
 

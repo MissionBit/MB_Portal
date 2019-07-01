@@ -2,6 +2,16 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+
+
+    <div class="sidenav">
+        <a href="{% url 'social:begin' 'google-oauth2' %}">Sign In With Google</a>
+        <a href="{% url 'home-register' %}">Register</a><br>
+    </div>
+
+
+
+    <div class="main-container">
     {% if messages %}
     {% for message in messages %}
         <div class = "alert alert-{{message.tags}}">
@@ -13,8 +23,13 @@
     <h4>Please Log In</h4>
     <form method = "POST">
             {% csrf_token %}
-            {{ form|crispy }} <br>
-            <button class = "btn btn-outline-info" type="submit">Login</button>
+            {{ form|crispy }}
+            <button class="btn btn-success" type="submit">Login</button>
     </form>
+    </div>
+
+
+
+
 
 {% endblock content %}

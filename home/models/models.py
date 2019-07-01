@@ -43,7 +43,8 @@ class Announcement(mdls.Model):
     posted = mdls.DateTimeField(db_index=True, auto_now=True)
     recipient_groups = mdls.ManyToManyField(Group, related_name="user_groups")
     recipient_classrooms = mdls.ManyToManyField(Classroom, related_name="classroom")
+    email_recipients = mdls.BooleanField(null=False, default=False)
+    created_by = mdls.ForeignKey(DjangoUser, related_name="user", on_delete=mdls.CASCADE)
 
     def __str__(self):
         return "%s, %s" % (self.title, self.posted)
-

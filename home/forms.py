@@ -208,10 +208,13 @@ class MakeAnnouncementForm(forms.ModelForm):
     title = forms.CharField(max_length=240)
     announcement = forms.Textarea()
     recipient_groups = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                                      queryset=Group.objects.all())
+                                                      queryset=Group.objects.all(),
+                                                      required=False)
     recipient_classrooms = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                                         queryset=Classroom.objects.all())
+                                                          queryset=Classroom.objects.all(),
+                                                          required=False)
+    email_recipients = forms.BooleanField(initial=False, required=False)
 
     class Meta:
         model = Announcement
-        fields = ["title", "announcement", "recipient_groups", "recipient_classrooms"]
+        fields = ["title", "announcement", "recipient_groups", "recipient_classrooms", "email_recipients"]

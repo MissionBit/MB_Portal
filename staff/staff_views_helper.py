@@ -139,3 +139,20 @@ def email_classroom(request, email_list, classroom_name):
         html_message=msg_html,
     )
     messages.add_message(request, messages.SUCCESS, "Email sent successfully")
+
+
+def add_students_to_student_dict(classroom):
+    student_dict = {}
+    for x, student in enumerate(classroom.students.all()):
+        student_user = DjangoUser.objects.get(id=student.id)
+        student_dict['student%s' % x] = "%s %s" % (student_user.first_name, student_user.last_name)
+    return student_dict
+
+
+def add_volunteers_to_volunteer_dict(classroom):
+    volunteer_dict = {}
+    for x, volunteer in enumerate(classroom.volunteers.all()):
+        volunteer_user = DjangoUser.objects.get(id=volunteer.id)
+        volunteer_dict['volunteer%s' % x] = "%s %s" % (volunteer_user.first_name, volunteer_user.last_name)
+    return volunteer_dict
+
