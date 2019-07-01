@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User as DjangoUser
+from django.contrib.auth.models import Group
 from home.models.salesforce import ClassEnrollment
 from home.models.models import UserProfile, Classroom
 from django.core.mail import send_mail
@@ -139,6 +140,52 @@ def email_classroom(request, email_list, classroom_name):
         html_message=msg_html,
     )
     messages.add_message(request, messages.SUCCESS, "Email sent successfully")
+
+
+def get_emails_from_form(form):
+    email_list = []
+    groups = form.getlist('recipient_groups')
+    for group in groups:
+        group_name = Group.objects.get(id=group)
+        users = DjangoUser.objects.filter(groups__name=group_name)
+        for user in users:
+            email_list.append(user.email)
+    classrooms = form.getlist('recipient_classrooms')
+    for classroom in classrooms:
+        classroom_object = Classroom.objects.get(id=classroom)
+        teacher = DjangoUser.objects.get(id=classroom_object.teacher_id).email
+        email_list.append(teacher.email)
+        teacher_assistant = DjangoUser.objects.get(id=classroom_object.teacher_assistant_id).email
+        email_list.append(teacher_assistant.email)
+        students = DjangoUser.objects.filter(classroom_students__course=classroom_object.course)
+        volunteers = DjangoUser.objects.filter(classroom_volunteers__course=classroom_object.course)
+        for student in students:
+            email_list.append(student.email)
+        for volunteer in volunteers:
+            email_list.append(volunteer.email)
+    return email_list
+
+
+def email_announcement(request, form, email_list):
+    subject = form.instance.title
+    msg_html = render_to_string(
+        "email_templates/announcement_email.html", {"subject": form.instance.title,
+                                                    "message": form.instance.announcement,
+                                                    "from": form.instance.created_by}
+    )
+    from_user = settings.EMAIL_HOST_USER
+    recipient_list = [
+        "tyler.iams@gmail.com",
+        "iams.sophia@gmail.com",
+    ]  # Will replace with email_list
+    send_mail(
+        subject=subject,
+        message=strip_tags(msg_html),
+        from_email=from_user,
+        recipient_list=recipient_list,
+        html_message=msg_html,
+    )
+    messages.add_message(request, messages.SUCCESS, "Recipients Successfully Emailed")
 
 
 def add_students_to_student_dict(classroom):

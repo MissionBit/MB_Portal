@@ -229,6 +229,10 @@ def make_announcement(request):
         form = MakeAnnouncementForm(request.POST)
         if form.is_valid():
             form.instance.created_by = DjangoUser.objects.get(id=request.user.id)
+            if form.instance.email_recipients:
+                data = request.POST.copy()
+                email_list = get_emails_from_form(data)
+                email_announcement(request, form, email_list)
             form.save()
             messages.add_message(
                 request, messages.SUCCESS, "Successfully Made Announcement"
