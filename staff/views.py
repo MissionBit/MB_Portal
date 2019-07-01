@@ -30,8 +30,8 @@ def classroom_management(request):
     for classroom in Classroom.objects.all():
         teacher_user = DjangoUser.objects.get(id=classroom.teacher_id)
         teacher_assistant_user = DjangoUser.objects.get(id=classroom.teacher_assistant_id)
-        student_list = add_students_to_student_dict()
-        volunteer_list = add_volunteers_to_volunteer_dict()
+        student_list = add_students_to_student_dict(classroom)
+        volunteer_list = add_volunteers_to_volunteer_dict(classroom)
         class_dict = {'id': classroom.id,
                       'teacher': "%s %s" % (teacher_user.first_name, teacher_user.last_name),
                       'teacher_assistant': "%s %s" % (teacher_assistant_user.first_name, teacher_assistant_user.last_name),
