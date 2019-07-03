@@ -2,11 +2,17 @@
 
 {% block content %}
 
-<h1> Create User </h1>
+ <div class="sidenav">
+ <a href="{% url 'create_staff_user' %}">Create Staff User</a><br>
+    <a href="{% url 'create_teacher_user' %}">Create Teacher User</a><br>
+    <a href="{% url 'create_student_user' %}">Create Student User</a><br>
+    <a href="{% url 'create_volunteer_user' %}">Create Volunteer User</a><br>
+ </div>
 
-<a href="{% url 'create_staff_user' %}">Create New Staff User</a><br>
-<a href="{% url 'create_teacher_user' %}">Create New Teacher User</a><br>
-<a href="{% url 'create_student_user' %}">Create New Student User</a><br>
-<a href="{% url 'create_volunteer_user' %}">Create New Volunteer User</a><br>
+ <div class="main-container">
+    <h1> User Management Home </h1>
+
+ </div>
+
 
 {% endblock content %}

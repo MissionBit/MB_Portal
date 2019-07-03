@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0004_remove_users_username'),
-    ]
+    dependencies = [("home", "0004_remove_users_username")]
 
     operations = [
         migrations.AddField(
-            model_name='users',
-            name='username',
-            field=models.CharField(default='none', max_length=100),
-        ),
+            model_name="users",
+            name="username",
+            field=models.CharField(default="none", max_length=100),
+        )
     ]

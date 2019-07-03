@@ -1,11 +1,25 @@
 {% extends "home/home.html" %}
 
 {% block content %}
-		<header>Logout</header>
-		<h1>You have been logged out</h1>
-		<div class="border-top pt-3">
-			<small class="text-muted">
-				<a href="{% url 'social:begin' 'google-oauth2' %}">Sign In</a>
-			</small>
-		</div>
+
+    <div class="sidenav">
+        <a href="{% url 'social:begin' 'google-oauth2' %}">Sign In With Google</a>
+        <a href="{% url 'login' %}">Sign In With Username and Password</a>
+        <a href="{% url 'home-register' %}">Register</a><br>
+    </div>
+
+
+    <div class="main-container">
+    {% if messages %}
+    {% for message in messages %}
+        <div class = "alert alert-{{message.tags}}">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% endif %}
+    <h1>You have been logged out</h1>
+    <div class="border-top pt-3">
+    </div>
+    </div>
+
 {% endblock content %}

@@ -6,15 +6,13 @@ import django.utils.timezone
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0001_initial'),
-    ]
+    dependencies = [("home", "0001_initial")]
 
     operations = [
         migrations.AddField(
-            model_name='users',
-            name='email',
+            model_name="users",
+            name="email",
             field=models.CharField(default=django.utils.timezone.now, max_length=100),
             preserve_default=False,
-        ),
+        )
     ]

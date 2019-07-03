@@ -9,7 +9,7 @@ This project will become an interactive web portal system for Mission Bit staff,
 
 ### Prerequisites
 
-`python`, `pip` and `postgresql` are prerequisites to installing. Python dependencies will be installed from `requirements.txt` using `pip`. If you're brand new to python, see [Getting Started With Mission Bit and Python Django](#getting-started-with-mission-bit-and-python-django).
+`python`, `pip`, `virtualenv` and `postgresql` are prerequisites to installing. Python dependencies will be installed from `requirements.txt` using `pip`. If you're brand new to python, see [Getting Started With Mission Bit and Python Django](#getting-started-with-mission-bit-and-python-django).
 
 ### Installing
 
@@ -24,8 +24,8 @@ git checkout auth
 Next, create your virtual environment, and activate it:
 
 ```
-virtualenv <name>
-source <name>/bin/activate
+virtualenv venv
+source venv/bin/activate
 ```
 
 Next, (also in your project folder) install all of the necessary dependencies from the project `requirements.txt` file:

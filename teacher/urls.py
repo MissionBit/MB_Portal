@@ -1,6 +1,4 @@
 from django.urls import path, include
 from . import views
 
-urlpatterns = [		
-		path('', views.teacher, name='teacher'),
-]
+urlpatterns = [path("", views.teacher, name="teacher")]

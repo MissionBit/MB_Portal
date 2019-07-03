@@ -18,11 +18,12 @@ from django.urls import path, include
 from django.conf.urls import url
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('home.urls')),
-    path('staff/', include('staff.urls')),
-    path('student/', include('student.urls')),
-    path('teacher/', include('teacher.urls')),
-    path('volunteer/', include('volunteer.urls')),
-    url(r'^auth/', include('social_django.urls', namespace='social')),
+    path("admin/", admin.site.urls),
+    path("", include("home.urls")),
+    path("staff/", include("staff.urls")),
+    path("student/", include("student.urls")),
+    path("teacher/", include("teacher.urls")),
+    path("volunteer/", include("volunteer.urls")),
+    path("donor/", include("donor.urls")),
+    url(r"^auth/", include("social_django.urls", namespace="social")),
 ]

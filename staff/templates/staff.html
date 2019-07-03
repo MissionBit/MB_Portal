@@ -2,8 +2,31 @@
 
 {% block content %}
 
-<h1> Staff User Home </h1>
 
-<a href="{% url 'user_management' %}">Manage Users</a><br>
+<div class="sidenav">
+    <a href="{% url 'user_management' %}">Manage Users</a>
+
+    <a href="{% url 'classroom_management' %}">Classroom Management</a>
+
+    <a href="{% url 'create_class_offering' %}">Create Class Offering</a>
+
+    <a href="{% url 'make_announcement' %}">Make Announcement</a>
+</div>
+
+
+<div class="main-container">
+    {% if messages %}
+    {% for message in messages %}
+        <div style="color: darkgreen; width: 500px" class = "alert alert-{{message.tags}}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+    <h1> Staff User Home Main Section </h1>
+    <h3> Announcements </h3>
+</div>
+
+
+
 
 {% endblock content %}

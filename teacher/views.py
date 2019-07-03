@@ -1,10 +1,9 @@
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
-from home.models import Users
 from django.shortcuts import render
+from home.decorators import group_required
+from home.models.models import Announcement
 
-@login_required
+
+@group_required("teacher")
 def teacher(request):
-	if Users.objects.filter(email = str(request.user.email)).first().role != 'teacher':
-		return HttpResponse('Unauthorized', status=401)
-	return render(request, 'teacher.html')
+    announcements = Announcement.objects.filter(recipient_groups=2)
+    return render(request, "teacher.html", {"announcements": announcements})

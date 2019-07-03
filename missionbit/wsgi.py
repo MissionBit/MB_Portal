@@ -1,5 +1,3 @@
-from dotenv import load_dotenv, find_dotenv
-load_dotenv(find_dotenv())
 """
 WSGI config for missionbit project.
 
@@ -13,6 +11,11 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'missionbit.settings')
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
+
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "missionbit.settings")
 
 application = get_wsgi_application()

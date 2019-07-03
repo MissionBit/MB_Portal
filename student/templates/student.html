@@ -2,6 +2,30 @@
 
 {% block content %}
 
-<h1> Student User Home </h1>
+<div class="sidenav">
+
+</div>
+
+
+<div class="main-container">
+    {% if messages %}
+    {% for message in messages %}
+        <div style="color: darkgreen; width: 500px" class = "alert alert-{{message.tags}}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+    <h1> Student User Home </h1>
+    <h3> Announcements </h3>
+
+    {% if announcements %}
+        {% for announcement in announcements %}
+            <strong>Subject: {{ announcement.title }}</strong><br>
+            Announcement: {{ announcement.announcement }}<br>
+            Author: {{ announcement.created_by }} on {{ announcement.posted.date }}<br><br>
+        {% endfor %}
+    {% endif %}
+
+</div>
 
 {% endblock content %}
