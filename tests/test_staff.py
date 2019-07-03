@@ -1,13 +1,13 @@
 from django.test import TestCase, RequestFactory
 from staff.views import *
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User as DjangoUser
 from django.urls import reverse
 from rest_framework import status
+from missionbit.settings import *
 
-"""
 class BaseTestCase(TestCase):
     def create_authenticated_staff_user(self):
-        user = User.objects.create_user(
+        user = DjangoUser.objects.create_user(
             username="testuser",
             email="test@email.com",
             first_name="testfirst",
@@ -20,7 +20,7 @@ class BaseTestCase(TestCase):
         return user
 
     def create_authenticated_nonstaff_user(self):
-        user = User.objects.create_user(
+        user = DjangoUser.objects.create_user(
             username="otherstafftestuser",
             email="othertest@email.com",
             first_name="othertestfirst",
@@ -35,32 +35,28 @@ class BaseTestCase(TestCase):
 
 class StaffViewsTest(BaseTestCase):
     def test_staff(self):
-        request = RequestFactory().get(reverse("home-home"))
-        request.user = self.create_authenticated_nonstaff_user()
-        response = staff(request)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        request.user = self.create_authenticated_staff_user()
-        response = staff(request)
+        self.client.force_login(self.create_authenticated_staff_user())
+        response = self.client.get(reverse("staff"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.client.force_login(self.create_authenticated_nonstaff_user())
+        self.assertRaises(PermissionError)
 
     def test_user_management(self):
-        request = RequestFactory().get(reverse("home-home"))
-        request.user = self.create_authenticated_nonstaff_user()
-        response = user_management(request)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        request.user = self.create_authenticated_staff_user()
-        response = user_management(request)
+        self.client.force_login(self.create_authenticated_staff_user())
+        response = self.client.get(reverse("user_management"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.client.force_login(self.create_authenticated_nonstaff_user())
+        self.assertRaises(PermissionError)
 
     def test_create_staff_user(self):
-        request = RequestFactory().get(reverse("home-home"))
-        request.user = self.create_authenticated_nonstaff_user()
-        response = create_staff_user(request)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        request.user = self.create_authenticated_staff_user()
-        response = create_staff_user(request)
+        self.client.force_login(self.create_authenticated_staff_user())
+        response = self.client.get(reverse("create_staff_user"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.client.force_login(self.create_authenticated_nonstaff_user())
+        self.assertRaises(PermissionError)
 
+
+    """
     def test_create_teacher_user(self):
         request = RequestFactory().get(reverse("home-home"))
         request.user = self.create_authenticated_nonstaff_user()

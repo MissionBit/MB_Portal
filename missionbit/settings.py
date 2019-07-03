@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 import dj_database_url
 from dotenv import load_dotenv
+import sys
 
 load_dotenv()
 import os
@@ -103,6 +104,15 @@ DATABASES = {
 }
 
 DATABASE_ROUTERS = ["salesforce.router.ModelRouter"]
+
+if 'test' in sys.argv:
+    DATABASES['salesforce'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'test_sfdb',
+        'MIRROR': 'salesforce',
+    }
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
