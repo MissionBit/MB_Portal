@@ -63,12 +63,12 @@ class HomeViewsTest(BaseTestCase):
                              status_code=302,
                              target_status_code=200)
 
-    @patch('home.decorators.group_required', lambda group: True)
     def test_home_authenticated_student(self):
         request = RequestFactory().get(reverse("home-home"))
         request.user = self.create_user_in_group("student")
         response = home(request)
-        response.client = Client()
+        response.client = self.client
+        self.client.force_login(request.user)
         self.assertRedirects(response=response,
                              expected_url='/student/',
                              status_code=302,
