@@ -1,22 +1,38 @@
-from django.test import TestCase, RequestFactory
+from django.test import TestCase, RequestFactory, Client
 from mixer.backend.django import mixer
-from django.contrib.auth.models import User, AnonymousUser, Group
+from django.contrib.auth.models import User, AnonymousUser, Group as DjangoUser, AnonymousUser, Group
+from django.contrib.auth import authenticate
 from django.urls import reverse
 from rest_framework import status
 from django.contrib.messages.storage.fallback import FallbackStorage
+from home.decorators import group_required
+from unittest.mock import patch
+
 from home.views import *
+
 
 
 class BaseTestCase(TestCase):
     def create_user(self):
-        user = User.objects.create_user(
+        test_user = DjangoUser.objects.create_user(
             username="testuser",
             email="test@email.com",
             first_name="testfirst",
             last_name="testlast",
             password="testpassword",
         )
-        return user
+        test_user = authenticate(username="testuser", password="testpassword")
+        return test_user
+
+    def create_user_in_group(self, group):
+        test_user = self.create_user()
+        self.add_user_to_group(test_user, group)
+        return test_user
+
+    def add_user_to_group(self, user, group):
+        add_to_group = Group.objects.create(name=group)
+        add_to_group = Group.objects.get(name=group)
+        add_to_group.user_set.add(user)
 
     def create_valid_form(
         self,
@@ -36,30 +52,39 @@ class BaseTestCase(TestCase):
 
 
 class HomeViewsTest(BaseTestCase):
+
     def test_home_unauthenticated(self):
         request = RequestFactory().get(reverse("home-home"))
         request.user = AnonymousUser()
         response = home(request)
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        response.client = Client()
+        self.assertRedirects(response=response,
+                             expected_url=reverse('home-landing_page')+'?next=/home/',
+                             status_code=302,
+                             target_status_code=200)
 
+    @patch('home.decorators.group_required', lambda group: True)
     def test_home_authenticated_student(self):
         request = RequestFactory().get(reverse("home-home"))
-        request.user = self.create_user()
-        Group.objects.get_or_create(name="student")
-        student_group = Group.objects.get(name="student")
-        student_group.user_set.add(request.user)
+        request.user = self.create_user_in_group("student")
         response = home(request)
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        response.client = Client()
+        self.assertRedirects(response=response,
+                             expected_url='/student/',
+                             status_code=302,
+                             target_status_code=403)
 
+    """
     def test_home_authenticated_staff(self):
         request = RequestFactory().get(reverse("home-home"))
-        request.user = self.create_user()
-        Group.objects.get_or_create(name="staff")
-        student_group = Group.objects.get(name="staff")
-        student_group.user_set.add(request.user)
+        request.user = self.create_user_in_group("staff")
         response = home(request)
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-
+        response.client = Client()
+        self.assertRedirects(response=response,
+                             expected_url=reverse('staff'),
+                             status_code=302,
+                             target_status_code=200)
+    
     def test_home_authenticated_teacher(self):
         request = RequestFactory().get(reverse("home-home"))
         request.user = self.create_user()
@@ -120,13 +145,13 @@ class HomeViewsTest(BaseTestCase):
         response = landing_page(request)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    """
+    
     NEEDS TO BE REWRITTEN
     def test_register_after_oauth(self):
         request = RequestFactory().get(reverse("home-home"))
         response = register_after_oauth(request)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-    """
+    
 
     def test_register_as_student(self):
         request = RequestFactory().get(reverse("home-home"))
@@ -185,3 +210,4 @@ class HomeViewsTest(BaseTestCase):
         setattr(request, "_messages", messages)
         response = register_as_volunteer(request)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+    """
