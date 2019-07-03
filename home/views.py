@@ -46,16 +46,12 @@ def home(request):
     """
     If the request's user already has a tag they are redirected to the correct page.  When a user
     first logs in they don't have a tag and they are directed based on the group they belong to with
-    approximately the highest permission level.  If the user wants to use the app as a member of
-    a different group, they can change in their profile, their tag will be changed and this method
-    will be called with a reqeust.user with a tag.
+    approximately the highest permission level.
     redirects ref:
     https://realpython.com/django-redirects/#django-redirects-a-super-simple-example
     """
     if request.user.userprofile.change_pwd:
         return redirect("change_pwd")
-    if request.GET.get("tag") is not None:
-        return redirect(str(request.GET.get("tag")))
     else:
         if request.user.groups.all().count() == 0:
             return redirect("home-register_after_oauth")

@@ -1,15 +1,11 @@
 from django.test import TestCase, RequestFactory, Client
-from mixer.backend.django import mixer
-from django.contrib.auth.models import User, AnonymousUser, Group as DjangoUser, AnonymousUser, Group
+from django.contrib.auth.models import User, AnonymousUser as DjangoUser, AnonymousUser
 from django.contrib.auth import authenticate
 from django.urls import reverse
 from rest_framework import status
 from django.contrib.messages.storage.fallback import FallbackStorage
-from home.decorators import group_required
-from unittest.mock import patch
 
 from home.views import *
-
 
 
 class BaseTestCase(TestCase):
@@ -29,8 +25,13 @@ class BaseTestCase(TestCase):
         self.add_user_to_group(test_user, group)
         return test_user
 
+    def create_user_with_tag(self, tag):
+        test_user = self.create_user()
+        setattr(test_user, "tag", str(tag))
+        return test_user
+
     def add_user_to_group(self, user, group):
-        add_to_group = Group.objects.create(name=group)
+        Group.objects.create(name=group)
         add_to_group = Group.objects.get(name=group)
         add_to_group.user_set.add(user)
 
@@ -71,52 +72,41 @@ class HomeViewsTest(BaseTestCase):
                              status_code=302,
                              target_status_code=200)
 
-    """
     def test_home_authenticated_staff(self):
-        request = RequestFactory().get(reverse("home-home"))
-        request.user = self.create_user_in_group("staff")
-        response = home(request)
-        response.client = Client()
+        self.client.force_login(self.create_user_in_group("staff"))
+        response = self.client.get(reverse("home-home"))
         self.assertRedirects(response=response,
-                             expected_url=reverse('staff'),
+                             expected_url='/staff/',
                              status_code=302,
                              target_status_code=200)
     
     def test_home_authenticated_teacher(self):
-        request = RequestFactory().get(reverse("home-home"))
-        request.user = self.create_user()
-        Group.objects.get_or_create(name="teacher")
-        student_group = Group.objects.get(name="teacher")
-        student_group.user_set.add(request.user)
-        response = home(request)
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.client.force_login(self.create_user_in_group("teacher"))
+        response = self.client.get(reverse("home-home"))
+        self.assertRedirects(response=response,
+                             expected_url='/teacher/',
+                             status_code=302,
+                             target_status_code=200)
 
     def test_home_authenticated_volunteer(self):
-        request = RequestFactory().get(reverse("home-home"))
-        request.user = self.create_user()
-        Group.objects.get_or_create(name="volunteer")
-        student_group = Group.objects.get(name="volunteer")
-        student_group.user_set.add(request.user)
-        response = home(request)
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.client.force_login(self.create_user_in_group("volunteer"))
+        response = self.client.get(reverse("home-home"))
+        self.assertRedirects(response=response,
+                             expected_url='/volunteer/',
+                             status_code=302,
+                             target_status_code=200)
 
     def test_home_user_has_no_group(self):
-        request = RequestFactory().get(reverse("home-home"))
-        request.user = self.create_user()
-        response = home(request)
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-
-    def test_home_user_is_tagged(self):
-        request = RequestFactory().get(reverse("home-home"))
-        request.user = self.create_user()
-        request.GET._mutable = True
-        request.GET["tag"] = "student"
-        response = home(request)
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.client.force_login(self.create_user())
+        response = self.client.get(reverse("home-home"))
+        self.assertRedirects(response=response,
+                             expected_url='/register_after_oauth/',
+                             status_code=302,
+                             target_status_code=200)
 
     def test_logout(self):
         self.client.force_login(
-            User.objects.create_user(
+            DjangoUser.objects.create_user(
                 username="testuser", email="testuser.example.com", password="top_secret"
             )
         )
@@ -125,35 +115,19 @@ class HomeViewsTest(BaseTestCase):
         self.assertEqual(response.wsgi_request.user.is_authenticated, False)
 
     def test_login(self):
-        request = RequestFactory().get(reverse("home-home"))
-        request.user = mixer.blend(User)
-        response = login(request)
-        self.assertEqual(response.url, reverse("login"))
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        response = self.client.get(reverse("login"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_register(self):
-        request = RequestFactory().get(reverse("home-home"))
-        request.user = mixer.blend(User)
-        response = register(request)
+        response = self.client.get(reverse("home-register"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_landing_page(self):
-        request = RequestFactory().get(reverse("home-home"))
-        response = landing_page(request)
+        response = self.client.get(reverse("home-landing_page"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    
-    NEEDS TO BE REWRITTEN
-    def test_register_after_oauth(self):
-        request = RequestFactory().get(reverse("home-home"))
-        response = register_after_oauth(request)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-    
 
     def test_register_as_student(self):
-        request = RequestFactory().get(reverse("home-home"))
-        request.user = mixer.blend(User)
-        response = register_as_student(request)
+        response = self.client.get(reverse("home-register_as_student"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_register_as_student_post(self):
@@ -165,7 +139,7 @@ class HomeViewsTest(BaseTestCase):
         Group.objects.get_or_create(name="student")
         response = register_as_student(request)
         self.assertEqual(
-            User.objects.filter(first_name="test").first().first_name, "test"
+            DjangoUser.objects.filter(first_name="test").first().first_name, "test"
         )
         self.assertEqual(response.url, reverse("login"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
@@ -180,9 +154,7 @@ class HomeViewsTest(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_register_as_volunteer(self):
-        request = RequestFactory().get(reverse("home-home"))
-        request.user = self.create_user()
-        response = register_as_volunteer(request)
+        response = self.client.get(reverse("home-register_as_volunteer"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_register_as_volunteer_post(self):
@@ -194,7 +166,7 @@ class HomeViewsTest(BaseTestCase):
         Group.objects.get_or_create(name="volunteer")
         response = register_as_volunteer(request)
         self.assertEqual(
-            User.objects.filter(first_name="test").first().first_name, "test"
+            DjangoUser.objects.filter(first_name="test").first().first_name, "test"
         )
         self.assertEqual(response.url, reverse("login"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
@@ -207,4 +179,3 @@ class HomeViewsTest(BaseTestCase):
         setattr(request, "_messages", messages)
         response = register_as_volunteer(request)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-    """

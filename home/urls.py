@@ -19,7 +19,7 @@ urlpatterns = [
     ),
     path("register_as_donor/", views.register_as_donor, name="home-register_as_donor"),
     path(
-        "register_after_oauth",
+        "register_after_oauth/",
         views.register_after_oauth,
         name="home-register_after_oauth",
     ),
