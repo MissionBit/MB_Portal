@@ -72,7 +72,7 @@ class HomeViewsTest(BaseTestCase):
         self.assertRedirects(response=response,
                              expected_url='/student/',
                              status_code=302,
-                             target_status_code=403)
+                             target_status_code=200)
 
     """
     def test_home_authenticated_staff(self):
