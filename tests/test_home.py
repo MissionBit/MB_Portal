@@ -64,11 +64,8 @@ class HomeViewsTest(BaseTestCase):
                              target_status_code=200)
 
     def test_home_authenticated_student(self):
-        request = RequestFactory().get(reverse("home-home"))
-        request.user = self.create_user_in_group("student")
-        response = home(request)
-        response.client = self.client
-        self.client.force_login(request.user)
+        self.client.force_login(self.create_user_in_group("student"))
+        response = self.client.get(reverse("home-home"))
         self.assertRedirects(response=response,
                              expected_url='/student/',
                              status_code=302,
