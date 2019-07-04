@@ -34,10 +34,13 @@ class BaseTestCase(TestCase):
 
 
 class StaffViewsTest(BaseTestCase):
+    databases = '__all__'
+
     def test_staff(self):
         self.client.force_login(self.create_authenticated_staff_user())
         response = self.client.get(reverse("staff"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTemplateUsed(response, "staff.html")
         self.client.force_login(self.create_authenticated_nonstaff_user())
         self.assertRaises(PermissionError)
 
@@ -45,6 +48,7 @@ class StaffViewsTest(BaseTestCase):
         self.client.force_login(self.create_authenticated_staff_user())
         response = self.client.get(reverse("user_management"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTemplateUsed(response, "user_management.html")
         self.client.force_login(self.create_authenticated_nonstaff_user())
         self.assertRaises(PermissionError)
 
@@ -52,6 +56,7 @@ class StaffViewsTest(BaseTestCase):
         self.client.force_login(self.create_authenticated_staff_user())
         response = self.client.get(reverse("create_staff_user"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTemplateUsed(response, "create_staff_user.html")
         self.client.force_login(self.create_authenticated_nonstaff_user())
         self.assertRaises(PermissionError)
 

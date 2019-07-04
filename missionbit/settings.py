@@ -105,13 +105,6 @@ DATABASES = {
 
 DATABASE_ROUTERS = ["salesforce.router.ModelRouter"]
 
-if 'test' in sys.argv:
-    DATABASES['salesforce'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'test_sfdb',
-        'MIRROR': 'salesforce',
-    }
-
 
 
 # Password validation
