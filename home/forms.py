@@ -196,7 +196,7 @@ class CreateClassOfferingForm(forms.ModelForm):
 
 
 class ChangePwdForm(PasswordChangeForm):
-    old_password = forms.CharField(widget=forms.PasswordInput, initial="missionbit")
+    old_password = forms.CharField(widget=forms.PasswordInput)
 
     class Meta:
         model = User

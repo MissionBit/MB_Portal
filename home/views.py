@@ -117,13 +117,10 @@ def register_after_oauth(request):
             student_group = Group.objects.get(name="student")
             student_group.user_set.add(request.user)
             return redirect("home-home")
-        elif request.POST.get("role") == "volunteer":
+        else:  # request.POST.get("role") == "volunteer":
             volunteer_group = Group.objects.get(name="volunteer")
             volunteer_group.user_set.add(request.user)
             return redirect("home-home")
-        else:
-            messages.error(request, "Please correct the error below.")
-            return redirect("register_after_oauth")
     user_count = DjangoUser.objects.filter(email=request.user.email).count()
     if user_count == 2:
         add_user_to_correct_group_and_delete_duplicate(request)

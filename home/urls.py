@@ -25,5 +25,5 @@ urlpatterns = [
     ),
     path("login/", include("django.contrib.auth.urls")),
     path("index/", views.index, name="index"),
-    path("change_pwd", views.change_pwd, name="change_pwd"),
+    path("change_pwd/", views.change_pwd, name="change_pwd"),
 ]
