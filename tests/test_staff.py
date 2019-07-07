@@ -1,7 +1,7 @@
 from django.test import TestCase, RequestFactory
 from staff.views import *
 from django.contrib.auth.models import User as DjangoUser
-from home.models.models import Classroom
+from home.models.models import Classroom, UserProfile
 from django.urls import reverse
 from rest_framework import status
 from home.models.salesforce import (
@@ -23,34 +23,42 @@ class BaseTestCase(TestCase):
         teacher = DjangoUser.objects.create_user(
             username="classroom_teacher",
             email="teacher@email.com",
-            first_name="testfirst",
-            last_name="testlast",
+            first_name="class",
+            last_name="teacher",
             password="testpassword",
         )
+        teacher.userprofile.salesforce_id = "clatea19010101"
+        teacher.save()
         Group.objects.get(name='teacher').user_set.add(teacher)
         t_a = DjangoUser.objects.create_user(
             username="classroom_teacher2",
             email="teacher2@email.com",
-            first_name="test2first",
-            last_name="test2last",
+            first_name="tassist",
+            last_name="user",
             password="testpassword",
         )
+        t_a.userprofile.salesforce_id = "tasuse19010101"
+        t_a.save()
         Group.objects.get(name='teacher').user_set.add(t_a)
         student = DjangoUser.objects.create_user(
             username="classroom_student",
             email="student@email.com",
-            first_name="studentfirst",
-            last_name="studentlast",
+            first_name="student",
+            last_name="user",
             password="testpassword",
         )
+        student.userprofile.salesforce_id = "stuuse19010101"
+        student.save()
         Group.objects.get(name='teacher').user_set.add(student)
         volunteer = DjangoUser.objects.create_user(
             username="classroom_vol",
             email="teacher2@email.com",
-            first_name="volfirst",
-            last_name="vollast",
+            first_name="volunteer",
+            last_name="user",
             password="testpassword",
         )
+        volunteer.userprofile.salesforce_id = "voluse19010101"
+        volunteer.save()
         Group.objects.get(name='teacher').user_set.add(volunteer)
         classroom = Classroom.objects.create(
             course="Test_Course",
@@ -66,7 +74,7 @@ class BaseTestCase(TestCase):
             email="test@email.com",
             first_name="testfirst",
             last_name="testlast",
-            password="beautifulbutterfly125",
+            password="top_secret125",
         )
         Group.objects.get_or_create(name="staff")
         staff_group = Group.objects.get(name="staff")
@@ -79,7 +87,7 @@ class BaseTestCase(TestCase):
             email="othertest@email.com",
             first_name="othertestfirst",
             last_name="othertestlast",
-            password="beautifulbutterfly125",
+            password="top_secret125",
         )
         Group.objects.get_or_create(name="student")
         student_group = Group.objects.get(name="student")
@@ -91,16 +99,39 @@ class BaseTestCase(TestCase):
             "first_name": "test_user",
             "last_name": "test_user",
             "email": "test@email.com",
-            "birthdate": "01/01/2001",
+            "birthdate": "01/01/1901",
             "owner": User.objects.filter(is_active=True).first().id,
             "title": group,
         }
 
-    def valid_create_classroom_form(self):
+    def valid_create_class_offering_form(self):
         return {
-            "course": ClassOffering
+            "name": "Test Course",
+            "location": Account.objects.get(name="Test_Org").id,
+            "created_by": User.objects.filter(is_active=True).first().id,
+            "start_date": "07/07/2019",
+            "end_date": "01/01/2020",
+            "description": "This is a test classroom",
+            "instructor": Contact.objects.get(client_id="clatea19010101").id,
+            "meeting_days": "M/W"
         }
 
+    def valid_create_classroom_form(self):
+        return {
+            "course": ClassOffering.objects.get(name="Test_Class").id,
+            "teacher": Contact.objects.get(client_id="clatea19010101").id,
+            "teacher_assistant": Contact.objects.get(client_id="clatea19010101").id,
+            "volunteers": Contact.objects.get(client_id="voluse19010101").id,
+            "students": Contact.objects.get(client_id="stuuse19010101").id,
+            "created_by": User.objects.filter(is_active=True).first().id
+        }
+
+    def valid_make_announcement_form(self):
+        return {
+            "title": "Test Announcement",
+            "announcement": "This is the test announcement",
+            "email_recipients": True
+        }
 
 class StaffViewsTest(BaseTestCase):
     databases = '__all__'
@@ -121,78 +152,6 @@ class StaffViewsTest(BaseTestCase):
         self.client.force_login(self.create_nonstaff_user())
         self.assertRaises(PermissionError)
 
-    def test_create_staff_user(self):
-        self.client.force_login(self.create_staff_user())
-        response = self.client.get(reverse("create_staff_user"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, "create_staff_user.html")
-        response = self.client.post(reverse("create_staff_user"), self.valid_create_user_form("staff"))
-        Contact.objects.get(client_id="testes20010101").delete()
-        self.assertEqual(response.url, reverse("staff"))
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-        self.client.force_login(self.create_nonstaff_user())
-        self.assertRaises(PermissionError)
-
-    def test_create_staff_user_invalid_form(self):
-        self.client.force_login(self.create_staff_user())
-        response = self.client.post(reverse("create_staff_user"), {})
-        self.assertEqual(response.url, reverse("staff"))
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-
-    def test_create_teacher_user(self):
-        self.client.force_login(self.create_staff_user())
-        response = self.client.get(reverse("create_teacher_user"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, "create_teacher_user.html")
-        response = self.client.post(reverse("create_teacher_user"), self.valid_create_user_form("teacher"))
-        Contact.objects.get(client_id="testes20010101").delete()
-        self.assertEqual(response.url, reverse("staff"))
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-        self.client.force_login(self.create_nonstaff_user())
-        self.assertRaises(PermissionError)
-
-    def test_create_teacher_user_invalid_form(self):
-        self.client.force_login(self.create_staff_user())
-        response = self.client.post(reverse("create_teacher_user"), {})
-        self.assertEqual(response.url, reverse("staff"))
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-
-    def test_create_student_user(self):
-        self.client.force_login(self.create_staff_user())
-        response = self.client.get(reverse("create_student_user"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, "create_student_user.html")
-        response = self.client.post(reverse("create_student_user"), self.valid_create_user_form("student"))
-        Contact.objects.get(client_id="testes20010101").delete()
-        self.assertEqual(response.url, reverse("staff"))
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-        self.client.force_login(self.create_nonstaff_user())
-        self.assertRaises(PermissionError)
-
-    def test_create_student_user_invalid_form(self):
-        self.client.force_login(self.create_staff_user())
-        response = self.client.post(reverse("create_student_user"), {})
-        self.assertEqual(response.url, reverse("staff"))
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-
-    def test_create_volunteer_user(self):
-        self.client.force_login(self.create_staff_user())
-        response = self.client.get(reverse("create_volunteer_user"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, "create_volunteer_user.html")
-        response = self.client.post(reverse("create_volunteer_user"), self.valid_create_user_form("volunteer"))
-        Contact.objects.get(client_id="testes20010101").delete()
-        self.assertEqual(response.url, reverse("staff"))
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-        self.client.force_login(self.create_nonstaff_user())
-        self.assertRaises(PermissionError)
-
-    def test_create_volunteer_user_invalid_form(self):
-        self.client.force_login(self.create_staff_user())
-        response = self.client.post(reverse("create_volunteer_user"), {})
-        self.assertEqual(response.url, reverse("staff"))
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-
     def test_my_account_staff(self):
         self.client.force_login(self.create_staff_user())
         response = self.client.get(reverse("my_account_staff"))
@@ -212,4 +171,116 @@ class StaffViewsTest(BaseTestCase):
         response = self.client.get(reverse("create_classroom"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTemplateUsed(response, "create_classroom.html")
-        response = self.client.post(reverse("create_classroom"), )
+        response = self.client.post(reverse("create_classroom"), self.valid_create_classroom_form())
+        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+
+    def test_create_classroom_invalid_form(self):
+        self.client.force_login(self.create_staff_user())
+        response = self.client.post(reverse("create_classroom"), {})
+        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+
+    def test_create_class_offering(self):
+        self.client.force_login(self.create_staff_user())
+        response = self.client.get(reverse("create_class_offering"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTemplateUsed(response, "create_class_offering.html")
+        response = self.client.post(reverse("create_class_offering"), self.valid_create_class_offering_form())
+        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+
+    def test_create_class_offering_invalid_form(self):
+        self.client.force_login(self.create_staff_user())
+        response = self.client.post(reverse("create_class_offering"), {})
+        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+
+    def test_make_announcement(self):
+        self.client.force_login(self.create_staff_user())
+        response = self.client.get(reverse("make_announcement"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTemplateUsed(response, "make_announcement.html")
+        response = self.client.post(reverse("make_announcement"), self.valid_make_announcement_form())
+        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+
+    def test_make_announcement_invalid_form(self):
+        self.client.force_login(self.create_staff_user())
+        response = self.client.post(reverse("make_announcement"), {})
+        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+
+    def test_create_staff_user(self):
+        self.client.force_login(self.create_staff_user())
+        response = self.client.get(reverse("create_staff_user"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTemplateUsed(response, "create_staff_user.html")
+        response = self.client.post(reverse("create_staff_user"), self.valid_create_user_form("staff"))
+        Contact.objects.get(client_id="testes19010101").delete()
+        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.client.force_login(self.create_nonstaff_user())
+        self.assertRaises(PermissionError)
+
+    def test_create_staff_user_invalid_form(self):
+        self.client.force_login(self.create_staff_user())
+        response = self.client.post(reverse("create_staff_user"), {})
+        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+
+    def test_create_teacher_user(self):
+        self.client.force_login(self.create_staff_user())
+        response = self.client.get(reverse("create_teacher_user"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTemplateUsed(response, "create_teacher_user.html")
+        response = self.client.post(reverse("create_teacher_user"), self.valid_create_user_form("teacher"))
+        Contact.objects.get(client_id="testes19010101").delete()
+        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.client.force_login(self.create_nonstaff_user())
+        self.assertRaises(PermissionError)
+
+    def test_create_teacher_user_invalid_form(self):
+        self.client.force_login(self.create_staff_user())
+        response = self.client.post(reverse("create_teacher_user"), {})
+        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+
+    def test_create_student_user(self):
+        self.client.force_login(self.create_staff_user())
+        response = self.client.get(reverse("create_student_user"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTemplateUsed(response, "create_student_user.html")
+        response = self.client.post(reverse("create_student_user"), self.valid_create_user_form("student"))
+        Contact.objects.get(client_id="testes19010101").delete()
+        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.client.force_login(self.create_nonstaff_user())
+        self.assertRaises(PermissionError)
+
+    def test_create_student_user_invalid_form(self):
+        self.client.force_login(self.create_staff_user())
+        response = self.client.post(reverse("create_student_user"), {})
+        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+
+    def test_create_volunteer_user(self):
+        self.client.force_login(self.create_staff_user())
+        response = self.client.get(reverse("create_volunteer_user"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTemplateUsed(response, "create_volunteer_user.html")
+        response = self.client.post(reverse("create_volunteer_user"), self.valid_create_user_form("volunteer"))
+        Contact.objects.get(client_id="testes19010101").delete()
+        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.client.force_login(self.create_nonstaff_user())
+        self.assertRaises(PermissionError)
+
+    def test_create_volunteer_user_invalid_form(self):
+        self.client.force_login(self.create_staff_user())
+        response = self.client.post(reverse("create_volunteer_user"), {})
+        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+
+

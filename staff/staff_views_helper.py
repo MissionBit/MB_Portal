@@ -56,16 +56,8 @@ def enroll_in_class(form, user):
 
 def setup_classroom_teachers(request, form):
     classroom = Classroom.objects.create(
-        teacher_id=UserProfile.objects.filter(
-            salesforce_id=form.cleaned_data.get("teacher").client_id
-        )
-        .first()
-        .user_id,
-        teacher_assistant_id=UserProfile.objects.filter(
-            salesforce_id=form.cleaned_data.get("teacher_assistant").client_id
-        )
-        .first()
-        .user_id,
+        teacher_id=UserProfile.objects.get(salesforce_id=form.cleaned_data.get("teacher").client_id.lower()).user_id,
+        teacher_assistant_id=UserProfile.objects.get(salesforce_id=form.cleaned_data.get("teacher_assistant").client_id.lower()).user_id,
         course=form.cleaned_data.get("course").name,
     )
     teacher_email_list = [
@@ -82,18 +74,12 @@ def add_volunteers_and_students_to_classroom(request, form, classroom):
     email_list = []
     for volunteer in form.cleaned_data.get("volunteers"):
         enroll_in_class(form, volunteer)
-        django_user = (
-            UserProfile.objects.filter(salesforce_id=volunteer.client_id)
-            .first()
-            .user_id
-        )
+        django_user = UserProfile.objects.get(salesforce_id=volunteer.client_id.lower()).user_id
         classroom.volunteers.add(django_user)
         email_list.append(DjangoUser.objects.get(id=django_user).email)
     for student in form.cleaned_data.get("students"):
         enroll_in_class(form, student)
-        django_user = (
-            UserProfile.objects.filter(salesforce_id=student.client_id).first().user_id
-        )
+        django_user = UserProfile.objects.get(salesforce_id=student.client_id.lower()).user_id
         classroom.students.add(django_user)
         email_list.append(DjangoUser.objects.get(id=django_user).email)
     email_classroom(request, email_list, classroom.course)

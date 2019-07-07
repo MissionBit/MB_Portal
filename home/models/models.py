@@ -10,7 +10,7 @@ class UserProfile(mdls.Model):
     user = mdls.OneToOneField(DjangoUser, on_delete=mdls.CASCADE)
     change_pwd = mdls.BooleanField(default=False)
     date_of_birth = mdls.DateField(default="1901-01-01")
-    salesforce_id = mdls.CharField(default="xxxxxx01011901", max_length=14)
+    salesforce_id = mdls.CharField(default="xxxxxx19010101", max_length=14)
 
     @receiver(post_save, sender=DjangoUser)
     def create_user_profile(sender, instance, created, **kwargs):
