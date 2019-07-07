@@ -18,6 +18,7 @@ steps:
       SALESFORCE_USER=$(SALESFORCE_USER)
       SALESFORCE_PASSWORD=$(SALESFORCE_PASSWORD)
       SALESFORCE_HOST=$(SALESFORCE_HOST)
+      DEFAULT_WORKING_DIRECTORY=$(System.DefaultWorkingDirectory)
 
 - task: PublishTestResults@2
   inputs:
@@ -28,4 +29,3 @@ steps:
   inputs:
     codeCoverageTool: Cobertura
     summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
-    pathToSources: '$(System.DefaultWorkingDirectory)'
