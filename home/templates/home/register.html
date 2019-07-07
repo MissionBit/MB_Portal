@@ -1,7 +1,14 @@
 {% extends "home/home.html" %}
 
 {% block content %}
-    {% if messages %}
+
+   <div class="sidenav">
+        <a href="{% url 'social:begin' 'google-oauth2' %}">Sign In With Google</a>
+        <a href="{% url 'login' %}">Sign in with Username</a><br>
+    </div>
+
+  <div class="main-container">
+  {% if messages %}
     {% for message in messages %}
         <div class = "alert alert-{{message.tags}}">
             {{ message }}
@@ -9,9 +16,14 @@
     {% endfor %}
     {% endif %}
 
-    <h3>Register with Mission Bit</h3>
-    <a href="{% url 'home-register_as_student' %}">Register As Student</a><br>
-    <a href="{% url 'home-register_as_volunteer' %}">Register As Volunteer</a><br>
-    <a href="{% url 'home-register_as_donor' %}">Register As Donor</a><br>
+    <h3>Register with Mission Bit</h3><br>
+    <a href="{% url 'home-register_as_student' %}">Register As Student</a><br><br>
+
+    <a href="{% url 'home-register_as_volunteer' %}">Register As Volunteer</a><br><br>
+
+    <a href="{% url 'home-register_as_donor' %}">Register As Donor</a><br><br>
   </form>
+
+  </div>
+
 {% endblock content %}
