@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+  test:
+    build: .
+    command: ./ci/run-tests.sh
+    environment:
+      - DATABASE_URL=postgres://postgres@db/mbdb
+      - SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
+      - SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
+      - SALESFORCE_CONSUMER_KEY
+      - SALESFORCE_CONSUMER_SECRET
+      - SALESFORCE_USER
+      - SALESFORCE_PASSWORD
+      - SALESFORCE_HOST
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db

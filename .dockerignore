@@ -1,0 +1,11 @@
+.coverage*
+.env
+.vscode
+.idea
+.git
+venv
+sf_db_resources
+**/__pycache__
+TEST-*.xml
+coverage.xml
+htmlcov
