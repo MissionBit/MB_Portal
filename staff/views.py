@@ -11,7 +11,7 @@ from home.forms import (
     MakeAnnouncementForm,
 )
 from .staff_views_helper import *
-
+from social_django.models import UserSocialAuth
 
 @group_required("staff")
 def staff(request):
@@ -57,6 +57,11 @@ def create_staff_user(request):
             email = form.cleaned_data.get("email")
             staff_group = Group.objects.get(name="staff")
             staff_group.user_set.add(new_user)
+            UserSocialAuth.objects.create(
+                uid=form.cleaned_data.get("email"),
+                user_id=new_user.userprofile.user_id,
+                provider="google-oauth2"
+            )
             first_name = form.cleaned_data.get("first_name")
             messages.success(
                 request, f"Staff Account Successfully Created For {first_name}"
@@ -86,6 +91,11 @@ def create_teacher_user(request):
             email = form.cleaned_data.get("email")
             teacher_group = Group.objects.get(name="teacher")
             teacher_group.user_set.add(new_user)
+            UserSocialAuth.objects.create(
+                uid=form.cleaned_data.get("email"),
+                user_id=new_user.userprofile.user_id,
+                provider="google-oauth2"
+            )
             first_name = form.cleaned_data.get("first_name")
             messages.success(
                 request, f"Teacher Account Successfully Created For {first_name}"
@@ -120,6 +130,11 @@ def create_student_user(request):
             email = form.cleaned_data.get("email")
             student_group = Group.objects.get(name="student")
             student_group.user_set.add(new_user)
+            UserSocialAuth.objects.create(
+                uid=form.cleaned_data.get("email"),
+                user_id=new_user.userprofile.user_id,
+                provider="google-oauth2"
+            )
             first_name = form.cleaned_data.get("first_name")
             messages.success(
                 request, f"Student Account Successfully Created For {first_name}"
@@ -154,6 +169,11 @@ def create_volunteer_user(request):
             email = form.cleaned_data.get("email")
             volunteer_group = Group.objects.get(name="volunteer")
             volunteer_group.user_set.add(new_user)
+            UserSocialAuth.objects.create(
+                uid=form.cleaned_data.get("email"),
+                user_id=new_user.userprofile.user_id,
+                provider="google-oauth2"
+            )
             first_name = form.cleaned_data.get("first_name")
             messages.success(
                 request, f"Volunteer Account Successfully Created For {first_name}"

@@ -13,20 +13,33 @@ p {
     padding-left: 20px;
     padding-top: 2px;
 }
+.button {
+   border-radius: 14px;
+   background-color: white;
+   color: #4CAF50;
+   border: 2px solid #4CAF50;
+}
 </style>
 
+    <div class="sidenav">
+
+    </div>
+
+<div class="main-container">
 <h2>{{ object.course }}</h2>
 <strong> Teacher: </strong>
-<p>{{ object.teacher.first_name }}  {{ object.teacher.last_name }} </p>
+<p> {{ object.teacher.first_name }}  {{ object.teacher.last_name }} &emsp; <button class="button">Change</button> </p>
 <strong> Teacher Assistant: </strong>
-<p>{{ object.teacher_assistant.first_name }} {{ object.teacher_assistant.last_name }}</p>
+<p>{{ object.teacher_assistant.first_name }} {{ object.teacher_assistant.last_name }} &emsp; <button class="button">Change</button></p>
 <strong> Volunteers: </strong>
     {% for volunteer in object.volunteers.all %}
-        <p>{{ volunteer.first_name }} {{ volunteer.last_name }} </p>
+        <p>{{ volunteer.first_name }} {{ volunteer.last_name }} &emsp; <button class="button">Remove</button> </p>
     {% endfor %}
 <strong> Students :</strong>
     {% for student in object.students.all %}
-        <p>{{ student.first_name }} {{ student.last_name }} </p>
+        <p>{{ student.first_name }} {{ student.last_name }} &emsp; <button class="button">Remove</button> </p>
     {% endfor %}
+</div>
+
 
 {% endblock content %}
