@@ -1,0 +1,31 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: DockerCompose@0
+  displayName: 'Run tests'
+  inputs:
+    dockerComposeFile: docker-compose-test.yml
+    dockerComposeCommand: up --build --abort-on-container-exit --exit-code-from test
+    dockerComposeFileArgs: |
+      SOCIAL_AUTH_GOOGLE_OAUTH2_KEY=$(SOCIAL_AUTH_GOOGLE_OAUTH2_KEY)
+      SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET=$(SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET)
+      SALESFORCE_CONSUMER_KEY=$(SALESFORCE_CONSUMER_KEY)
+      SALESFORCE_CONSUMER_SECRET=$(SALESFORCE_CONSUMER_SECRET)
+      SALESFORCE_USER=$(SALESFORCE_USER)
+      SALESFORCE_PASSWORD=$(SALESFORCE_PASSWORD)
+      SALESFORCE_HOST=$(SALESFORCE_HOST)
+
+- task: PublishTestResults@2
+  inputs:
+    testResultsFiles: "**/TEST-*.xml"
+  condition: succeededOrFailed()
+
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
+    pathToSources: '$(System.DefaultWorkingDirectory)'

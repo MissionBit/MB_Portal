@@ -125,3 +125,5 @@ dmypy.json
 
 # Visual Studio Code settings
 .vscode
+
+**/TEST-*.xml
