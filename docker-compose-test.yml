@@ -15,6 +15,7 @@ services:
       - SALESFORCE_USER
       - SALESFORCE_PASSWORD
       - SALESFORCE_HOST
+      - DEFAULT_WORKING_DIRECTORY
     volumes:
       - .:/code
     ports:
