@@ -230,3 +230,30 @@ class HomeViewsTest(BaseTestCase):
         setattr(request, "_messages", messages)
         response = register_as_volunteer(request)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_register_as_donor(self):
+        response = self.client.get(reverse("home-register_as_donor"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_register_as_donor_post(self):
+        request = RequestFactory().post(reverse("home-home"), self.create_valid_form())
+        request.user = self.create_user()
+        setattr(request, "session", "session")
+        messages = FallbackStorage(request)
+        setattr(request, "_messages", messages)
+        Group.objects.get_or_create(name="donor")
+        response = register_as_donor(request)
+        self.assertEqual(
+            DjangoUser.objects.filter(first_name="test").first().first_name, "test"
+        )
+        self.assertEqual(response.url, reverse("login"))
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+
+    def test_register_as_donor_invalid_form(self):
+        request = RequestFactory().post(reverse("home-home"), {})
+        request.user = self.create_user()
+        setattr(request, "session", "session")
+        messages = FallbackStorage(request)
+        setattr(request, "_messages", messages)
+        response = register_as_donor(request)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

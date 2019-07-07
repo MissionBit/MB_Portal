@@ -86,7 +86,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "missionbit.wsgi.application"
 
 
-# Postgres Database Setup
+# Postgres/Salesforce Database Setup
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 # Using DATABASE_URL for configuration
 DATABASES = {
@@ -105,6 +105,13 @@ DATABASES = {
 
 DATABASE_ROUTERS = ["salesforce.router.ModelRouter"]
 
+"""
+if 'test' in sys.argv:
+    DATABASES['salesforce'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'test_sfdb'
+    }
+"""
 
 
 # Password validation
