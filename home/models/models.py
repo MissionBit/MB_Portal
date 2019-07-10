@@ -6,6 +6,13 @@ from django.dispatch import receiver
 from home.choices import *
 
 
+def get_name(self):
+    return "%s %s" % (self.first_name, self.last_name)
+
+
+DjangoUser.add_to_class("__str__", get_name)
+
+
 class UserProfile(mdls.Model):
     user = mdls.OneToOneField(DjangoUser, on_delete=mdls.CASCADE)
     change_pwd = mdls.BooleanField(default=False)

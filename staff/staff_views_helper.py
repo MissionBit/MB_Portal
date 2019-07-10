@@ -30,8 +30,8 @@ def parse_new_user(new_user, form):
     birthdate_d = birthdate[5:7]
     new_user.userprofile.change_pwd = True
     new_user.userprofile.salesforce_id = "%s%s%s%s%s" % (
-        form.cleaned_data.get("first_name")[:3],
-        form.cleaned_data.get("last_name")[:3],
+        form.cleaned_data.get("first_name")[:3].lower(),
+        form.cleaned_data.get("last_name")[:3].lower(),
         birthdate_year,
         birthdate_d,
         birthdate_m,

@@ -2,43 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User as DjangoUser
-from home.models.models import UserProfile
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, ChangePwdForm
 from django.contrib import messages
-from home.models.salesforce import (
-    Contact,
-    User,
-    Individual,
-    ClassOffering,
-    ClassEnrollment,
-)
 from django.contrib.auth import update_session_auth_hash
-
-
-def index(request):
-    """
-    **THIS index() method WILL NOT BE USED IN PRODUCTION: **
-    it is a method that was added to test the mb-salesforce database
-    connection during development
-    This method should be used to test our database, we can push data to it through here via a
-    post request and we can query the database from here as well.  Leave this method here for
-    ease of fxnality testing purposes
-    until we are ready to deploy in production.
-    """
-    contacts = Contact.objects.all()
-    users = User.objects.all()
-    individuals = Individual.objects.all()
-    classes = ClassOffering.objects.all()
-    enrollments = ClassEnrollment.objects.all()
-    context = {
-        "contacts": contacts,
-        "users": users,
-        "individuals": individuals,
-        "classes": classes,
-        "enrollments": enrollments,
-    }
-    return render(request, "home/index.html", context)
 
 
 @login_required
@@ -122,47 +89,14 @@ def register_after_oauth(request):
             volunteer_group.user_set.add(request.user)
             return redirect("home-home")
     user_count = DjangoUser.objects.filter(email=request.user.email).count()
-    if user_count == 2:
-        add_user_to_correct_group_and_delete_duplicate(request)
-        return redirect("home-home")
-    elif user_count > 2:
+    if user_count >= 2:
         messages.error(
             request,
-            "Error, multiple users with that email - please contact  Mission Bit Staff",
+            "Error, multiple users with that email - please contact Mission Bit Staff",
         )
         logout(request)
         return render(request, "home/logout.html")
     return render(request, "home/register_after_oauth.html")
-
-
-def add_user_to_correct_group_and_delete_duplicate(request):
-    user_1 = DjangoUser.objects.filter(email=request.user.email)[0]
-    user_2 = DjangoUser.objects.filter(email=request.user.email)[1]
-    if user_1.groups.count() == 0:
-        copy_attributes_and_delete(user_1, user_2)
-        return
-    elif user_2.groups.count() == 0:
-        copy_attributes_and_delete(user_2, user_1)
-        return
-
-
-def copy_attributes_and_delete(social_user, duplicate_user):
-    duplicate_user_profile = UserProfile.objects.get(user_id=duplicate_user.id)
-    social_user_profile = UserProfile.objects.get(user_id=social_user.id)
-    social_user_profile.salesforce_id = duplicate_user_profile.salesforce_id
-    social_user_profile.date_of_birth = duplicate_user_profile.date_of_birth
-    social_user_profile.change_pwd = False
-    social_user_profile.save()
-    social_user.username = duplicate_user.username
-    social_user.first_name = duplicate_user.first_name
-    social_user.last_name = duplicate_user.last_name
-    social_user.date_joined = duplicate_user.date_joined
-    social_user.is_superuser = duplicate_user.is_superuser
-    for group in duplicate_user.groups.all():
-        group.user_set.add(social_user)
-    duplicate_user.delete()
-    social_user.save()
-    return
 
 
 def register_as_student(request):

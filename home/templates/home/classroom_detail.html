@@ -1,19 +1,26 @@
 {%  extends "home/home.html" %}
+{% load crispy_forms_tags %}
 
 {% block content %}
+
 <style>
 h2 {
-    color: firebrick;
+    color: steelblue;
     padding-left: 10px;
 }
 strong {
+    font-size: 24px;
     padding-left: 10px;
+    padding-bottom: 1px;
 }
 p {
+    font-size: 16px;
     padding-left: 20px;
     padding-top: 2px;
 }
 .button {
+   font-size: 10px;
+   font-family: "American Typewriter";
    border-radius: 14px;
    background-color: white;
    color: #4CAF50;
@@ -21,25 +28,135 @@ p {
 }
 </style>
 
-    <div class="sidenav">
+<script>
+function ChangeTeacherForm() {
+   document.getElementById('change_teacher_div').style.display = "block";
+   document.getElementById('undo_button').style.display = "block";
+   document.getElementById('teacher').style.display = "none";
+}
+function revertCTF() {
+   document.getElementById('change_teacher_div').style.display = "none";
+   document.getElementById('teacher').style.display = "block";
+   document.getElementById('undo_button').style.display = "none";
+}
+function ChangeTAForm() {
+  document.getElementById('change_ta_div').style.display = "block";
+  document.getElementById('undo_cta_button').style.display = "block";
+  document.getElementById('ta').style.display = "none";
+}
+function revertCTAF() {
+  document.getElementById('change_ta_div').style.display = "none";
+  document.getElementById('undo_cta_button').style.display = "none";
+  document.getElementById('ta').style.display = "block";
+}
+function addVolunteersForm() {
+  document.getElementById('add_vols_div').style.display = "block";
+  document.getElementById('undo_addvols_button').style.display = "block";
+  document.getElementById('add_vols_button').style.display = "none";
+}
+function revertAddVols() {
+  document.getElementById('add_vols_div').style.display = "none";
+  document.getElementById('undo_addvols_button').style.display = "none";
+  document.getElementById('add_vols_button').style.display = "block";
+}
+function addStudentsForm() {
+  document.getElementById('add_stus_div').style.display = "block";
+  document.getElementById('undo_addstus_button').style.display = "block";
+  document.getElementById('add_stus_button').style.display = "none";
+}
+function revertASF() {
+  document.getElementById('add_stus_div').style.display = "none";
+  document.getElementById('undo_addstus_button').style.display = "none";
+  document.getElementById('add_stus_button').style.display = "block";
+}
+</script>
 
+    <div class="sidenav">
+      <a href={% url 'staff' %}>Staff Home</a>
     </div>
 
 <div class="main-container">
-<h2>{{ object.course }}</h2>
-<strong> Teacher: </strong>
-<p> {{ object.teacher.first_name }}  {{ object.teacher.last_name }} &emsp; <button class="button">Change</button> </p>
-<strong> Teacher Assistant: </strong>
-<p>{{ object.teacher_assistant.first_name }} {{ object.teacher_assistant.last_name }} &emsp; <button class="button">Change</button></p>
-<strong> Volunteers: </strong>
+
+<h2>{{ object.course }}</h2><hr>
+
+  <strong> Teacher: </strong><hr>
+    <form method="post">
+        <div id="change_teacher_div"  style="display:none; width: 200px; padding-left: 50px" class="inline-group">
+          {% csrf_token %} {{ change_teacher_form|crispy }}
+        <p><button class="button" type="submit">Submit</button>&emsp;</p>
+        </div>
+      <input type="hidden" name="change_who" value="teacher"/>
+      <input type="hidden" name="course_id" value={{ object.id }} />
+      <input type="hidden" name="former_teacher" value={{ object.teacher_id }} />
+    </form>
+     <p style="padding-left: 70px"><button id="undo_button" class="button" style="display:none; color: firebrick" onclick="revertCTF()">Undo</button></p>
+  <p id="teacher"> {{ object.teacher.first_name }}  {{ object.teacher.last_name }} &emsp;
+  <button class="button" onclick="ChangeTeacherForm()">Change</button>
+  </p><br><hr>
+
+  <strong> Teacher Assistant: </strong><hr>
+    <form method="post">
+          <div id="change_ta_div"  style="display:none; width: 200px; padding-left: 50px" class="inline-group">
+            {% csrf_token %} {{ change_teacher_form|crispy }}
+          <p><button class="button" type="submit">Submit</button>&emsp;</p>
+          </div>
+        <input type="hidden" name="change_who" value="ta"/>
+        <input type="hidden" name="course_id" value={{ object.id }} />
+        <input type="hidden" name="former_ta" value={{ object.teacher_assistant_id }} />
+      </form>
+       <p style="padding-left: 70px"><button id="undo_cta_button" class="button" style="display:none; color: firebrick" onclick="revertCTAF()">Undo</button></p>
+  <p id="ta">{{ object.teacher_assistant.first_name }} {{ object.teacher_assistant.last_name }} &emsp;
+  <button class="button" onclick="ChangeTAForm()">Change</button></p><br><hr>
+
+  <strong> Volunteers: </strong><hr>
     {% for volunteer in object.volunteers.all %}
-        <p>{{ volunteer.first_name }} {{ volunteer.last_name }} &emsp; <button class="button">Remove</button> </p>
+        <form method="post">
+        {% csrf_token %}
+        <p>{{ volunteer.first_name }} {{ volunteer.last_name }} &emsp;
+          <input type="hidden" name="change_who" value="remove_vol"/>
+          <input type="hidden" name="former_vol" value={{ volunteer.id }} />
+          <input type="hidden" name="course_id" value={{ object.id }} />
+          <button class="button" type="submit">Remove</button> </p>
+        </form>
     {% endfor %}
-<strong> Students :</strong>
+
+    <form method="post">
+        <div id="add_vols_div"  style="display:none; width: 200px; padding-left: 25px" class="inline-group">
+          {% csrf_token %} {{ add_volunteers_form | crispy }}
+        <p><button class="button" type="submit">Submit</button>&emsp;</p>
+        </div>
+        <input type="hidden" name="change_who" value="add_vols"/>
+        <input type="hidden" name="course_id" value={{ object.id }} />
+    </form>
+    <p style="padding-left: 46px"><button id="undo_addvols_button" class="button" style="display:none; color: firebrick" onclick="revertAddVols()">Cancel</button></p>
+    <p style="padding-left: 20px;"><button id="add_vols_button" class="button" onclick="addVolunteersForm()">Add Volunteers</button></p>
+    <hr>
+
+
+  <strong> Students :</strong><hr>
     {% for student in object.students.all %}
-        <p>{{ student.first_name }} {{ student.last_name }} &emsp; <button class="button">Remove</button> </p>
+        <form method="post">
+          <p id="student">{{ student.first_name }} {{ student.last_name }} &emsp; <button class="button" type="submit">Remove</button> </p>
+          {% csrf_token %}
+          <input type="hidden" name="change_who" value="delete_student" />
+          <input type="hidden" name="course_id" value={{ object.id }} />
+          <input type="hidden" name="former_student" value={{ student.id }} />
+      </form>
     {% endfor %}
-</div>
+
+  <form method="post">
+        <div id="add_stus_div"  style="display:none; width: 200px; padding-left: 25px" class="inline-group">
+          {% csrf_token %} {{ add_students_form | crispy }}
+        <p><button class="button" type="submit">Submit</button>&emsp;</p>
+        </div>
+        <input type="hidden" name="change_who" value="add_students"/>
+        <input type="hidden" name="course_id" value={{ object.id }} />
+    </form>
+    <p style="padding-left: 46px"><button id="undo_addstus_button" class="button" style="display:none; color: firebrick" onclick="revertASF()">Cancel</button></p>
+    <p style="padding-left: 20px;"><button id="add_stus_button" class="button" onclick="addStudentsForm()">Add Students</button></p>
+
+  <hr>
+  </div>
 
 
 {% endblock content %}

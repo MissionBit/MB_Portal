@@ -24,6 +24,5 @@ urlpatterns = [
         name="home-register_after_oauth",
     ),
     path("login/", include("django.contrib.auth.urls")),
-    path("index/", views.index, name="index"),
     path("change_pwd/", views.change_pwd, name="change_pwd"),
 ]
