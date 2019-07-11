@@ -10,13 +10,11 @@ from home.forms import (
     CreateClassOfferingForm,
     MakeAnnouncementForm,
     ChangeTeacherForm,
-    AddVolunteersForm,
-    AddStudentsForm,
 )
 from .staff_views_helper import *
 from social_django.models import UserSocialAuth
-from home.models.salesforce import Contact, ClassOffering, ClassEnrollment
 from home.models.models import Classroom
+
 
 @group_required("staff")
 def staff(request):
@@ -321,104 +319,3 @@ class ClassroomListView(ListView):
     template_name = "classroom_management.html"
     context_object_name = "classrooms"
 
-
-def change_classroom_teacher(request):
-    teacher_contact = get_contact_by_user_id(request.POST["former_teacher"])
-    class_offering = get_class_offering_by_id(request.POST["course_id"])
-    new_teacher = get_contact_by_user_id(request.POST["teacher"])
-    classroom = Classroom.objects.get(id=request.POST["course_id"])
-    classroom.teacher_id = request.POST["teacher"]
-    classroom.save()
-    remove_enrollment(teacher_contact, class_offering)
-    ClassEnrollment.objects.get_or_create(
-        created_by=class_offering.created_by,
-        contact=new_teacher,
-        status="Enrolled",
-        class_offering=class_offering,
-    )
-    class_offering.instructor = new_teacher
-    class_offering.save()
-
-
-def change_classroom_ta(request):
-    ta_contact = get_contact_by_user_id(request.POST["former_ta"])
-    class_offering = get_class_offering_by_id(request.POST["course_id"])
-    new_ta = get_contact_by_user_id(request.POST["teacher"])
-    classroom = Classroom.objects.get(id=request.POST["course_id"])
-    classroom.teacher_assistant_id = request.POST["teacher"]
-    classroom.save()
-    remove_enrollment(ta_contact, class_offering)
-    ClassEnrollment.objects.get_or_create(
-        created_by=class_offering.created_by,
-        contact=new_ta,
-        status="Enrolled",
-        class_offering=class_offering,
-    )
-
-
-def remove_volunteer(request):
-    vol_contact = get_contact_by_user_id(request.POST["former_vol"])
-    class_offering = get_class_offering_by_id(request.POST["course_id"])
-    classroom = Classroom.objects.get(id=request.POST["course_id"])
-    classroom.volunteers.remove(request.POST["former_vol"])
-    remove_enrollment(vol_contact, class_offering)
-
-
-def remove_student(request):
-    student_contact = get_contact_by_user_id(request.POST["former_student"])
-    class_offering = get_class_offering_by_id(request.POST["course_id"])
-    classroom = Classroom.objects.get(id=request.POST["course_id"])
-    classroom.students.remove(request.POST["former_student"])
-    remove_enrollment(student_contact, class_offering)
-
-
-def add_volunteers(request):
-    form = AddVolunteersForm(request.POST)
-    class_offering = get_class_offering_by_id(request.POST["course_id"])
-    classroom = Classroom.objects.get(id=request.POST["course_id"])
-    if form.is_valid():
-        for volunteer in form.cleaned_data.get("volunteers"):
-            vol_contact = get_contact_by_user_id(volunteer)
-            ClassEnrollment.objects.create(
-                created_by=class_offering.created_by,
-                contact=vol_contact,
-                status="Enrolled",
-                class_offering=class_offering
-            )
-            classroom.volunteers.add(volunteer)
-
-
-def add_students(request):
-    form = AddStudentsForm(request.POST)
-    class_offering = get_class_offering_by_id(request.POST["course_id"])
-    classroom = Classroom.objects.get(id=request.POST["course_id"])
-    if form.is_valid():
-        for student in form.cleaned_data.get("students"):
-            student_contact = get_contact_by_user_id(student)
-            ClassEnrollment.objects.create(
-                created_by=class_offering.created_by,
-                contact=student_contact,
-                status="Enrolled",
-                class_offering=class_offering
-            )
-            classroom.students.add(student)
-
-
-def remove_enrollment(contact, class_offering):
-    old_enrollment = ClassEnrollment.objects.get(contact=contact, status="Enrolled", class_offering=class_offering)
-    created_by = old_enrollment.created_by
-    old_enrollment.delete()
-    return created_by
-
-
-def get_contact_by_user_id(id):
-    return Contact.objects.get(client_id=UserProfile.objects.get(user_id=id).salesforce_id)
-
-
-def get_class_offering_by_id(id):
-    course_name = get_course_name_by_id(id)
-    return ClassOffering.objects.get(name=course_name)
-
-
-def get_course_name_by_id(id):
-    return Classroom.objects.get(id=id).course

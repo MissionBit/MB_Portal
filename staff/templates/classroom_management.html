@@ -41,18 +41,13 @@
 </style>
 
 <div class="sidenav">
+  <a href={% url 'staff' %}>Staff Home</a>
   <a href="{% url 'create_classroom' %}">Create Classroom</a>
   <a href="{% url 'create_class_offering' %}">Create Class Offering</a>
 </div>
 
 <div class="wrapper">
-{% if messages %}
-    {% for message in messages %}
-      <div style="color: darkgreen; width: 500px" class = "alert alert-{{message.tags}}">
-          {{ message }}
-      </div>
-    {% endfor %}
-{% endif %}
+
 
   {% if classrooms %}
     {% for class, class_dict in classrooms.items %}
