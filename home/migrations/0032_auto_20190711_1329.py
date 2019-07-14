@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0031_auto_20190711_1312'),
-    ]
+    dependencies = [("home", "0031_auto_20190711_1312")]
 
     operations = [
         migrations.AlterField(
-            model_name='templates',
-            name='notes',
-            field=models.TextField(default='', max_length=500),
-        ),
+            model_name="templates",
+            name="notes",
+            field=models.TextField(default="", max_length=500),
+        )
     ]

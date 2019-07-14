@@ -9,30 +9,61 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('home', '0028_auto_20190707_1348'),
+        ("home", "0028_auto_20190707_1348"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Attendance',
+            name="Attendance",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('presence', models.CharField(default='U', max_length=10)),
-                ('student', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='student', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("presence", models.CharField(default="U", max_length=10)),
+                (
+                    "student",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="student",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Session',
+            name="Session",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField(default='1901-01-01')),
-                ('lecture', models.FileField(default=None, upload_to='')),
-                ('templates', models.ManyToManyField(related_name='classroom_session_attendance', to='home.Attendance')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateField(default="1901-01-01")),
+                ("lecture", models.FileField(default=None, upload_to="")),
+                (
+                    "templates",
+                    models.ManyToManyField(
+                        related_name="classroom_session_attendance",
+                        to="home.Attendance",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='classroom',
-            name='sessions',
-            field=models.ManyToManyField(related_name='classroom_sessions', to='home.Session'),
+            model_name="classroom",
+            name="sessions",
+            field=models.ManyToManyField(
+                related_name="classroom_sessions", to="home.Session"
+            ),
         ),
     ]

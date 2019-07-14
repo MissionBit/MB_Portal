@@ -629,8 +629,4 @@ INCOME_LEVEL_CHOICES = (
     ),
 )
 
-CHANGE_STUDENT_CHOICES = (
-    ("Add", "Add"),
-    ("Remove", "Remove"),
-    ("None", "None")
-)
+CHANGE_STUDENT_CHOICES = (("Add", "Add"), ("Remove", "Remove"), ("None", "None"))

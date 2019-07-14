@@ -63,7 +63,7 @@ def create_staff_user(request):
             UserSocialAuth.objects.create(
                 uid=form.cleaned_data.get("email"),
                 user_id=new_user.userprofile.user_id,
-                provider="google-oauth2"
+                provider="google-oauth2",
             )
             first_name = form.cleaned_data.get("first_name")
             messages.success(
@@ -97,7 +97,7 @@ def create_teacher_user(request):
             UserSocialAuth.objects.create(
                 uid=form.cleaned_data.get("email"),
                 user_id=new_user.userprofile.user_id,
-                provider="google-oauth2"
+                provider="google-oauth2",
             )
             first_name = form.cleaned_data.get("first_name")
             messages.success(
@@ -136,7 +136,7 @@ def create_student_user(request):
             UserSocialAuth.objects.create(
                 uid=form.cleaned_data.get("email"),
                 user_id=new_user.userprofile.user_id,
-                provider="google-oauth2"
+                provider="google-oauth2",
             )
             first_name = form.cleaned_data.get("first_name")
             messages.success(
@@ -175,7 +175,7 @@ def create_volunteer_user(request):
             UserSocialAuth.objects.create(
                 uid=form.cleaned_data.get("email"),
                 user_id=new_user.userprofile.user_id,
-                provider="google-oauth2"
+                provider="google-oauth2",
             )
             first_name = form.cleaned_data.get("first_name")
             messages.success(
@@ -284,11 +284,13 @@ class ClassroomDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(ClassroomDetailView, self).get_context_data(**kwargs)
         forms = self.get_forms()
-        context.update({
-            "change_teacher_form": forms[0],
-            "add_volunteers_form": forms[1],
-            "add_students_form": forms[2]
-        })
+        context.update(
+            {
+                "change_teacher_form": forms[0],
+                "add_volunteers_form": forms[1],
+                "add_students_form": forms[2],
+            }
+        )
 
         return context
 
@@ -318,4 +320,3 @@ class ClassroomListView(ListView):
     model = Classroom
     template_name = "classroom_management.html"
     context_object_name = "classrooms"
-

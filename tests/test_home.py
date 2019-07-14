@@ -71,72 +71,87 @@ class BaseTestCase(TestCase):
 
 
 class HomeViewsTest(BaseTestCase):
-
     def test_home_unauthenticated(self):
         request = RequestFactory().get(reverse("home-home"))
         request.user = AnonymousUser()
         response = home(request)
         response.client = Client()
-        self.assertRedirects(response=response,
-                             expected_url=reverse('home-landing_page')+'?next=/home/',
-                             status_code=302,
-                             target_status_code=200)
+        self.assertRedirects(
+            response=response,
+            expected_url=reverse("home-landing_page") + "?next=/home/",
+            status_code=302,
+            target_status_code=200,
+        )
 
     def test_home_authenticated_student(self):
         self.client.force_login(self.create_user_in_group("student"))
         response = self.client.get(reverse("home-home"))
-        self.assertRedirects(response=response,
-                             expected_url='/student/',
-                             status_code=302,
-                             target_status_code=200)
+        self.assertRedirects(
+            response=response,
+            expected_url="/student/",
+            status_code=302,
+            target_status_code=200,
+        )
 
     def test_home_authenticated_staff(self):
         self.client.force_login(self.create_user_in_group("staff"))
         response = self.client.get(reverse("home-home"))
-        self.assertRedirects(response=response,
-                             expected_url='/staff/',
-                             status_code=302,
-                             target_status_code=200)
-    
+        self.assertRedirects(
+            response=response,
+            expected_url="/staff/",
+            status_code=302,
+            target_status_code=200,
+        )
+
     def test_home_authenticated_teacher(self):
         self.client.force_login(self.create_user_in_group("teacher"))
         response = self.client.get(reverse("home-home"))
-        self.assertRedirects(response=response,
-                             expected_url='/teacher/',
-                             status_code=302,
-                             target_status_code=200)
+        self.assertRedirects(
+            response=response,
+            expected_url="/teacher/",
+            status_code=302,
+            target_status_code=200,
+        )
 
     def test_home_authenticated_volunteer(self):
         self.client.force_login(self.create_user_in_group("volunteer"))
         response = self.client.get(reverse("home-home"))
-        self.assertRedirects(response=response,
-                             expected_url='/volunteer/',
-                             status_code=302,
-                             target_status_code=200)
+        self.assertRedirects(
+            response=response,
+            expected_url="/volunteer/",
+            status_code=302,
+            target_status_code=200,
+        )
 
     def test_home_authenticated_donor(self):
         self.client.force_login(self.create_user_in_group("donor"))
         response = self.client.get(reverse("home-home"))
-        self.assertRedirects(response=response,
-                             expected_url='/donor/',
-                             status_code=302,
-                             target_status_code=200)
+        self.assertRedirects(
+            response=response,
+            expected_url="/donor/",
+            status_code=302,
+            target_status_code=200,
+        )
 
     def test_home_user_has_no_group(self):
         self.client.force_login(self.create_user())
         response = self.client.get(reverse("home-home"))
-        self.assertRedirects(response=response,
-                             expected_url='/register_after_oauth/',
-                             status_code=302,
-                             target_status_code=200)
+        self.assertRedirects(
+            response=response,
+            expected_url="/register_after_oauth/",
+            status_code=302,
+            target_status_code=200,
+        )
 
     def test_home_change_pwd(self):
         self.client.force_login(self.create_user_change_pwd())
         response = self.client.get(reverse("home-home"))
-        self.assertRedirects(response=response,
-                             expected_url='/change_pwd/',
-                             status_code=302,
-                             target_status_code=200)
+        self.assertRedirects(
+            response=response,
+            expected_url="/change_pwd/",
+            status_code=302,
+            target_status_code=200,
+        )
 
     def test_logout(self):
         self.client.force_login(
@@ -166,7 +181,9 @@ class HomeViewsTest(BaseTestCase):
 
     def test_change_pwd(self):
         self.client.force_login(self.create_user_change_pwd())
-        response = self.client.post(reverse("change_pwd"), self.create_change_pwd_form())
+        response = self.client.post(
+            reverse("change_pwd"), self.create_change_pwd_form()
+        )
         self.assertEqual(response.url, reverse("home-home"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
         response = self.client.post(reverse("change_pwd"), {})
@@ -174,10 +191,14 @@ class HomeViewsTest(BaseTestCase):
 
     def test_register_after_oauth(self):
         self.client.force_login(self.create_user())
-        response = self.client.post(reverse("home-register_after_oauth"), {"role": "student"})
+        response = self.client.post(
+            reverse("home-register_after_oauth"), {"role": "student"}
+        )
         self.assertEqual(response.url, reverse("home-home"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-        response = self.client.post(reverse("home-register_after_oauth"), {"role": "volunteer"})
+        response = self.client.post(
+            reverse("home-register_after_oauth"), {"role": "volunteer"}
+        )
         self.assertEqual(response.url, reverse("home-home"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 

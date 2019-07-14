@@ -6,18 +6,18 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0029_auto_20190711_0406'),
-    ]
+    dependencies = [("home", "0029_auto_20190711_0406")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='session',
-            name='templates',
-        ),
+        migrations.RemoveField(model_name="session", name="templates"),
         migrations.AddField(
-            model_name='templates',
-            name='session',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, related_name='session', to='home.Session'),
+            model_name="templates",
+            name="session",
+            field=models.ForeignKey(
+                default=None,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="session",
+                to="home.Session",
+            ),
         ),
     ]

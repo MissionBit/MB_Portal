@@ -58,8 +58,12 @@ def enroll_in_class(form, user):
 
 def setup_classroom_teachers(request, form):
     classroom = Classroom.objects.create(
-        teacher_id=UserProfile.objects.get(salesforce_id=form.cleaned_data.get("teacher").client_id.lower()).user_id,
-        teacher_assistant_id=UserProfile.objects.get(salesforce_id=form.cleaned_data.get("teacher_assistant").client_id.lower()).user_id,
+        teacher_id=UserProfile.objects.get(
+            salesforce_id=form.cleaned_data.get("teacher").client_id.lower()
+        ).user_id,
+        teacher_assistant_id=UserProfile.objects.get(
+            salesforce_id=form.cleaned_data.get("teacher_assistant").client_id.lower()
+        ).user_id,
         course=form.cleaned_data.get("course").name,
     )
     teacher_email_list = [
@@ -76,12 +80,16 @@ def add_volunteers_and_students_to_classroom(request, form, classroom):
     email_list = []
     for volunteer in form.cleaned_data.get("volunteers"):
         enroll_in_class(form, volunteer)
-        django_user = UserProfile.objects.get(salesforce_id=volunteer.client_id.lower()).user_id
+        django_user = UserProfile.objects.get(
+            salesforce_id=volunteer.client_id.lower()
+        ).user_id
         classroom.volunteers.add(django_user)
         email_list.append(DjangoUser.objects.get(id=django_user).email)
     for student in form.cleaned_data.get("students"):
         enroll_in_class(form, student)
-        django_user = UserProfile.objects.get(salesforce_id=student.client_id.lower()).user_id
+        django_user = UserProfile.objects.get(
+            salesforce_id=student.client_id.lower()
+        ).user_id
         classroom.students.add(django_user)
         email_list.append(DjangoUser.objects.get(id=django_user).email)
     email_classroom(request, email_list, classroom.course)
@@ -132,21 +140,27 @@ def email_classroom(request, email_list, classroom_name):
 
 def get_emails_from_form(form):
     email_list = []
-    groups = form.getlist('recipient_groups')
+    groups = form.getlist("recipient_groups")
     for group in groups:
         group_name = Group.objects.get(id=group)
         users = DjangoUser.objects.filter(groups__name=group_name)
         for user in users:
             email_list.append(user.email)
-    classrooms = form.getlist('recipient_classrooms')
+    classrooms = form.getlist("recipient_classrooms")
     for classroom in classrooms:
         classroom_object = Classroom.objects.get(id=classroom)
         teacher = DjangoUser.objects.get(id=classroom_object.teacher_id).email
         email_list.append(teacher.email)
-        teacher_assistant = DjangoUser.objects.get(id=classroom_object.teacher_assistant_id).email
+        teacher_assistant = DjangoUser.objects.get(
+            id=classroom_object.teacher_assistant_id
+        ).email
         email_list.append(teacher_assistant.email)
-        students = DjangoUser.objects.filter(classroom_students__course=classroom_object.course)
-        volunteers = DjangoUser.objects.filter(classroom_volunteers__course=classroom_object.course)
+        students = DjangoUser.objects.filter(
+            classroom_students__course=classroom_object.course
+        )
+        volunteers = DjangoUser.objects.filter(
+            classroom_volunteers__course=classroom_object.course
+        )
         for student in students:
             email_list.append(student.email)
         for volunteer in volunteers:
@@ -157,9 +171,12 @@ def get_emails_from_form(form):
 def email_announcement(request, form, email_list):
     subject = form.instance.title
     msg_html = render_to_string(
-        "email_templates/announcement_email.html", {"subject": form.instance.title,
-                                                    "message": form.instance.announcement,
-                                                    "from": form.instance.created_by}
+        "email_templates/announcement_email.html",
+        {
+            "subject": form.instance.title,
+            "message": form.instance.announcement,
+            "from": form.instance.created_by,
+        },
     )
     from_user = settings.EMAIL_HOST_USER
     recipient_list = [
@@ -259,7 +276,7 @@ def add_volunteers(request):
                 created_by=class_offering.created_by,
                 contact=vol_contact,
                 status="Enrolled",
-                class_offering=class_offering
+                class_offering=class_offering,
             )
             classroom.volunteers.add(volunteer)
 
@@ -275,20 +292,24 @@ def add_students(request):
                 created_by=class_offering.created_by,
                 contact=student_contact,
                 status="Enrolled",
-                class_offering=class_offering
+                class_offering=class_offering,
             )
             classroom.students.add(student)
 
 
 def remove_enrollment(contact, class_offering):
-    old_enrollment = ClassEnrollment.objects.get(contact=contact, status="Enrolled", class_offering=class_offering)
+    old_enrollment = ClassEnrollment.objects.get(
+        contact=contact, status="Enrolled", class_offering=class_offering
+    )
     created_by = old_enrollment.created_by
     old_enrollment.delete()
     return created_by
 
 
 def get_contact_by_user_id(id):
-    return Contact.objects.get(client_id=UserProfile.objects.get(user_id=id).salesforce_id)
+    return Contact.objects.get(
+        client_id=UserProfile.objects.get(user_id=id).salesforce_id
+    )
 
 
 def get_class_offering_by_id(id):
@@ -317,7 +338,7 @@ def sync_attendance_with_salesforce_class_offerings():
                     student_id=student.id,
                     session_id=session.id,
                     classroom_id=classroom.id,
-                    date=day
+                    date=day,
                 )
 
 

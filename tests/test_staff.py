@@ -29,7 +29,7 @@ class BaseTestCase(TestCase):
         )
         teacher.userprofile.salesforce_id = "clatea19010101"
         teacher.save()
-        Group.objects.get(name='teacher').user_set.add(teacher)
+        Group.objects.get(name="teacher").user_set.add(teacher)
         t_a = DjangoUser.objects.create_user(
             username="classroom_teacher2",
             email="teacher2@email.com",
@@ -39,7 +39,7 @@ class BaseTestCase(TestCase):
         )
         t_a.userprofile.salesforce_id = "tasuse19010101"
         t_a.save()
-        Group.objects.get(name='teacher').user_set.add(t_a)
+        Group.objects.get(name="teacher").user_set.add(t_a)
         student = DjangoUser.objects.create_user(
             username="classroom_student",
             email="student@email.com",
@@ -49,7 +49,7 @@ class BaseTestCase(TestCase):
         )
         student.userprofile.salesforce_id = "stuuse19010101"
         student.save()
-        Group.objects.get(name='teacher').user_set.add(student)
+        Group.objects.get(name="teacher").user_set.add(student)
         volunteer = DjangoUser.objects.create_user(
             username="classroom_vol",
             email="teacher2@email.com",
@@ -59,11 +59,9 @@ class BaseTestCase(TestCase):
         )
         volunteer.userprofile.salesforce_id = "voluse19010101"
         volunteer.save()
-        Group.objects.get(name='teacher').user_set.add(volunteer)
+        Group.objects.get(name="teacher").user_set.add(volunteer)
         classroom = Classroom.objects.create(
-            course="Test_Course",
-            teacher=teacher,
-            teacher_assistant=t_a
+            course="Test_Course", teacher=teacher, teacher_assistant=t_a
         )
         classroom.students.add(student)
         classroom.volunteers.add(volunteer)
@@ -113,7 +111,7 @@ class BaseTestCase(TestCase):
             "end_date": "01/01/2020",
             "description": "This is a test classroom",
             "instructor": Contact.objects.get(client_id="clatea19010101").id,
-            "meeting_days": "M/W"
+            "meeting_days": "M/W",
         }
 
     def valid_create_classroom_form(self):
@@ -123,18 +121,19 @@ class BaseTestCase(TestCase):
             "teacher_assistant": Contact.objects.get(client_id="clatea19010101").id,
             "volunteers": Contact.objects.get(client_id="voluse19010101").id,
             "students": Contact.objects.get(client_id="stuuse19010101").id,
-            "created_by": User.objects.filter(is_active=True).first().id
+            "created_by": User.objects.filter(is_active=True).first().id,
         }
 
     def valid_make_announcement_form(self):
         return {
             "title": "Test Announcement",
             "announcement": "This is the test announcement",
-            "email_recipients": True
+            "email_recipients": True,
         }
 
+
 class StaffViewsTest(BaseTestCase):
-    databases = '__all__'
+    databases = "__all__"
 
     def test_staff(self):
         self.client.force_login(self.create_staff_user())
@@ -171,7 +170,9 @@ class StaffViewsTest(BaseTestCase):
         response = self.client.get(reverse("create_classroom"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTemplateUsed(response, "create_classroom.html")
-        response = self.client.post(reverse("create_classroom"), self.valid_create_classroom_form())
+        response = self.client.post(
+            reverse("create_classroom"), self.valid_create_classroom_form()
+        )
         self.assertEqual(response.url, reverse("staff"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
@@ -186,7 +187,9 @@ class StaffViewsTest(BaseTestCase):
         response = self.client.get(reverse("create_class_offering"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTemplateUsed(response, "create_class_offering.html")
-        response = self.client.post(reverse("create_class_offering"), self.valid_create_class_offering_form())
+        response = self.client.post(
+            reverse("create_class_offering"), self.valid_create_class_offering_form()
+        )
         self.assertEqual(response.url, reverse("staff"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
@@ -201,7 +204,9 @@ class StaffViewsTest(BaseTestCase):
         response = self.client.get(reverse("make_announcement"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTemplateUsed(response, "make_announcement.html")
-        response = self.client.post(reverse("make_announcement"), self.valid_make_announcement_form())
+        response = self.client.post(
+            reverse("make_announcement"), self.valid_make_announcement_form()
+        )
         self.assertEqual(response.url, reverse("staff"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
@@ -216,7 +221,9 @@ class StaffViewsTest(BaseTestCase):
         response = self.client.get(reverse("create_staff_user"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTemplateUsed(response, "create_staff_user.html")
-        response = self.client.post(reverse("create_staff_user"), self.valid_create_user_form("staff"))
+        response = self.client.post(
+            reverse("create_staff_user"), self.valid_create_user_form("staff")
+        )
         Contact.objects.get(client_id="testes19010101").delete()
         self.assertEqual(response.url, reverse("staff"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
@@ -234,7 +241,9 @@ class StaffViewsTest(BaseTestCase):
         response = self.client.get(reverse("create_teacher_user"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTemplateUsed(response, "create_teacher_user.html")
-        response = self.client.post(reverse("create_teacher_user"), self.valid_create_user_form("teacher"))
+        response = self.client.post(
+            reverse("create_teacher_user"), self.valid_create_user_form("teacher")
+        )
         Contact.objects.get(client_id="testes19010101").delete()
         self.assertEqual(response.url, reverse("staff"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
@@ -252,7 +261,9 @@ class StaffViewsTest(BaseTestCase):
         response = self.client.get(reverse("create_student_user"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTemplateUsed(response, "create_student_user.html")
-        response = self.client.post(reverse("create_student_user"), self.valid_create_user_form("student"))
+        response = self.client.post(
+            reverse("create_student_user"), self.valid_create_user_form("student")
+        )
         Contact.objects.get(client_id="testes19010101").delete()
         self.assertEqual(response.url, reverse("staff"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
@@ -270,7 +281,9 @@ class StaffViewsTest(BaseTestCase):
         response = self.client.get(reverse("create_volunteer_user"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTemplateUsed(response, "create_volunteer_user.html")
-        response = self.client.post(reverse("create_volunteer_user"), self.valid_create_user_form("volunteer"))
+        response = self.client.post(
+            reverse("create_volunteer_user"), self.valid_create_user_form("volunteer")
+        )
         Contact.objects.get(client_id="testes19010101").delete()
         self.assertEqual(response.url, reverse("staff"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
@@ -282,5 +295,3 @@ class StaffViewsTest(BaseTestCase):
         response = self.client.post(reverse("create_volunteer_user"), {})
         self.assertEqual(response.url, reverse("staff"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-
-

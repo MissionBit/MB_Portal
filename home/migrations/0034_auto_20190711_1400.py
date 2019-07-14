@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0033_auto_20190711_1342'),
-    ]
+    dependencies = [("home", "0033_auto_20190711_1342")]
 
     operations = [
         migrations.AlterField(
-            model_name='session',
-            name='video',
+            model_name="session",
+            name="video",
             field=models.URLField(default=None, null=True),
-        ),
+        )
     ]

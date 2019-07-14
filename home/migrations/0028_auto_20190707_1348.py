@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0027_auto_20190630_2257'),
-    ]
+    dependencies = [("home", "0027_auto_20190630_2257")]
 
     operations = [
         migrations.AlterField(
-            model_name='userprofile',
-            name='salesforce_id',
-            field=models.CharField(default='xxxxxx19010101', max_length=14),
-        ),
+            model_name="userprofile",
+            name="salesforce_id",
+            field=models.CharField(default="xxxxxx19010101", max_length=14),
+        )
     ]

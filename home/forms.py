@@ -234,7 +234,7 @@ class ChangeTeacherForm(forms.ModelForm):
     teacher = forms.ModelChoiceField(
         queryset=DjangoUser.objects.filter(groups__name="teacher"),
         required=False,
-        label=""
+        label="",
     )
 
     class Meta:
@@ -247,7 +247,7 @@ class AddVolunteersForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         queryset=DjangoUser.objects.filter(groups__name="volunteer"),
         required=False,
-        label=""
+        label="",
     )
 
     class Meta:
@@ -260,7 +260,7 @@ class AddStudentsForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         queryset=DjangoUser.objects.filter(groups__name="student"),
         required=False,
-        label=""
+        label="",
     )
 
     class Meta:

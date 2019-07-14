@@ -58,10 +58,19 @@ class Classroom(mdls.Model):
 
 class Attendance(mdls.Model):
     date = mdls.DateField(default="1901-01-01")
-    student = mdls.ForeignKey(DjangoUser, related_name="student", on_delete=mdls.CASCADE)
+    student = mdls.ForeignKey(
+        DjangoUser, related_name="student", on_delete=mdls.CASCADE
+    )
     presence = mdls.CharField(max_length=100, default="Unassigned")
-    session = mdls.ForeignKey(Session, related_name="session", on_delete=mdls.CASCADE, default=None)
-    classroom = mdls.ForeignKey(Classroom, related_name="attendance_classroom", on_delete=mdls.CASCADE, default=None)
+    session = mdls.ForeignKey(
+        Session, related_name="session", on_delete=mdls.CASCADE, default=None
+    )
+    classroom = mdls.ForeignKey(
+        Classroom,
+        related_name="attendance_classroom",
+        on_delete=mdls.CASCADE,
+        default=None,
+    )
     notes = mdls.TextField(max_length=500, default="")
 
 
@@ -70,7 +79,9 @@ class Announcement(mdls.Model):
     announcement = mdls.TextField(max_length=2500)
     posted = mdls.DateTimeField(db_index=True, auto_now=True)
     recipient_groups = mdls.ManyToManyField(Group, related_name="user_groups")
-    recipient_classrooms = mdls.ManyToManyField(Classroom, related_name="recipient_classroom")
+    recipient_classrooms = mdls.ManyToManyField(
+        Classroom, related_name="recipient_classroom"
+    )
     email_recipients = mdls.BooleanField(null=False, default=False)
     created_by = mdls.ForeignKey(
         DjangoUser, related_name="user", on_delete=mdls.CASCADE
