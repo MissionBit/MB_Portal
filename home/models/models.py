@@ -59,7 +59,7 @@ class Classroom(mdls.Model):
 class Attendance(mdls.Model):
     date = mdls.DateField(default="1901-01-01")
     student = mdls.ForeignKey(DjangoUser, related_name="student", on_delete=mdls.CASCADE)
-    presence = mdls.CharField(max_length=10, default="U")
+    presence = mdls.CharField(max_length=100, default="Unassigned")
     session = mdls.ForeignKey(Session, related_name="session", on_delete=mdls.CASCADE, default=None)
     classroom = mdls.ForeignKey(Classroom, related_name="attendance_classroom", on_delete=mdls.CASCADE, default=None)
     notes = mdls.TextField(max_length=500, default="")

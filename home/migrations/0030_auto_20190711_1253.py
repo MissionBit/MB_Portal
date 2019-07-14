@@ -13,10 +13,10 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RemoveField(
             model_name='session',
-            name='attendance',
+            name='templates',
         ),
         migrations.AddField(
-            model_name='attendance',
+            model_name='templates',
             name='session',
             field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, related_name='session', to='home.Session'),
         ),

@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('date', models.DateField(default='1901-01-01')),
                 ('lecture', models.FileField(default=None, upload_to='')),
-                ('attendance', models.ManyToManyField(related_name='classroom_session_attendance', to='home.Attendance')),
+                ('templates', models.ManyToManyField(related_name='classroom_session_attendance', to='home.Attendance')),
             ],
         ),
         migrations.AddField(

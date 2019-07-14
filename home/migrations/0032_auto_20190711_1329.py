@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name='attendance',
+            model_name='templates',
             name='notes',
             field=models.TextField(default='', max_length=500),
         ),

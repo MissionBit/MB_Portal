@@ -12,12 +12,12 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name='attendance',
+            model_name='templates',
             name='classroom',
             field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, related_name='attendance_classroom', to='home.Classroom'),
         ),
         migrations.AddField(
-            model_name='attendance',
+            model_name='templates',
             name='notes',
             field=models.TextField(default=None, max_length=500),
         ),

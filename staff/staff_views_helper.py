@@ -303,8 +303,8 @@ def get_course_name_by_id(id):
 def sync_attendance_with_salesforce_class_offerings():
     """
     This method is fluid; in its current state it will duplicate entries
-    in your postgres attendance database if you've already got attendance data!
-    Only use if you don't have attendance data but do have Classroom
+    in your postgres templates database if you've already got templates data!
+    Only use if you don't have templates data but do have Classroom
     data.
     """
     for classoffering in ClassOffering.objects.all():

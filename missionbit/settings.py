@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "volunteer.apps.VolunteerConfig",
     "staff.apps.StaffConfig",
     "donor.apps.DonorConfig",
+    "attendance.apps.AttendanceConfig",
     "home.apps.HomeConfig",
     "django.contrib.admin",
     "django.contrib.auth",

@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             name='date',
         ),
         migrations.AddField(
-            model_name='attendance',
+            model_name='templates',
             name='date',
             field=models.DateField(default='1901-01-01'),
         ),

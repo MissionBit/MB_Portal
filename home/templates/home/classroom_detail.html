@@ -159,8 +159,10 @@ function revertASF() {
   <br>
   <button class="button" >Take Attendance Today</button></p><br>
 
+  <form action="{% url 'attendance'  %}">
   <button class="button" >All Attendance</button></p><br>
-
+  <input type="hidden" name="course_id" value="{{ object.id }}">
+  </form>
   </div>
 
 
