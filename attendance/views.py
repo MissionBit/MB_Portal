@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from home.models.models import Classroom, Attendance
 from home.models.salesforce import ClassOffering
-from staff.staff_views_helper import class_offering_meeting_dates
+from staff.staff_views_helper import class_offering_meeting_dates, sync_attendance_with_salesforce_class_offerings
 from datetime import datetime
 from django.template.defaulttags import register
 
@@ -77,12 +77,7 @@ def store_attendance_data(request):
 
 
 def get_course_attendance_statistic(course_id):
-    class_attendance = Attendance.objects.filter(classroom_id=course_id)
-    class_attendance = [
-        daily_attendance
-        for daily_attendance in class_attendance
-        if daily_attendance.date < datetime.today().date()
-    ]
+    class_attendance = Attendance.objects.filter(classroom_id=course_id, date__range=["2000-01-01", datetime.today().date()])
     average = get_average_attendance_from_list(class_attendance)
     return round(average * 100, 2)
 

@@ -329,6 +329,8 @@ def sync_attendance_with_salesforce_class_offerings():
     data.
     """
     for classoffering in ClassOffering.objects.all():
+        if (classoffering.name == "Test_Class"):
+            continue
         dates = class_offering_meeting_dates(classoffering)
         classroom = Classroom.objects.get(course=classoffering.name)
         for day in dates:
