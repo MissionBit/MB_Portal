@@ -1,6 +1,5 @@
 from django.views.generic import DetailView, ListView
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import Group
 from home.decorators import group_required
 from home.forms import (
     CreateStaffForm,
@@ -10,8 +9,11 @@ from home.forms import (
     CreateStudentForm,
     CreateClassOfferingForm,
     MakeAnnouncementForm,
+    ChangeTeacherForm,
 )
 from .staff_views_helper import *
+from social_django.models import UserSocialAuth
+from home.models.models import Classroom
 
 
 @group_required("staff")
@@ -48,11 +50,6 @@ def classroom_management(request):
 
 
 @group_required("staff")
-def contact_management(request):
-    return render(request, "contact_management.html")
-
-
-@group_required("staff")
 def create_staff_user(request):
     if request.method == "POST":
         form = CreateStaffForm(request.POST)
@@ -63,6 +60,11 @@ def create_staff_user(request):
             email = form.cleaned_data.get("email")
             staff_group = Group.objects.get(name="staff")
             staff_group.user_set.add(new_user)
+            UserSocialAuth.objects.create(
+                uid=form.cleaned_data.get("email"),
+                user_id=new_user.userprofile.user_id,
+                provider="google-oauth2",
+            )
             first_name = form.cleaned_data.get("first_name")
             messages.success(
                 request, f"Staff Account Successfully Created For {first_name}"
@@ -76,7 +78,7 @@ def create_staff_user(request):
                 request,
                 "Staff User NOT created, your form was not valid, please try again.",
             )
-            return redirect(request, "staff")
+            return redirect("staff")
     form = CreateStaffForm()
     return render(request, "create_staff_user.html", {"form": form})
 
@@ -88,10 +90,15 @@ def create_teacher_user(request):
         if form.is_valid():
             form.save()
             random_password = DjangoUser.objects.make_random_password()
-            new_user = create_user_with_profile(form)
+            new_user = create_user_with_profile(form, random_password)
             email = form.cleaned_data.get("email")
             teacher_group = Group.objects.get(name="teacher")
             teacher_group.user_set.add(new_user)
+            UserSocialAuth.objects.create(
+                uid=form.cleaned_data.get("email"),
+                user_id=new_user.userprofile.user_id,
+                provider="google-oauth2",
+            )
             first_name = form.cleaned_data.get("first_name")
             messages.success(
                 request, f"Teacher Account Successfully Created For {first_name}"
@@ -110,7 +117,7 @@ def create_teacher_user(request):
                 request,
                 "Teacher User NOT created, your form was not valid, please try again.",
             )
-            return redirect(request, "staff")
+            return redirect("staff")
     form = CreateTeacherForm()
     return render(request, "create_teacher_user.html", {"form": form})
 
@@ -122,10 +129,15 @@ def create_student_user(request):
         if form.is_valid():
             form.save()
             random_password = DjangoUser.objects.make_random_password()
-            new_user = create_user_with_profile(form)
+            new_user = create_user_with_profile(form, random_password)
             email = form.cleaned_data.get("email")
             student_group = Group.objects.get(name="student")
             student_group.user_set.add(new_user)
+            UserSocialAuth.objects.create(
+                uid=form.cleaned_data.get("email"),
+                user_id=new_user.userprofile.user_id,
+                provider="google-oauth2",
+            )
             first_name = form.cleaned_data.get("first_name")
             messages.success(
                 request, f"Student Account Successfully Created For {first_name}"
@@ -144,7 +156,7 @@ def create_student_user(request):
                 request,
                 "Student User NOT created, your form was not valid, please try again.",
             )
-            return redirect(request, "staff")
+            return redirect("staff")
     form = CreateStudentForm()
     return render(request, "create_student_user.html", {"form": form})
 
@@ -156,10 +168,15 @@ def create_volunteer_user(request):
         if form.is_valid():
             form.save()
             random_password = DjangoUser.objects.make_random_password()
-            new_user = create_user_with_profile(form)
+            new_user = create_user_with_profile(form, random_password)
             email = form.cleaned_data.get("email")
             volunteer_group = Group.objects.get(name="volunteer")
             volunteer_group.user_set.add(new_user)
+            UserSocialAuth.objects.create(
+                uid=form.cleaned_data.get("email"),
+                user_id=new_user.userprofile.user_id,
+                provider="google-oauth2",
+            )
             first_name = form.cleaned_data.get("first_name")
             messages.success(
                 request, f"Volunteer Account Successfully Created For {first_name}"
@@ -178,7 +195,7 @@ def create_volunteer_user(request):
                 request,
                 "Volunteer User NOT created, your form was not valid, please try again.",
             )
-            return redirect(request, "staff")
+            return redirect("staff")
     form = CreateVolunteerForm()
     return render(request, "create_volunteer_user.html", {"form": form})
 
@@ -201,7 +218,7 @@ def create_classroom(request):
                 request,
                 "Classroom NOT created, your form was not valid, please try again.",
             )
-            return redirect(request, "staff")
+            return redirect("staff")
     form = CreateClassroomForm()
     return render(request, "create_classroom.html", {"form": form})
 
@@ -218,7 +235,7 @@ def create_class_offering(request):
                 request,
                 "Class offering NOT created, your form was not valid, please try again.",
             )
-            return redirect(request, "staff")
+            return redirect("staff")
     form = CreateClassOfferingForm()
     return render(request, "create_class_offering.html", {"form": form})
 
@@ -243,7 +260,7 @@ def make_announcement(request):
                 request,
                 "Announcement NOT made, your announcement form was not valid, please try again.",
             )
-            return redirect(request, "staff")
+            return redirect("staff")
     form = MakeAnnouncementForm(
         initial={"created_by": DjangoUser.objects.get(id=request.user.id)}
     )
@@ -257,6 +274,39 @@ def my_account_staff(request):
 
 class ClassroomDetailView(DetailView):
     model = Classroom
+
+    def get_forms(self):
+        return {
+            "change_teacher_form": ChangeTeacherForm(),
+            "add_volunteers_form": AddVolunteersForm(),
+            "add_students_form": AddStudentsForm(),
+        }
+
+    def get_context_data(self, **kwargs):
+        context = super(ClassroomDetailView, self).get_context_data(**kwargs)
+        context.update(self.get_forms())
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if request.POST["change_who"] == "teacher":
+            change_classroom_teacher(request)
+            messages.success(request, "Teacher Changed")
+        elif request.POST["change_who"] == "ta":
+            change_classroom_ta(request)
+            messages.success(request, "TA Changed")
+        elif request.POST["change_who"] == "remove_vol":
+            remove_volunteer(request)
+            messages.success(request, "Volunteer Removed")
+        elif request.POST["change_who"] == "add_vols":
+            add_volunteers(request)
+            messages.success(request, "Volunteers Added")
+        elif request.POST["change_who"] == "delete_student":
+            remove_student(request)
+            messages.success(request, "Student Removed")
+        elif request.POST["change_who"] == "add_students":
+            add_students(request)
+            messages.success(request, "Students Added")
+        return redirect("classroom_management")
 
 
 class ClassroomListView(ListView):

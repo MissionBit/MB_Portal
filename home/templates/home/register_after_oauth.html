@@ -1,6 +1,12 @@
 {% extends "home/home.html" %}
 
-{% block content %}
+    {% block content %}
+
+      <div class="sidenav">
+
+    </div>
+
+    <div class = "main-container">
     {% if messages %}
     {% for message in messages %}
         <div class = "alert alert-{{message.tags}}">
@@ -17,5 +23,7 @@
           <input type="radio" name="role" value="volunteer">Volunteer<br><br>
         <button class = "btn btn-outline-info" type="submit">Finish Registration</button>
     </form>
+    </div>
+
 
 {% endblock content %}

@@ -196,7 +196,7 @@ class CreateClassOfferingForm(forms.ModelForm):
 
 
 class ChangePwdForm(PasswordChangeForm):
-    old_password = forms.CharField(widget=forms.PasswordInput, initial="missionbit")
+    old_password = forms.CharField(widget=forms.PasswordInput)
 
     class Meta:
         model = User
@@ -228,3 +228,41 @@ class MakeAnnouncementForm(forms.ModelForm):
             "recipient_classrooms",
             "email_recipients",
         ]
+
+
+class ChangeTeacherForm(forms.ModelForm):
+    teacher = forms.ModelChoiceField(
+        queryset=DjangoUser.objects.filter(groups__name="teacher"),
+        required=False,
+        label="",
+    )
+
+    class Meta:
+        model = Classroom
+        fields = ["teacher"]
+
+
+class AddVolunteersForm(forms.ModelForm):
+    volunteers = forms.ModelMultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        queryset=DjangoUser.objects.filter(groups__name="volunteer"),
+        required=False,
+        label="",
+    )
+
+    class Meta:
+        model = Classroom
+        fields = ["volunteers"]
+
+
+class AddStudentsForm(forms.ModelForm):
+    students = forms.ModelMultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        queryset=DjangoUser.objects.filter(groups__name="student"),
+        required=False,
+        label="",
+    )
+
+    class Meta:
+        model = Classroom
+        fields = ["students"]

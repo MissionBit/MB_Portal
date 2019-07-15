@@ -628,3 +628,5 @@ INCOME_LEVEL_CHOICES = (
         "Above Moderate Income $139,101 or greater (8 persons)",
     ),
 )
+
+CHANGE_STUDENT_CHOICES = (("Add", "Add"), ("Remove", "Remove"), ("None", "None"))

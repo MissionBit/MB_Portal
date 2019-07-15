@@ -6,11 +6,18 @@ from django.dispatch import receiver
 from home.choices import *
 
 
+def get_name(self):
+    return "%s %s" % (self.first_name, self.last_name)
+
+
+DjangoUser.add_to_class("__str__", get_name)
+
+
 class UserProfile(mdls.Model):
     user = mdls.OneToOneField(DjangoUser, on_delete=mdls.CASCADE)
     change_pwd = mdls.BooleanField(default=False)
     date_of_birth = mdls.DateField(default="1901-01-01")
-    salesforce_id = mdls.CharField(default="xxxxxx01011901", max_length=14)
+    salesforce_id = mdls.CharField(default="xxxxxx19010101", max_length=14)
 
     @receiver(post_save, sender=DjangoUser)
     def create_user_profile(sender, instance, created, **kwargs):
@@ -20,6 +27,14 @@ class UserProfile(mdls.Model):
     @receiver(post_save, sender=DjangoUser)
     def save_user_profile(sender, instance, **kwargs):
         instance.userprofile.save()
+
+
+class Session(mdls.Model):
+    description = mdls.TextField(max_length=2000, default="No Description Available")
+    lesson_plan = mdls.FileField(default=None)
+    lecture = mdls.FileField(default=None)
+    video = mdls.URLField(default=None, null=True)
+    activity = mdls.FileField(default=None)
 
 
 class Classroom(mdls.Model):
@@ -41,12 +56,32 @@ class Classroom(mdls.Model):
         )
 
 
+class Attendance(mdls.Model):
+    date = mdls.DateField(default="1901-01-01")
+    student = mdls.ForeignKey(
+        DjangoUser, related_name="student", on_delete=mdls.CASCADE
+    )
+    presence = mdls.CharField(max_length=100, default="Unassigned")
+    session = mdls.ForeignKey(
+        Session, related_name="session", on_delete=mdls.CASCADE, default=None
+    )
+    classroom = mdls.ForeignKey(
+        Classroom,
+        related_name="attendance_classroom",
+        on_delete=mdls.CASCADE,
+        default=None,
+    )
+    notes = mdls.TextField(max_length=500, default="")
+
+
 class Announcement(mdls.Model):
     title = mdls.CharField(max_length=240, unique=True)
     announcement = mdls.TextField(max_length=2500)
     posted = mdls.DateTimeField(db_index=True, auto_now=True)
     recipient_groups = mdls.ManyToManyField(Group, related_name="user_groups")
-    recipient_classrooms = mdls.ManyToManyField(Classroom, related_name="classroom")
+    recipient_classrooms = mdls.ManyToManyField(
+        Classroom, related_name="recipient_classroom"
+    )
     email_recipients = mdls.BooleanField(null=False, default=False)
     created_by = mdls.ForeignKey(
         DjangoUser, related_name="user", on_delete=mdls.CASCADE
