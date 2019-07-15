@@ -276,22 +276,15 @@ class ClassroomDetailView(DetailView):
     model = Classroom
 
     def get_forms(self):
-        change_teacher_form = ChangeTeacherForm()
-        add_volunteers_form = AddVolunteersForm()
-        add_students_form = AddStudentsForm()
-        return [change_teacher_form, add_volunteers_form, add_students_form]
+        return {
+            "change_teacher_form": ChangeTeacherForm(),
+            "add_volunteers_form": AddVolunteersForm(),
+            "add_students_form": AddStudentsForm(),
+        }
 
     def get_context_data(self, **kwargs):
         context = super(ClassroomDetailView, self).get_context_data(**kwargs)
-        forms = self.get_forms()
-        context.update(
-            {
-                "change_teacher_form": forms[0],
-                "add_volunteers_form": forms[1],
-                "add_students_form": forms[2],
-            }
-        )
-
+        context.update(self.get_forms())
         return context
 
     def post(self, request, *args, **kwargs):
