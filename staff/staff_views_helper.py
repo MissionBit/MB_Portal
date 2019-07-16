@@ -8,7 +8,7 @@ from django.utils.html import strip_tags
 from django.conf import settings
 from django.contrib import messages
 from home.forms import AddVolunteersForm, AddStudentsForm
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 
 def create_user_with_profile(form, random_password):
@@ -26,23 +26,19 @@ def create_user_with_profile(form, random_password):
 
 
 def parse_new_user(new_user, form):
-    birthdate = str(form.cleaned_data.get("birthdate")).replace(r"/", "")
-    birthdate_year = birthdate[0:4]
-    birthdate_m = birthdate[8:]
-    birthdate_d = birthdate[5:7]
+    birthdate = form.cleaned_data.get("birthdate")
+    print(birthdate.month)
+    print(birthdate.day)
+    print(birthdate.month)
     new_user.userprofile.change_pwd = True
     new_user.userprofile.salesforce_id = "%s%s%s%s%s" % (
         form.cleaned_data.get("first_name")[:3].lower(),
         form.cleaned_data.get("last_name")[:3].lower(),
-        birthdate_year,
-        birthdate_d,
-        birthdate_m,
+        '%04d' % birthdate.year,
+        '%02d' % birthdate.month,
+        '%02d' % birthdate.day,
     )
-    new_user.userprofile.date_of_birth = "%s-%s-%s" % (
-        birthdate_year,
-        birthdate_d,
-        birthdate_m,
-    )
+    new_user.userprofile.date_of_birth = birthdate
     return new_user
 
 
