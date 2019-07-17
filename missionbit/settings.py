@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "crispy_forms",  # <- Crispy forms
     "coverage",  # <- for testing
     "salesforce",  # <- salesforce database
+    'django_q', # <- For queueing tasks
 ]
 
 MIDDLEWARE = [
@@ -140,6 +141,25 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY")
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET")
 SOCIAL_AUTH_URL_NAMESPACE = "social"
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+
+
+# Django Q Settings
+
+Q_CLUSTER = {
+    'name': 'DjangoORM',
+    'timeout': 1200,
+    'save_limit': 10,
+    'catch_up': False,
+    'orm': 'default'
+}
+
+CACHES = {
+    'default': {
+        'BACKEND':
+            'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'djangoq-localmem',
+    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/

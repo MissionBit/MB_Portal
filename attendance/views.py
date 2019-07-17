@@ -22,7 +22,7 @@ def attendance(request):
         else:
             context = take_attendance_context(
                 request.POST.get("course_id"),
-                datetime.strptime(request.POST.get("date"), "%B %d, %Y").date(),
+                get_date_from_template_returned_string(request.POST.get("date")),
             )
             return render(request, "attendance.html", context)
     if request.GET.get("course_id") is not None:
@@ -68,7 +68,7 @@ def take_attendance_context(course_id, date):
 
 
 def store_attendance_data(request):
-    date = datetime.strptime(request.POST.get("date"), "%B %d, %Y").date()
+    date = get_date_from_template_returned_string(request.POST.get("date"))
     course_id = request.POST.get("course_id")
     attendance_objects = Attendance.objects.filter(classroom_id=course_id, date=date)
     for attendance_object in attendance_objects:
@@ -116,3 +116,7 @@ def get_classroom_meeting_dates(course_id):
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)
+
+
+def get_date_from_template_returned_string(string_date):
+    return datetime.strptime(string_date, "%B %d, %Y").date()
