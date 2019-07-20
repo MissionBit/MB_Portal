@@ -91,6 +91,20 @@ def add_volunteers_and_students_to_classroom(request, form, classroom):
     email_classroom(request, email_list, classroom.course)
 
 
+def generate_classroom_sessions_and_attendance(classroom):
+    class_offering = ClassOffering.objects.filter(name=classroom.course)
+    dates = class_offering_meeting_dates(class_offering)
+    for day in dates:
+        session = Session.objects.create()
+        for student in classroom.students.all():
+            Attendance.objects.create(
+                student_id=student.id,
+                session_id=session.id,
+                classroom_id=classroom.id,
+                date=day,
+            )
+
+
 def email_new_user(request, email, first_name, account_type, username, password):
     subject = "%s - Your new %s account has been set up" % (first_name, account_type)
     msg_html = render_to_string(
@@ -315,29 +329,6 @@ def get_class_offering_by_id(id):
 
 def get_course_name_by_id(id):
     return Classroom.objects.get(id=id).course
-
-
-def sync_attendance_with_salesforce_class_offerings():
-    """
-    This method is fluid; in its current state it will duplicate entries
-    in your postgres templates database if you've already got templates data!
-    Only use if you don't have templates data but do have Classroom
-    data.
-    """
-    for classoffering in ClassOffering.objects.all():
-        if (classoffering.name == "Test_Class"):
-            continue
-        dates = class_offering_meeting_dates(classoffering)
-        classroom = Classroom.objects.get(course=classoffering.name)
-        for day in dates:
-            session = Session.objects.create()
-            for student in classroom.students.all():
-                Attendance.objects.create(
-                    student_id=student.id,
-                    session_id=session.id,
-                    classroom_id=classroom.id,
-                    date=day,
-                )
 
 
 def class_offering_meeting_dates(class_offering):

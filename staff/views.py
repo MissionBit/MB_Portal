@@ -207,6 +207,7 @@ def create_classroom(request):
         if form.is_valid():
             classroom = setup_classroom_teachers(request, form)
             add_volunteers_and_students_to_classroom(request, form, classroom)
+            generate_classroom_sessions_and_attendance(classroom)
             messages.success(
                 request,
                 f'Classroom {form.cleaned_data.get("course")} Successfully Created',
