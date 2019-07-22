@@ -27,9 +27,6 @@ def create_user_with_profile(form, random_password):
 
 def parse_new_user(new_user, form):
     birthdate = form.cleaned_data.get("birthdate")
-    print(birthdate.month)
-    print(birthdate.day)
-    print(birthdate.month)
     new_user.userprofile.change_pwd = True
     new_user.userprofile.salesforce_id = "%s%s%s%s%s" % (
         form.cleaned_data.get("first_name")[:3].lower(),
@@ -92,6 +89,8 @@ def add_volunteers_and_students_to_classroom(request, form, classroom):
 
 
 def generate_classroom_sessions_and_attendance(classroom):
+    classroom.attendance_summary = {"attendance_statistic": get_course_attendance_statistic(classroom.id)}
+    classroom.save()
     class_offering = ClassOffering.objects.filter(name=classroom.course)
     dates = class_offering_meeting_dates(class_offering)
     for day in dates:
@@ -349,3 +348,12 @@ def get_integer_days(class_offering):
         return [0, 2]
     elif class_offering.meeting_days == "T/R":
         return [1, 3]
+
+
+def get_course_attendance_statistic(course_id):
+    class_attendance = Attendance.objects.filter(classroom_id=course_id, date__range=["2000-01-01", datetime.today().date()])
+    average = sum(
+        attendance_object.presence == "Present" or attendance_object.presence == "Late"
+        for attendance_object in list
+    ) / len(class_attendance) if len(class_attendance) > 0 else 0
+    return round(average * 100, 2)

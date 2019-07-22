@@ -14,12 +14,8 @@ def attendance(request):
     if request.method == "POST":
         if request.POST.get("attendance_taken") is not None:
             store_attendance_data(request)
-            attendance_averages = compile_attendance_averages_for_all_courses()
-            context = {
-                "classrooms": Classroom.objects.all(),
-                "attendance_averages": attendance_averages,
-            }
-            return render(request, "attendance.html", context)
+            async_task("attendance.views.update_course_attendance_statistic", request.POST.get("course_id"))
+            return redirect("attendance")
         else:
             context = take_attendance_context(
                 request.POST.get("course_id"),
@@ -27,15 +23,15 @@ def attendance(request):
             )
             return render(request, "attendance.html", context)
     if request.GET.get("course_id") is not None:
-        context = get_classroom_attendance(request.GET.get("course_id"))
+        course_id = request.GET.get("course_id")
+        context = get_classroom_attendance(course_id)
         context.update(
             {
-                "attendance_statistic": get_course_attendance_statistic(
-                    request.GET.get("course_id")
-                )
+                "attendance_statistic": get_course_attendance_statistic(course_id)
             }
         )
     else:
+        print("Hello I'm actually here")
         attendance_averages = compile_attendance_averages_for_all_courses()
         context = {
             "classrooms": Classroom.objects.all(),
@@ -77,13 +73,6 @@ def store_attendance_data(request):
         attendance_object.save()
 
 
-def get_course_attendance_statistic(course_id):
-    class_attendance = Attendance.objects.filter(classroom_id=course_id, date__range=["2000-01-01", datetime.today().date()])
-    average = get_average_attendance_from_list(class_attendance)
-    print(average)
-    return round(average * 100, 2)
-
-
 def compile_attendance_averages_for_all_courses():
     attendance_averages = {}
     for classroom in Classroom.objects.all():
@@ -122,3 +111,15 @@ def get_item(dictionary, key):
 
 def get_date_from_template_returned_string(string_date):
     return datetime.strptime(string_date, "%B %d, %Y").date()
+
+
+def update_course_attendance_statistic(course_id):
+    class_attendance = Attendance.objects.filter(classroom_id=course_id, date__range=["2000-01-01", datetime.today().date()])
+    average = get_average_attendance_from_list(class_attendance)
+    classroom = Classroom.objects.get(id=course_id)
+    classroom.attendance_summary = {"attendance_statistic": round(average * 100, 2)}
+    classroom.save()
+
+
+def get_course_attendance_statistic(course_id):
+    return Classroom.objects.get(id=course_id).attendance_summary.get("attendance_statistic")

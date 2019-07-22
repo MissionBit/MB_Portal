@@ -1,6 +1,7 @@
 from django.db import models as mdls
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.models import Group
+from django.contrib.postgres.fields import JSONField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from home.choices import *
@@ -47,6 +48,7 @@ class Classroom(mdls.Model):
     )
     volunteers = mdls.ManyToManyField(DjangoUser, related_name="classroom_volunteers")
     students = mdls.ManyToManyField(DjangoUser, related_name="classroom_students")
+    attendance_summary = JSONField(default=None, null=True)
 
     def __str__(self):
         return "%s - %s, %s" % (
