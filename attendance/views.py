@@ -1,27 +1,20 @@
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
+from home.decorators import group_required_multiple
+from django import forms
 from django.shortcuts import render, redirect
 from home.models.models import Classroom, Attendance
 from home.models.salesforce import ClassOffering
 from staff.staff_views_helper import class_offering_meeting_dates
 from datetime import datetime
 from django.template.defaulttags import register
-from django_q.tasks import async_task, result
+from django_q.tasks import async_task
 
 
-@login_required
+@group_required_multiple('staff', 'teacher')
 def attendance(request):
     if request.method == "POST":
-        if request.POST.get("attendance_taken") is not None:
-            store_attendance_data(request)
-            async_task("attendance.views.update_course_attendance_statistic", request.POST.get("course_id"))
-            return redirect("attendance")
-        else:
-            context = take_attendance_context(
-                request.POST.get("course_id"),
-                get_date_from_template_returned_string(request.POST.get("date")),
-            )
-            return render(request, "attendance.html", context)
+        store_attendance_data(request)
+        async_task("attendance.views.update_course_attendance_statistic", request.POST.get("course_id"))
+        return redirect("attendance")
     if request.GET.get("course_id") is not None:
         course_id = request.GET.get("course_id")
         context = get_classroom_attendance(course_id)
@@ -31,12 +24,20 @@ def attendance(request):
             }
         )
     else:
-        print("Hello I'm actually here")
         attendance_averages = compile_attendance_averages_for_all_courses()
         context = {
             "classrooms": Classroom.objects.all(),
             "attendance_averages": attendance_averages,
         }
+    return render(request, "attendance.html", context)
+
+
+@group_required_multiple('staff', 'teacher')
+def take_attendance(request):
+    context = take_attendance_context(
+        request.GET.get("course_id"),
+        get_date_from_template_returned_string(request.GET.get("date")),
+    )
     return render(request, "attendance.html", context)
 
 
@@ -64,6 +65,7 @@ def take_attendance_context(course_id, date):
     }
 
 
+@group_required_multiple('staff', 'teacher')
 def store_attendance_data(request):
     date = get_date_from_template_returned_string(request.POST.get("date"))
     course_id = request.POST.get("course_id")

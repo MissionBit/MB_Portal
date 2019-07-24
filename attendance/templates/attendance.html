@@ -55,7 +55,7 @@ tr:nth-child(even) {
         <td>{{ date }}</td>
         <td>{{ daily_attendance|get_item:date }}%</td>
         <td>
-        <form method="post">
+        <form action= "{% url 'take_attendance' %}" method="GET">
           {% csrf_token %}
           <input type="hidden" name="date" value="{{ date }}" />
           <input type="hidden" name="course_id" value={{ course_id }} />
@@ -68,7 +68,7 @@ tr:nth-child(even) {
     </table>
     {% elif attendance_objects %}
     <h1 style="padding-bottom: 30px"> {{ course_name }} </h1>
-    <form method="POST" style="width: 80%">
+    <form action= "{% url 'attendance' %}" method="POST" style="width: 80%">
     {% csrf_token %}
       <table>
       <tr>

@@ -12,3 +12,16 @@ def group_required(group):
         return wrapper
 
     return user_in_group
+
+
+def group_required_multiple(group, group_two):
+    def user_in_group(func):
+        def wrapper(request, *args, **kwargs):
+            if request.user.groups.filter(name=group).exists() or request.user.groups.filter(name=group_two):
+                return func(request, *args, **kwargs)
+            else:
+                raise PermissionDenied
+
+        return wrapper
+
+    return user_in_group
