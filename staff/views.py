@@ -10,10 +10,11 @@ from home.forms import (
     CreateClassOfferingForm,
     MakeAnnouncementForm,
     ChangeTeacherForm,
+    PostFormForm,
 )
 from .staff_views_helper import *
 from social_django.models import UserSocialAuth
-from home.models.models import Classroom
+from home.models.models import Classroom, Form
 
 
 @group_required("staff")
@@ -266,6 +267,45 @@ def make_announcement(request):
         initial={"created_by": DjangoUser.objects.get(id=request.user.id)}
     )
     return render(request, "make_announcement.html", {"form": form})
+
+
+@group_required("staff")
+def post_form(request):
+    if request.method == "POST":
+        form = PostFormForm(request.POST, request.FILES)
+        if form.is_valid():
+            print("email recipients: ", form.cleaned_data.get("email_recipients"))
+            posted_form = Form(
+                name=request.POST['form_name'],
+                form=request.FILES['form'],
+                created_by=DjangoUser.objects.get(id=request.user.id),
+            )
+            posted_form.save()
+            posted_form.recipient_groups.set(
+                form.cleaned_data.get("recipient_groups")
+            )
+            posted_form.recipient_classrooms.set(
+                form.cleaned_data.get("recipient_classrooms")
+            )
+            messages.add_message(
+                request, messages.SUCCESS, "Successfully Posted Form"
+            )
+            if form.cleaned_data.get("email_recipients"):
+                data = request.POST.copy()
+                email_list = get_emails_from_form(data)
+                print("email list: ", email_list)
+                email_posted_form(request, form, email_list)
+            return redirect("staff")
+        else:
+            messages.error(
+                request,
+                "Form NOT made, your form form was not valid, please try again.",
+            )
+            return redirect("staff")
+    form = PostFormForm(
+        initial={"created_by": DjangoUser.objects.get(id=request.user.id)}
+    )
+    return render(request, "post_form.html", {"form": form})
 
 
 @group_required("staff")

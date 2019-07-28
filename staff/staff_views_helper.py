@@ -2,7 +2,7 @@ from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.models import Group
 from home.models.salesforce import ClassEnrollment, Contact, ClassOffering
 from home.models.models import UserProfile, Classroom, Attendance, Session
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
@@ -159,11 +159,11 @@ def get_emails_from_form(form):
     for classroom in classrooms:
         classroom_object = Classroom.objects.get(id=classroom)
         teacher = DjangoUser.objects.get(id=classroom_object.teacher_id).email
-        email_list.append(teacher.email)
+        email_list.append(teacher)
         teacher_assistant = DjangoUser.objects.get(
             id=classroom_object.teacher_assistant_id
         ).email
-        email_list.append(teacher_assistant.email)
+        email_list.append(teacher_assistant)
         students = DjangoUser.objects.filter(
             classroom_students__course=classroom_object.course
         )
@@ -182,7 +182,7 @@ def email_announcement(request, form, email_list):
     msg_html = render_to_string(
         "email_templates/announcement_email.html",
         {
-            "subject": form.instance.title,
+            "subject": subject,
             "message": form.instance.announcement,
             "from": form.instance.created_by,
         },
@@ -199,6 +199,33 @@ def email_announcement(request, form, email_list):
         recipient_list=recipient_list,
         html_message=msg_html,
     )
+    messages.add_message(request, messages.SUCCESS, "Recipients Successfully Emailed")
+
+
+def email_posted_form(request, form, email_list):
+    subject = form.cleaned_data.get("form_name")
+    msg_html = render_to_string(
+        "email_templates/announcement_email.html",
+        {
+            "subject": subject,
+            "message": "Check out your new form",
+            "from": form.cleaned_data.get("created_by")
+        },
+    )
+    text_content = "Please view your new form (attached)"
+    recipient_list = [
+        "tyler.iams@gmail.com",
+        "iams.sophia@gmail.com",
+    ]  # Will replace with email_list
+    email = EmailMultiAlternatives(
+        subject,
+        text_content,
+        settings.EMAIL_HOST_USER,
+        recipient_list,
+    )
+    email.attach_alternative(msg_html, "text/html")
+    email.attach_file("%s%s" % ('documents/', str(request.FILES['form']).replace(" ", "_")))
+    email.send()
     messages.add_message(request, messages.SUCCESS, "Recipients Successfully Emailed")
 
 
