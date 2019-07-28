@@ -31,9 +31,9 @@ def parse_new_user(new_user, form):
     new_user.userprofile.salesforce_id = "%s%s%s%s%s" % (
         form.cleaned_data.get("first_name")[:3].lower(),
         form.cleaned_data.get("last_name")[:3].lower(),
-        '%04d' % birthdate.year,
-        '%02d' % birthdate.month,
-        '%02d' % birthdate.day,
+        "%04d" % birthdate.year,
+        "%02d" % birthdate.month,
+        "%02d" % birthdate.day,
     )
     new_user.userprofile.date_of_birth = birthdate
     return new_user
@@ -89,7 +89,9 @@ def add_volunteers_and_students_to_classroom(request, form, classroom):
 
 
 def generate_classroom_sessions_and_attendance(classroom):
-    classroom.attendance_summary = {"attendance_statistic": get_course_attendance_statistic(classroom.id)}
+    classroom.attendance_summary = {
+        "attendance_statistic": get_course_attendance_statistic(classroom.id)
+    }
     classroom.save()
     class_offering = ClassOffering.objects.filter(name=classroom.course)
     dates = class_offering_meeting_dates(class_offering)
@@ -209,7 +211,7 @@ def email_posted_form(request, form, email_list):
         {
             "subject": subject,
             "message": "Check out your new form",
-            "from": form.cleaned_data.get("created_by")
+            "from": form.cleaned_data.get("created_by"),
         },
     )
     text_content = "Please view your new form (attached)"
@@ -218,13 +220,12 @@ def email_posted_form(request, form, email_list):
         "iams.sophia@gmail.com",
     ]  # Will replace with email_list
     email = EmailMultiAlternatives(
-        subject,
-        text_content,
-        settings.EMAIL_HOST_USER,
-        recipient_list,
+        subject, text_content, settings.EMAIL_HOST_USER, recipient_list
     )
     email.attach_alternative(msg_html, "text/html")
-    email.attach_file("%s%s" % ('documents/', str(request.FILES['form']).replace(" ", "_")))
+    email.attach_file(
+        "%s%s" % ("documents/", str(request.FILES["form"]).replace(" ", "_"))
+    )
     email.send()
     messages.add_message(request, messages.SUCCESS, "Recipients Successfully Emailed")
 
@@ -378,9 +379,17 @@ def get_integer_days(class_offering):
 
 
 def get_course_attendance_statistic(course_id):
-    class_attendance = Attendance.objects.filter(classroom_id=course_id, date__range=["2000-01-01", datetime.today().date()])
-    average = sum(
-        attendance_object.presence == "Present" or attendance_object.presence == "Late"
-        for attendance_object in list
-    ) / len(class_attendance) if len(class_attendance) > 0 else 0
+    class_attendance = Attendance.objects.filter(
+        classroom_id=course_id, date__range=["2000-01-01", datetime.today().date()]
+    )
+    average = (
+        sum(
+            attendance_object.presence == "Present"
+            or attendance_object.presence == "Late"
+            for attendance_object in list
+        )
+        / len(class_attendance)
+        if len(class_attendance) > 0
+        else 0
+    )
     return round(average * 100, 2)

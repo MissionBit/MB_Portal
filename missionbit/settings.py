@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     "crispy_forms",  # <- Crispy forms
     "coverage",  # <- for testing
     "salesforce",  # <- salesforce database
-    'django_q', # <- For queueing tasks
+    "django_q",  # <- For queueing tasks
 ]
 
 MIDDLEWARE = [
@@ -146,18 +146,17 @@ SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 # Django Q Settings
 
 Q_CLUSTER = {
-    'name': 'DjangoORM',
-    'timeout': 1200,
-    'save_limit': 10,
-    'catch_up': False,
-    'orm': 'default'
+    "name": "DjangoORM",
+    "timeout": 1200,
+    "save_limit": 10,
+    "catch_up": False,
+    "orm": "default",
 }
 
 CACHES = {
-    'default': {
-        'BACKEND':
-            'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'djangoq-localmem',
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "djangoq-localmem",
     }
 }
 

@@ -9,19 +9,20 @@ from django.template.defaulttags import register
 from django_q.tasks import async_task
 
 
-@group_required_multiple('staff', 'teacher')
+@group_required_multiple("staff", "teacher")
 def attendance(request):
     if request.method == "POST":
         store_attendance_data(request)
-        async_task("attendance.views.update_course_attendance_statistic", request.POST.get("course_id"))
+        async_task(
+            "attendance.views.update_course_attendance_statistic",
+            request.POST.get("course_id"),
+        )
         return redirect("attendance")
     if request.GET.get("course_id") is not None:
         course_id = request.GET.get("course_id")
         context = get_classroom_attendance(course_id)
         context.update(
-            {
-                "attendance_statistic": get_course_attendance_statistic(course_id)
-            }
+            {"attendance_statistic": get_course_attendance_statistic(course_id)}
         )
     else:
         attendance_averages = compile_attendance_averages_for_all_courses()
@@ -32,7 +33,7 @@ def attendance(request):
     return render(request, "attendance.html", context)
 
 
-@group_required_multiple('staff', 'teacher')
+@group_required_multiple("staff", "teacher")
 def take_attendance(request):
     context = take_attendance_context(
         request.GET.get("course_id"),
@@ -65,7 +66,7 @@ def take_attendance_context(course_id, date):
     }
 
 
-@group_required_multiple('staff', 'teacher')
+@group_required_multiple("staff", "teacher")
 def store_attendance_data(request):
     date = get_date_from_template_returned_string(request.POST.get("date"))
     course_id = request.POST.get("course_id")
@@ -94,10 +95,16 @@ def compile_daily_attendance_for_course(course_id):
 
 
 def get_average_attendance_from_list(list):
-    return sum(
-        attendance_object.presence == "Present" or attendance_object.presence == "Late"
-        for attendance_object in list
-    ) / len(list) if len(list) > 0 else 0
+    return (
+        sum(
+            attendance_object.presence == "Present"
+            or attendance_object.presence == "Late"
+            for attendance_object in list
+        )
+        / len(list)
+        if len(list) > 0
+        else 0
+    )
 
 
 def get_classroom_meeting_dates(course_id):
@@ -116,7 +123,9 @@ def get_date_from_template_returned_string(string_date):
 
 
 def update_course_attendance_statistic(course_id):
-    class_attendance = Attendance.objects.filter(classroom_id=course_id, date__range=["2000-01-01", datetime.today().date()])
+    class_attendance = Attendance.objects.filter(
+        classroom_id=course_id, date__range=["2000-01-01", datetime.today().date()]
+    )
     average = get_average_attendance_from_list(class_attendance)
     classroom = Classroom.objects.get(id=course_id)
     classroom.attendance_summary = {"attendance_statistic": round(average * 100, 2)}
@@ -124,4 +133,6 @@ def update_course_attendance_statistic(course_id):
 
 
 def get_course_attendance_statistic(course_id):
-    return Classroom.objects.get(id=course_id).attendance_summary.get("attendance_statistic")
+    return Classroom.objects.get(id=course_id).attendance_summary.get(
+        "attendance_statistic"
+    )

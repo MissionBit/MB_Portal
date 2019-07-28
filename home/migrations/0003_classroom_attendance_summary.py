@@ -6,14 +6,14 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0002_auto_20190714_0448'),
-    ]
+    dependencies = [("home", "0002_auto_20190714_0448")]
 
     operations = [
         migrations.AddField(
-            model_name='classroom',
-            name='attendance_summary',
-            field=django.contrib.postgres.fields.jsonb.JSONField(default=None, null=True),
-        ),
+            model_name="classroom",
+            name="attendance_summary",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                default=None, null=True
+            ),
+        )
     ]

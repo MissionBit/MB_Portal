@@ -276,20 +276,16 @@ def post_form(request):
         if form.is_valid():
             print("email recipients: ", form.cleaned_data.get("email_recipients"))
             posted_form = Form(
-                name=request.POST['form_name'],
-                form=request.FILES['form'],
+                name=request.POST["form_name"],
+                form=request.FILES["form"],
                 created_by=DjangoUser.objects.get(id=request.user.id),
             )
             posted_form.save()
-            posted_form.recipient_groups.set(
-                form.cleaned_data.get("recipient_groups")
-            )
+            posted_form.recipient_groups.set(form.cleaned_data.get("recipient_groups"))
             posted_form.recipient_classrooms.set(
                 form.cleaned_data.get("recipient_classrooms")
             )
-            messages.add_message(
-                request, messages.SUCCESS, "Successfully Posted Form"
-            )
+            messages.add_message(request, messages.SUCCESS, "Successfully Posted Form")
             if form.cleaned_data.get("email_recipients"):
                 data = request.POST.copy()
                 email_list = get_emails_from_form(data)

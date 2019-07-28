@@ -95,7 +95,7 @@ class Announcement(mdls.Model):
 
 class Form(mdls.Model):
     name = mdls.CharField(max_length=240, unique=True)
-    form = mdls.FileField(upload_to='documents/')
+    form = mdls.FileField(upload_to="documents/")
     posted = mdls.DateTimeField(db_index=True, auto_now=True)
     recipient_groups = mdls.ManyToManyField(Group, related_name="form_user_groups")
     recipient_classrooms = mdls.ManyToManyField(

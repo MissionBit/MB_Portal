@@ -29,5 +29,5 @@ urlpatterns = [
         name="create_class_offering",
     ),
     path("make_announcement/", views.make_announcement, name="make_announcement"),
-    path("post_form/", views.post_form, name="post_form")
+    path("post_form/", views.post_form, name="post_form"),
 ]

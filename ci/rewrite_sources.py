@@ -11,11 +11,13 @@ the directory outside of the container.
 import sys
 import xml.etree.ElementTree as ET
 
+
 def main(path, new_sources):
     tree = ET.parse(path)
-    for elem in tree.findall('sources/source'):
+    for elem in tree.findall("sources/source"):
         elem.text = new_sources
     tree.write(path)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main(*sys.argv[1:])
