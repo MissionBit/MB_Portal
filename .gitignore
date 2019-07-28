@@ -127,4 +127,7 @@ dmypy.json
 # Visual Studio Code settings
 .vscode
 
+# migrations
+/migrations
+
 **/TEST-*.xml
