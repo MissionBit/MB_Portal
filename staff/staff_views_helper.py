@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.models import Group
 from home.models.salesforce import ClassEnrollment, Contact, ClassOffering
-from home.models.models import UserProfile, Classroom, Attendance, Session
-from django.core.mail import send_mail, EmailMessage, EmailMultiAlternatives
+from home.models.models import UserProfile, Classroom, Attendance, Session, FormDistribution
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
@@ -401,3 +401,37 @@ def get_course_attendance_statistic(course_id):
         else 0
     )
     return round(average * 100, 2)
+
+
+def distribute_forms(request, posted_form, form):
+    groups = form.cleaned_data.get("recipient_groups")
+    for group in groups:
+        users = DjangoUser.objects.filter(groups__name=group.name)
+        for user in users:
+            create_form_distribution(posted_form, user)
+    classrooms = form.cleaned_data.get("recipient_classrooms")
+    for classroom in classrooms:
+        teacher = DjangoUser.objects.get(id=classroom.teacher_id)
+        create_form_distribution(posted_form, teacher)
+        teacher_assistant = DjangoUser.objects.get(id=classroom.teacher_assistant_id)
+        create_form_distribution(posted_form, teacher_assistant)
+        students = DjangoUser.objects.filter(
+            classroom_students__course=classroom.course
+        )
+        volunteers = DjangoUser.objects.filter(
+            classroom_volunteers__course=classroom.course
+        )
+        for student in students:
+            create_form_distribution(posted_form, student)
+        for volunteer in volunteers:
+            create_form_distribution(posted_form, volunteer)
+    messages.add_message(request, messages.SUCCESS, "Form Distributed Successfully")
+
+
+def create_form_distribution(posted_form, user):
+    dist = FormDistribution(
+        form=posted_form,
+        user=user,
+        submitted=False
+    )
+    dist.save()

@@ -293,6 +293,7 @@ def post_form(request):
                 data = request.POST.copy()
                 email_list = get_emails_from_form(data)
                 email_posted_form(request, form, email_list)
+            distribute_forms(request, posted_form, form)
             return redirect("staff")
         else:
             messages.error(
