@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.models import Group
-from home.models.models import Announcement, Classroom, Form, Esign, FormDistribution
+from home.models.models import Announcement, Classroom, Form, Esign, FormDistribution, Notification
 from home.models.salesforce import (
     Contact,
     User,
@@ -317,4 +317,18 @@ class CollectForms(forms.ModelForm):
         model = FormDistribution
         fields = [
             "submitted"
+        ]
+
+
+class NotifyUnsubmittedUsersForm(forms.ModelForm):
+    subject = forms.CharField(max_length=240, label="Subject")
+    notification = forms.Textarea()
+    email_recipients = forms.BooleanField(initial=False, required=False)
+
+    class Meta:
+        model = Notification
+        fields = [
+            "subject",
+            "notification",
+            "email_recipients",
         ]

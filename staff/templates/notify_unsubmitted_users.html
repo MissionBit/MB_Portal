@@ -1,0 +1,20 @@
+{% extends "staff_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="sidenav">
+  <a href={% url 'staff' %}>Staff Home</a>
+</div>
+
+    <div class="main-container">
+    <h2 style="padding-bottom: 20px"> Notify Users About {{ notify_about }}</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+        <br>
+        <input type="hidden" name="notify_about", value="{{ notify_about }}" />
+        <button type="submit" class="btn btn-primary">Notify Users</button>
+        </form>
+    </div>
+{% endblock content %}

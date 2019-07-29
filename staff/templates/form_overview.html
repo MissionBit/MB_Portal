@@ -27,6 +27,15 @@ tr:nth-child(even) {
    color: #4CAF50;
    border: 2px solid #000080;
 }
+
+.buttonNotify {
+   font-size: 14px;
+   font-family: "American Typewriter";
+   border-radius: 16px;
+   background-color: white;
+   color: #4CAF50;
+   border: 2px solid #000080;
+}
 </style>
 
 
@@ -68,6 +77,10 @@ tr:nth-child(even) {
               </tr>
             {% endfor %}
           </table>
+            <form action={% url 'notify_unsubmitted_users' %} method="GET">
+              <input type="hidden" name="notify_unsubmitted_users" value="{{ form_name }}" />
+              <br><td><button class="buttonNotify" type="submit">Notify Unsubmitted Users</button></td>
+            </form>
           {% endfor %}
       {% else %}
           <p>No outstanding form dict</p>

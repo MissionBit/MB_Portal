@@ -129,3 +129,20 @@ class FormDistribution(mdls.Model):
 
     def __str__(self):
         return "%s, %s" % (self.user, self.form)
+
+
+class Notification(mdls.Model):
+    user = mdls.ForeignKey(DjangoUser, related_name="notified_user", on_delete=mdls.CASCADE)
+    subject = mdls.CharField(max_length=240)
+    notification = mdls.TextField(max_length=2500)
+    email_recipients = mdls.BooleanField(null=False, default=False)
+    form = mdls.ForeignKey(Form, related_name="notified_about_form", on_delete=mdls.CASCADE)
+    attendance = mdls.ForeignKey(Attendance, related_name="notified_about_attendance", on_delete=mdls.CASCADE, null=True)
+    notified = mdls.DateTimeField(db_index=True, auto_now=True)
+    created_by = mdls.ForeignKey(
+        DjangoUser, related_name="notification_user", on_delete=mdls.CASCADE
+    )
+    acknowledged = mdls.BooleanField(null=False, default=False)
+
+    def __str__(self):
+        return "%s %s" % (self.subject, self.created_by)

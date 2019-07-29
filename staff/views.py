@@ -12,11 +12,12 @@ from home.forms import (
     ChangeTeacherForm,
     PostFormForm,
     CreateEsignForm,
-    CollectForms
+    CollectForms,
+    NotifyUnsubmittedUsersForm
 )
 from .staff_views_helper import *
 from social_django.models import UserSocialAuth
-from home.models.models import Classroom, Form, Esign
+from home.models.models import Classroom, Form, Esign, Notification
 
 
 @group_required("staff")
@@ -313,9 +314,6 @@ def form_overview(request):
     if request.method == "POST":
         form = CollectForms(request.POST)
         if form.is_valid():
-            print("user_id: ", request.POST.get("user_id"))
-            print("form_name: ", request.POST.get("form_name"))
-            print("submitted: ", form.cleaned_data.get("submitted"))
             form_id = Form.objects.get(name=request.POST.get("form_name"))
             form_distribution = FormDistribution.objects.get(user_id=request.POST.get("user_id"), form_id=form_id)
             form_distribution.submitted = form.cleaned_data.get("submitted")
@@ -325,6 +323,39 @@ def form_overview(request):
     form = CollectForms()
     return render(request, "form_overview.html", {"outstanding_form_dict": outstanding_form_dict,
                                                   "form": form})
+
+
+@group_required("staff")
+def notify_unsubmitted_users(request):
+    if request.method == "POST":
+        form = NotifyUnsubmittedUsersForm(request.POST)
+        if form.is_valid():
+            form_id = Form.objects.get(name=request.POST.get("notify_about")).id
+            form_distributions = FormDistribution.objects.filter(form_id=form_id, submitted=False)
+            for form_dist in form_distributions:
+                create_form_notification(request, form, form_dist.user_id)
+            if form.cleaned_data.get("email_recipients"):
+                email_list = get_emails_from_form_distributions(form_distributions)
+                email_form_notification(request, form, email_list)
+            messages.add_message(request, messages.SUCCESS, "Successfully Notified Users")
+            return redirect("staff")
+    form = NotifyUnsubmittedUsersForm()
+    notify_about = request.GET.get("notify_unsubmitted_users")
+    return render(request, "notify_unsubmitted_users.html", {"form": form,
+                                                             "notify_about": notify_about})
+
+
+@group_required("staff")
+def create_form_notification(request, form, user_id):
+    notification = Notification(
+        subject=form.cleaned_data.get("subject"),
+        notification=form.cleaned_data.get("notification"),
+        email_recipients=form.cleaned_data.get("email_recipients"),
+        created_by=DjangoUser.objects.get(id=request.user.id),
+        form_id=Form.objects.get(name=request.POST.get("notify_about")).id,
+        user_id=user_id
+    )
+    notification.save()
 
 
 @group_required("staff")

@@ -179,6 +179,13 @@ def get_emails_from_form(form):
     return email_list
 
 
+def get_emails_from_form_distributions(form_distributions):
+    email_list = []
+    for form_dist in form_distributions:
+        user_email = DjangoUser.objects.get(id=form_dist.user_id).email
+        email_list.append(user_email)
+    return email_list
+
 def email_announcement(request, form, email_list):
     subject = form.instance.title
     msg_html = render_to_string(
@@ -206,13 +213,10 @@ def email_announcement(request, form, email_list):
 
 def email_posted_form(request, form, email_list):
     subject = form.cleaned_data.get("name")
-    print()
     if form.cleaned_data.get("esign") is not None:
         esign_link = form.cleaned_data.get("esign").template
     else:
         esign_link = None
-    print(form.cleaned_data.get("esign"))
-    print("esign link: ", esign_link)
     msg_html = render_to_string(
         "email_templates/post_form_email.html",
         {
@@ -443,3 +447,27 @@ def get_outstanding_forms():
         distributions = FormDistribution.objects.filter(form_id=form.id)
         outstanding_form_dict.update({form.name: distributions})
     return outstanding_form_dict
+
+
+def email_form_notification(request, form, email_list):
+    subject = form.cleaned_data.get("subject")
+    msg_html = render_to_string(
+        "email_templates/post_form_email.html",
+        {
+            "subject": subject,
+            "message": form.cleaned_data.get("notification"),
+            "from": DjangoUser.objects.get(id=request.user.id),
+        },
+    )
+    text_content = "You are being notified about something"
+    recipient_list = [
+        "tyler.iams@gmail.com",
+        "iams.sophia@gmail.com",
+    ]  # Will replace with email_list
+    email = EmailMultiAlternatives(
+        subject, text_content, settings.EMAIL_HOST_USER, recipient_list
+    )
+    email.attach_alternative(msg_html, "text/html")
+    email.attach_file(str(Form.objects.get(name=request.POST.get("notify_about")).form))
+    email.send()
+    messages.add_message(request, messages.SUCCESS, "Recipients Successfully Emailed")
