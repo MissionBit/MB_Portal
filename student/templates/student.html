@@ -26,6 +26,19 @@
         {% endfor %}
     {% endif %}
 
+    <h3> Forms </h3>
+    {% if forms %}
+        {% for form in forms %}
+            <strong>Subject: {{ form.name }}</strong><br>
+            Author: {{ form.created_by }} on {{ form.posted.date }}<br><br>
+            URL: {{ form.form.url }}
+            <form action="{% url 'download_form' %}" method="get">
+              <input type="hidden" name="path" value="{{ form.form }}">
+              <button>Download Form</button>
+            </form>
+        {% endfor %}
+    {% endif %}
+
 </div>
 
 {% endblock content %}

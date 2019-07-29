@@ -11,10 +11,11 @@ from home.forms import (
     MakeAnnouncementForm,
     ChangeTeacherForm,
     PostFormForm,
+    CreateEsignForm
 )
 from .staff_views_helper import *
 from social_django.models import UserSocialAuth
-from home.models.models import Classroom, Form
+from home.models.models import Classroom, Form, Esign
 
 
 @group_required("staff")
@@ -274,12 +275,14 @@ def post_form(request):
     if request.method == "POST":
         form = PostFormForm(request.POST, request.FILES)
         if form.is_valid():
-            print("email recipients: ", form.cleaned_data.get("email_recipients"))
             posted_form = Form(
-                name=request.POST["form_name"],
+                name=form.cleaned_data.get("name"),
+                description=form.cleaned_data.get("description"),
                 form=request.FILES["form"],
                 created_by=DjangoUser.objects.get(id=request.user.id),
             )
+            if form.cleaned_data.get("esign") is not None:
+                posted_form.esign = form.cleaned_data.get("esign")
             posted_form.save()
             posted_form.recipient_groups.set(form.cleaned_data.get("recipient_groups"))
             posted_form.recipient_classrooms.set(
@@ -289,7 +292,6 @@ def post_form(request):
             if form.cleaned_data.get("email_recipients"):
                 data = request.POST.copy()
                 email_list = get_emails_from_form(data)
-                print("email list: ", email_list)
                 email_posted_form(request, form, email_list)
             return redirect("staff")
         else:
@@ -302,6 +304,25 @@ def post_form(request):
         initial={"created_by": DjangoUser.objects.get(id=request.user.id)}
     )
     return render(request, "post_form.html", {"form": form})
+
+
+@group_required("staff")
+def create_esign(request):
+    if request.method == "POST":
+        form = CreateEsignForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data.get("name"))
+            print(form.cleaned_data.get("link"))
+            esign = Esign(
+                name=form.cleaned_data.get("name"),
+                template=form.cleaned_data.get("link"),
+                created_by=DjangoUser.objects.get(id=request.user.id)
+            )
+            esign.save()
+    form = CreateEsignForm(
+        initial={"created_by": DjangoUser.objects.get(id=request.user.id)}
+    )
+    return render(request, "create_esign.html", {"form": form})
 
 
 @group_required("staff")

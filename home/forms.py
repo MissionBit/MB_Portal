@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.models import Group
-from home.models.models import Announcement, Classroom, Form
+from home.models.models import Announcement, Classroom, Form, Esign
 from home.models.salesforce import (
     Contact,
     User,
@@ -268,9 +268,11 @@ class AddStudentsForm(forms.ModelForm):
         fields = ["students"]
 
 
-class PostFormForm(forms.Form):
-    form_name = forms.CharField(max_length=240)
+class PostFormForm(forms.ModelForm):
+    name = forms.CharField(max_length=240)
+    description = forms.Textarea()
     form = forms.FileField()
+    esign = forms.ModelChoiceField(queryset=Esign.objects.all(), required=False)
     recipient_groups = forms.ModelMultipleChoiceField(
         widget=forms.CheckboxSelectMultiple,
         queryset=Group.objects.all(),
@@ -286,9 +288,23 @@ class PostFormForm(forms.Form):
     class Meta:
         model = Form
         fields = [
-            "form_name",
+            "name",
+            "description",
             "form",
+            "esign",
             "recipient_groups",
             "recipient_classrooms",
             "email_recipients",
+        ]
+
+
+class CreateEsignForm(forms.Form):
+    name = forms.CharField(max_length=240)
+    link = forms.URLField()
+
+    class Meta:
+        model = Esign
+        fields = [
+            "name",
+            "link"
         ]

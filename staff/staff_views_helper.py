@@ -205,13 +205,20 @@ def email_announcement(request, form, email_list):
 
 
 def email_posted_form(request, form, email_list):
-    subject = form.cleaned_data.get("form_name")
+    subject = form.cleaned_data.get("name")
+    if form.cleaned_data.get("esign") is not None:
+        esign_link = form.cleaned_data.get("esign").template
+    else:
+        esign_link = "esign not available for this form"
+    print(form.cleaned_data.get("esign"))
+    print("esign link: ", esign_link)
     msg_html = render_to_string(
-        "email_templates/announcement_email.html",
+        "email_templates/post_form_email.html",
         {
             "subject": subject,
-            "message": "Check out your new form",
-            "from": form.cleaned_data.get("created_by"),
+            "message": form.cleaned_data.get("description"),
+            "from": DjangoUser.objects.get(id=request.user.id),
+            "esign_link": esign_link
         },
     )
     text_content = "Please view your new form (attached)"

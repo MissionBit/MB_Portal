@@ -26,5 +26,5 @@ urlpatterns = [
     path("volunteer/", include("volunteer.urls")),
     path("donor/", include("donor.urls")),
     path("attendance/", include("attendance.urls")),
-    url(r"^auth/", include("social_django.urls", namespace="social")),
+    url(r"^auth/", include("social_django.urls", namespace="social"))
 ]

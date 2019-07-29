@@ -93,9 +93,22 @@ class Announcement(mdls.Model):
         return "%s, %s" % (self.title, self.posted)
 
 
+class Esign(mdls.Model):
+    name = mdls.CharField(max_length=240, unique=True)
+    template = mdls.URLField()
+    created_by = mdls.ForeignKey(
+        DjangoUser, related_name="esign_creator_user", on_delete=mdls.CASCADE, default=False
+    )
+
+    def __str__(self):
+        return self.name
+
+
 class Form(mdls.Model):
     name = mdls.CharField(max_length=240, unique=True)
+    description = mdls.TextField(max_length=2500)
     form = mdls.FileField(upload_to="documents/")
+    esign = mdls.ForeignKey(Esign, related_name="esign_form", on_delete=mdls.CASCADE, null=True)
     posted = mdls.DateTimeField(db_index=True, auto_now=True)
     recipient_groups = mdls.ManyToManyField(Group, related_name="form_user_groups")
     recipient_classrooms = mdls.ManyToManyField(
@@ -106,4 +119,13 @@ class Form(mdls.Model):
     )
 
     def __str__(self):
-        return "%s, %s" % (self.name, self.posted)
+        return self.name
+
+
+class FormDistribution(mdls.Model):
+    user = mdls.ForeignKey(DjangoUser, related_name="form_signer", on_delete=mdls.CASCADE)
+    form = mdls.ForeignKey(Form, related_name="form_to_be_signed", on_delete=mdls.CASCADE)
+    submitted = mdls.BooleanField(null=False, default=False)
+
+    def __str__(self):
+        return "%s, %s" % (self.user, self.form)
