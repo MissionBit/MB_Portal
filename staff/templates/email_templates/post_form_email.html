@@ -2,5 +2,7 @@
 <h5>{{ subject }}</h5>
 <p>{{ message }}</p>
 <p> Author: {{ from }}</p>
-<a href="{{ esign_link }}"> e-sign the form here </a>
+{% if esign_link %}
+  <a href="{{ esign_link }}"> e-sign the form here </a>
+{% endif %}
 <p> Sincerely, <br> Mission Bit </p>

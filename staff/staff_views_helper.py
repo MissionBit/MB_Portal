@@ -206,10 +206,11 @@ def email_announcement(request, form, email_list):
 
 def email_posted_form(request, form, email_list):
     subject = form.cleaned_data.get("name")
+    print()
     if form.cleaned_data.get("esign") is not None:
         esign_link = form.cleaned_data.get("esign").template
     else:
-        esign_link = "esign not available for this form"
+        esign_link = None
     print(form.cleaned_data.get("esign"))
     print("esign link: ", esign_link)
     msg_html = render_to_string(
