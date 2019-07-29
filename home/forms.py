@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.models import Group
-from home.models.models import Announcement, Classroom, Form, Esign
+from home.models.models import Announcement, Classroom, Form, Esign, FormDistribution
 from home.models.salesforce import (
     Contact,
     User,
@@ -307,4 +307,14 @@ class CreateEsignForm(forms.Form):
         fields = [
             "name",
             "link"
+        ]
+
+
+class CollectForms(forms.ModelForm):
+    submitted = forms.BooleanField(initial=False, required=False)
+
+    class Meta:
+        model = FormDistribution
+        fields = [
+            "submitted"
         ]

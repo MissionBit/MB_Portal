@@ -11,7 +11,8 @@ from home.forms import (
     MakeAnnouncementForm,
     ChangeTeacherForm,
     PostFormForm,
-    CreateEsignForm
+    CreateEsignForm,
+    CollectForms
 )
 from .staff_views_helper import *
 from social_django.models import UserSocialAuth
@@ -308,12 +309,34 @@ def post_form(request):
 
 
 @group_required("staff")
+def form_overview(request):
+    if request.method == "POST":
+        form = CollectForms(request.POST)
+        if form.is_valid():
+            print("user_id: ", request.POST.get("user_id"))
+            print("form_name: ", request.POST.get("form_name"))
+            print("submitted: ", form.cleaned_data.get("submitted"))
+            form_id = Form.objects.get(name=request.POST.get("form_name"))
+            form_distribution = FormDistribution.objects.get(user_id=request.POST.get("user_id"), form_id=form_id)
+            form_distribution.submitted = form.cleaned_data.get("submitted")
+            form_distribution.save()
+        return redirect("form_overview")
+    outstanding_form_dict = get_outstanding_forms()
+    form = CollectForms()
+    return render(request, "form_overview.html", {"outstanding_form_dict": outstanding_form_dict,
+                                                  "form": form})
+
+
+@group_required("staff")
+def collect_forms(request):
+    return None
+
+
+@group_required("staff")
 def create_esign(request):
     if request.method == "POST":
         form = CreateEsignForm(request.POST)
         if form.is_valid():
-            print(form.cleaned_data.get("name"))
-            print(form.cleaned_data.get("link"))
             esign = Esign(
                 name=form.cleaned_data.get("name"),
                 template=form.cleaned_data.get("link"),

@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.models import Group
 from home.models.salesforce import ClassEnrollment, Contact, ClassOffering
-from home.models.models import UserProfile, Classroom, Attendance, Session, FormDistribution
+from home.models.models import UserProfile, Classroom, Attendance, Session, FormDistribution, Form
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
@@ -435,3 +435,11 @@ def create_form_distribution(posted_form, user):
         submitted=False
     )
     dist.save()
+
+
+def get_outstanding_forms():
+    outstanding_form_dict = {}
+    for form in Form.objects.all():
+        distributions = FormDistribution.objects.filter(form_id=form.id)
+        outstanding_form_dict.update({form.name: distributions})
+    return outstanding_form_dict
