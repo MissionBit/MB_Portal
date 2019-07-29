@@ -49,6 +49,7 @@ tr:nth-child(even) {
         <th>Date</th>
         <th>Daily Attendance</th>
         <th>Take Attendance</th>
+        <th>Send Absent Notifications</th>
       </tr>
       {% for date in dates %}
       <tr>
@@ -62,6 +63,15 @@ tr:nth-child(even) {
           <input type="hidden" name="date_id" value={{ id }} />
           <button class="button" type="submit">Take Attendance</button>
         </form>
+        </td>
+        <td>
+          <form action= "{% url 'notify_absent_students' %}" method="GET">
+          {% csrf_token %}
+          <input type="hidden" name="date" value="{{ date }}" />
+          <input type="hidden" name="course_id" value={{ course_id }} />
+          <input type="hidden" name="date_id" value={{ id }} />
+          <button class="button" type="submit">Notify Absent Students</button>
+          </form>
         </td>
       </tr>
     {% endfor %}

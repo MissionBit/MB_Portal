@@ -9,7 +9,7 @@ from django.template.defaulttags import register
 from django_q.tasks import async_task
 
 
-@group_required_multiple("staff", "teacher")
+@group_required_multiple(["staff", "teacher"])
 def attendance(request):
     if request.method == "POST":
         store_attendance_data(request)
@@ -33,13 +33,19 @@ def attendance(request):
     return render(request, "attendance.html", context)
 
 
-@group_required_multiple("staff", "teacher")
+@group_required_multiple(["staff", "teacher"])
 def take_attendance(request):
     context = take_attendance_context(
         request.GET.get("course_id"),
         get_date_from_template_returned_string(request.GET.get("date")),
     )
     return render(request, "attendance.html", context)
+
+
+@group_required_multiple(["staff", "teacher"])
+def notify_absent_students(request):
+    print("hello here")
+    return render(request, "attendance.html")
 
 
 def get_classroom_attendance(course_id):
@@ -66,7 +72,7 @@ def take_attendance_context(course_id, date):
     }
 
 
-@group_required_multiple("staff", "teacher")
+@group_required_multiple(["staff", "teacher"])
 def store_attendance_data(request):
     date = get_date_from_template_returned_string(request.POST.get("date"))
     course_id = request.POST.get("course_id")

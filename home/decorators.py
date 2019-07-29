@@ -14,12 +14,11 @@ def group_required(group):
     return user_in_group
 
 
-def group_required_multiple(group, group_two):
+def group_required_multiple(group_list):
     def user_in_group(func):
         def wrapper(request, *args, **kwargs):
-            if request.user.groups.filter(
-                name=group
-            ).exists() or request.user.groups.filter(name=group_two):
+            group = [group for group in request.user.groups.all() if group in group_list]
+            if group is not None:
                 return func(request, *args, **kwargs)
             else:
                 raise PermissionDenied
