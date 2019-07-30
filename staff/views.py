@@ -17,12 +17,15 @@ from home.forms import (
 )
 from .staff_views_helper import *
 from social_django.models import UserSocialAuth
-from home.models.models import Classroom, Form, Esign, Notification
+from home.models.models import Classroom, Form, Esign, Notification, Announcement
 
 
 @group_required("staff")
 def staff(request):
-    return render(request, "staff.html")
+    announcements = Announcement.objects.filter(recipient_groups=2)
+    forms = Form.objects.filter(recipient_groups=2)
+    return render(request, "staff.html", {"announcements": announcements,
+                                            "forms": forms})
 
 
 @group_required("staff")

@@ -8,45 +8,6 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-
-<style>
-.sidenav {
-  height: 100%;
-  width: 240px;
-  position: fixed;
-  z-index: 1;
-  top: 20px;
-  left: 0;
-  background-color: whitesmoke;
-  overflow-x: hidden;
-  padding-top: 100px;
-}
-
-.sidenav a {
-  padding-top: 10px;
-  padding-left: 25px;
-  padding-bottom: 50px;
-  text-decoration: #333333;
-  font-size: 18px;
-  color: steelblue;
-  display: block;
-}
-
-.sidenav a:hover {
-  color: #666666;
-}
-
-.main-container {
-   padding-left: 300px;
-   padding-top: 105px;
-   padding-bottom: 100px;
-}
-
-form {
-    width: 250px;
-}
-
-</style>
 </head>
 
 <nav class="navbar navbar-default navbar-fixed-top">
@@ -57,19 +18,53 @@ form {
              height="55" width="205">
       </a>
     </div>
-    <ul style="padding-top: 17px;" class="nav navbar-nav">
-      <li><a href="{% url 'home-home' %}">{{ user.username }}</a></li>
-      <li><a href="{% url 'user_management' %}">Manage Users</a></li>
-      <li><a href="{% url 'attendance' %}">Attendance</a></li>
-      <li><a href="{% url 'classroom_management' %}">Classroom Management</a></li>
-      <li><a href="{% url 'form_overview' %}">Form Overview</a></li>
+    <ul style="padding-top: 17px" class="nav navbar-nav">
+      <li><a href="#">{{ user.username }}</a></li>
+      <li><a href="#">Contact Teacher</a></li>
+      <li><a href="#">Contact Mission Bit</a></li>
       <li><a href="{% url 'home-logout' %}">Logout</a></li>
     </ul>
   </div>
 </nav>
 
-
 <body>
+<style>
+    .sidenav {
+          height: 100%;
+          width: 240px;
+          position: fixed;
+          z-index: 1;
+          top: 82px;
+          left: 0;
+          background-color: whitesmoke;
+          overflow-x: hidden;
+          padding-top: 100px;
+    }
+
+    .sidenav a {
+          padding-top: 10px;
+          padding-left: 25px;
+          padding-bottom: 50px;
+          text-decoration: #333333;
+          font-size: 18px;
+          color: steelblue;
+          display: block;
+    }
+
+    .sidenav a:hover {
+          color: #666666;
+    }
+
+    .main-container {
+           padding-left: 300px;
+           padding-top: 100px;
+           padding-bottom: 100px;
+    }
+
+    form {
+        width: 250px;
+    }
+</style>
 
 {% block content %}
 

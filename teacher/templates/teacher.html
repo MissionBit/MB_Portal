@@ -1,22 +1,68 @@
-{% extends "home/home.html" %}
+{% extends "teacher_base.html" %}
 
 {% block content %}
+<style>
+.announcement {
+  padding: 10px 15px 0px;
+  border: 1px solid #e1e1e1;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  width: 75%;
+}
+
+.button {
+   font-size: 10px;
+   font-family: "American Typewriter";
+   border-radius: 14px;
+   background-color: white;
+   color: #4CAF50;
+   border: 2px solid #000080;
+}
+
+.form {
+  padding: 10px 15px 0px;
+  border: 1px solid #e1e1e1;
+  background-color: plum;
+  border-radius: 4px;
+  width: 75%;
+}
+</style>
 
 <div class="sidenav">
-
+    <a href="#">My Class</a>
+    <a href="#">Resources</a>
+    <a href="#">Contact Student</a>
+    <a href="#">Contact Mission Bit</a>
+    <a href="https://discordapp.com/channels/589891075456630808/589891075456630816" target="_blank">Discord</a>
 </div>
 
 <div class="main-container">
-    <h1> Teacher User Home </h1>
-    <h3> Announcements: </h3>
+    <h1> Teacher User Home </h1><br>
     {% if announcements %}
-        {% for announcement in announcements %}
-        <div class="container">
-            <strong style="color: #666666;">Subject: {{ announcement.title }}</strong><br>
-            <p style="padding-left: 2pc">{{ announcement.announcement }}</p>
-            Author: {{ announcement.created_by }} on {{ announcement.posted.date }}<br><br>
-        </div>
-
+      <h2> Announcements </h2><hr>
+      {% for announcement in announcements reversed %}
+            <div class="announcement">
+            <h4>{{ announcement.title }}</h4><hr>
+            <p>{{ announcement.announcement }}</p><hr>
+            <p>{{ announcement.created_by }} on {{ announcement.posted.date }}</p><br>
+            <button class="button">Dismiss (inactive)</button><br><br>
+            </div><br>
+      {% endfor %}
+    {% endif %}
+    {% if forms %}
+      <h2> Forms </h2><hr>
+        {% for form in forms %}
+            <div class="form">
+              <h4>{{ form.name }}</h4><hr>
+              <p>{{ form.description }}</p><br>
+              <p>{{ form.created_by }} on {{ form.posted.date }}</p><br>
+              <p>
+                <form action="{% url 'download_form' %}" method="get">
+                <input type="hidden" name="path" value="{{ form.form }}">
+                <button class="button">Download Form</button>
+                </form>
+              </p>
+            </div><br>
         {% endfor %}
     {% endif %}
 </div>
