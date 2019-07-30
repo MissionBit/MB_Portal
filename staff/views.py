@@ -391,7 +391,7 @@ def my_account_staff(request):
 
 
 @group_required("staff")
-def download_form(request):
+def download_form_staff(request):
     path = request.GET.get("path")
     file_path = os.path.join(path)
     if os.path.exists(file_path):
