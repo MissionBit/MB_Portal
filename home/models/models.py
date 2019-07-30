@@ -136,7 +136,7 @@ class Notification(mdls.Model):
     subject = mdls.CharField(max_length=240)
     notification = mdls.TextField(max_length=2500)
     email_recipients = mdls.BooleanField(null=False, default=False)
-    form = mdls.ForeignKey(Form, related_name="notified_about_form", on_delete=mdls.CASCADE)
+    form = mdls.ForeignKey(Form, related_name="notified_about_form", on_delete=mdls.CASCADE, null=True)
     attendance = mdls.ForeignKey(Attendance, related_name="notified_about_attendance", on_delete=mdls.CASCADE, null=True)
     notified = mdls.DateTimeField(db_index=True, auto_now=True)
     created_by = mdls.ForeignKey(

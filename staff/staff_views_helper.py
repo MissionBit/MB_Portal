@@ -186,6 +186,7 @@ def get_emails_from_form_distributions(form_distributions):
         email_list.append(user_email)
     return email_list
 
+
 def email_announcement(request, form, email_list):
     subject = form.instance.title
     msg_html = render_to_string(
