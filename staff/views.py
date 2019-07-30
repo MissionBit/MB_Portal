@@ -18,6 +18,8 @@ from home.forms import (
 from .staff_views_helper import *
 from social_django.models import UserSocialAuth
 from home.models.models import Classroom, Form, Esign, Notification, Announcement
+import os
+from django.http import HttpResponse, Http404
 
 
 @group_required("staff")
@@ -386,6 +388,18 @@ def create_esign(request):
 @group_required("staff")
 def my_account_staff(request):
     return render(request, "my_account_staff.html")
+
+
+@group_required("staff")
+def download_form(request):
+    path = request.GET.get("path")
+    file_path = os.path.join(path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="pdf/text")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
+    raise Http404
 
 
 class ClassroomDetailView(DetailView):
