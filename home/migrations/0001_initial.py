@@ -7,7 +7,6 @@ import django.db.models.deletion
 import salesforce.backend.operations
 import salesforce.fields
 
-
 class Migration(migrations.Migration):
 
     initial = True

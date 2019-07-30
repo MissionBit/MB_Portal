@@ -184,6 +184,8 @@ def email_absence_notifications(request, email_list, date):
     recipient_list = [
         "tyler.iams@gmail.com",
         "iams.sophia@gmail.com",
+        "christina@missionbit.com",
+        "cora@missionbit.com"
     ]  # Will replace with email_list
     email = EmailMultiAlternatives(
         subject, text_content, settings.EMAIL_HOST_USER, recipient_list

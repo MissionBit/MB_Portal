@@ -3,7 +3,7 @@ from home.models.models import Group
 from django.conf import settings
 
 
-def add_groups():
+def add_groups(apps, schema_editor):
     Group.objects.get_or_create(name="Staff"),
     Group.objects.get_or_create(name="Student"),
     Group.objects.get_or_create(name="Teacher"),
