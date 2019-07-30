@@ -7,8 +7,8 @@ from django.http import HttpResponse, Http404
 
 @group_required("teacher")
 def teacher(request):
-    announcements = Announcement.objects.filter(recipient_groups=2)
-    forms = Form.objects.filter(recipient_groups=1)
+    announcements = Announcement.objects.filter(recipient_groups=4)
+    forms = Form.objects.filter(recipient_groups=4)
     return render(request, "teacher.html", {"announcements": announcements,
                                             "forms": forms})
 
