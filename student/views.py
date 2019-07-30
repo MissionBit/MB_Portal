@@ -15,7 +15,7 @@ def student(request):
 
 
 @group_required("student")
-def download_form(request):
+def download_form_student(request):
     path = request.GET.get("path")
     file_path = os.path.join(path)
     if os.path.exists(file_path):

@@ -63,7 +63,7 @@
               <h4>{{ form.name }}</h4><br>
               <p>{{ form.created_by }} on {{ form.posted.date }}</p><br>
               <p>
-                <form action="{% url 'download_form' %}" method="get">
+                <form action="{% url 'download_form_student' %}" method="get">
                 <input type="hidden" name="path" value="{{ form.form }}">
                 <button class="button">Download Form</button>
                 </form>
