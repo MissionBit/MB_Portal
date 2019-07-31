@@ -93,6 +93,15 @@ class Announcement(mdls.Model):
         return "%s, %s" % (self.title, self.posted)
 
 
+class AnnouncementDistribution(mdls.Model):
+    announcement = mdls.ForeignKey(Announcement, related_name="announcement_distributed", on_delete=mdls.CASCADE)
+    user = mdls.ForeignKey(DjangoUser, related_name="announcement_user", on_delete=mdls.CASCADE)
+    dismissed = mdls.BooleanField(null=False, default=False)
+
+    def __str__(self):
+        return "%s - %s - dismissed: %s" % (self.announcement, self.user, self.dismissed)
+
+
 class Esign(mdls.Model):
     name = mdls.CharField(max_length=240, unique=True)
     template = mdls.URLField()
