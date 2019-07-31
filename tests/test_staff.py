@@ -15,11 +15,6 @@ from home.models.salesforce import (
 
 class BaseTestCase(TestCase):
     def setUp(self) -> None:
-        Group.objects.create(name="student")
-        Group.objects.create(name="teacher")
-        Group.objects.create(name="volunteer")
-        Group.objects.create(name="donor")
-        Group.objects.create(name="staff")
         teacher = DjangoUser.objects.create_user(
             username="classroom_teacher",
             email="teacher@email.com",
