@@ -93,7 +93,7 @@ def generate_classroom_sessions_and_attendance(classroom):
         "attendance_statistic": get_course_attendance_statistic(classroom.id)
     }
     classroom.save()
-    class_offering = ClassOffering.objects.filter(name=classroom.course)
+    class_offering = ClassOffering.objects.get(name=classroom.course)
     dates = class_offering_meeting_dates(class_offering)
     for day in dates:
         session = Session.objects.create()
@@ -123,7 +123,7 @@ def email_new_user(request, email, first_name, account_type, username, password)
         subject=subject,
         message=strip_tags(msg_html),
         from_email=from_user,
-        recipient_list=["tyler.iams@gmail.com", "christina@missionbit.com", "cora@missionbit.com"],  # Will replace with email
+        recipient_list=["tyler.iams@gmail.com"],  # Will replace with email
         html_message=msg_html,
     )
     messages.add_message(request, messages.SUCCESS, "Email sent successfully")
@@ -138,8 +138,6 @@ def email_classroom(request, email_list, classroom_name):
     recipient_list = [
         "tyler.iams@gmail.com",
         "iams.sophia@gmail.com",
-        "christina@missionbit.com",
-        "cora@missionbit.com"
     ]  # Will replace with email_list
     send_mail(
         subject=subject,
@@ -203,8 +201,6 @@ def email_announcement(request, form, email_list):
     recipient_list = [
         "tyler.iams@gmail.com",
         "iams.sophia@gmail.com",
-        "christina@missionbit.com",
-        "cora@missionbit.com"
     ]  # Will replace with email_list
     send_mail(
         subject=subject,
@@ -235,8 +231,6 @@ def email_posted_form(request, form, email_list):
     recipient_list = [
         "tyler.iams@gmail.com",
         "iams.sophia@gmail.com",
-        "christina@missionbit.com",
-        "cora@missionbit.com"
     ]  # Will replace with email_list
     email = EmailMultiAlternatives(
         subject, text_content, settings.EMAIL_HOST_USER, recipient_list
@@ -470,8 +464,6 @@ def email_form_notification(request, form, email_list):
     recipient_list = [
         "tyler.iams@gmail.com",
         "iams.sophia@gmail.com",
-        "christina@missionbit.com",
-        "cora@missionbit.com"
     ]  # Will replace with email_list
     email = EmailMultiAlternatives(
         subject, text_content, settings.EMAIL_HOST_USER, recipient_list

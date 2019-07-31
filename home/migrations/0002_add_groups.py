@@ -4,11 +4,11 @@ from django.conf import settings
 
 
 def add_groups(apps, schema_editor):
-    Group.objects.get_or_create(name="Staff"),
-    Group.objects.get_or_create(name="Student"),
-    Group.objects.get_or_create(name="Teacher"),
-    Group.objects.get_or_create(name="Volunteer"),
-    Group.objects.get_or_create(name="Donor"),
+    Group.objects.get_or_create(name="staff"),
+    Group.objects.get_or_create(name="student"),
+    Group.objects.get_or_create(name="teacher"),
+    Group.objects.get_or_create(name="volunteer"),
+    Group.objects.get_or_create(name="donor"),
 
 
 class Migration(migrations.Migration):
