@@ -31,17 +31,24 @@ class UserRegisterForm(UserCreationForm):
         ]
 
 
+class DateInput(forms.DateInput):
+    input_type = "date"
+
+
 class MissionBitUserCreationForm(forms.ModelForm):
     account = forms.ModelChoiceField(queryset=Account.objects.all(), required=False)
     first_name = forms.CharField(label="First name", max_length=100)
     last_name = forms.CharField(label="Last name", max_length=100)
     email = forms.EmailField(label="email", max_length=100)
-    birthdate = forms.DateField(label="birthday")
     owner = forms.ModelChoiceField(queryset=User.objects.filter(is_active=True))
 
     class Meta:
         model = Contact
-        fields = []
+        fields = ["account",
+                  "first_name",
+                  "last_name",
+                  "email",
+                  "owner"]
 
 
 class RaceGenderEthnicityForm(forms.ModelForm):
@@ -74,15 +81,15 @@ class CreateStaffForm(MissionBitUserCreationForm):
             "owner",
             "title",
         ]
+    widgets = {
+        "birthdate": DateInput()
+    }
 
 
 class CreateStudentForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
     title = forms.CharField(initial="Student", disabled=True)
     expected_graduation_year = forms.ChoiceField(
         label="Expected graduation year", choices=GRAD_YEAR_CHOICES, required=False
-    )
-    npsp_primary_affiliation = forms.ModelChoiceField(
-        label="Affiliated Account", queryset=Account.objects.all(), required=False
     )
 
     class Meta:
@@ -96,12 +103,13 @@ class CreateStudentForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
             "owner",
             "title",
             "expected_graduation_year",
-            "npsp_primary_affiliation",
             "which_best_describes_your_ethnicity",
             "race",
             "gender",
         ]
-
+        widgets = {
+            "birthdate": DateInput()
+        }
 
 class CreateTeacherForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
     title = forms.CharField(initial="Teacher", disabled=True)
@@ -121,6 +129,10 @@ class CreateTeacherForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
             "gender",
         ]
 
+    widgets = {
+        "birthdate": DateInput()
+    }
+
 
 class CreateVolunteerForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
     title = forms.CharField(initial="Volunteer", disabled=True)
@@ -139,6 +151,10 @@ class CreateVolunteerForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
             "race",
             "gender",
         ]
+
+    widgets = {
+        "birthdate": DateInput()
+    }
 
 
 class CreateClassroomForm(forms.ModelForm):
