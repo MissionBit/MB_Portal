@@ -24,10 +24,21 @@ from django.http import HttpResponse, Http404
 
 @group_required("staff")
 def staff(request):
+    if request.method == "POST":
+        if request.POST.get("dismiss_announcement") == "true":
+            mark_announcement_dismissed(Announcement.objects.get(id=request.POST.get("announcement")), request.user)
+            return redirect("staff")
+        elif request.POST.get("acknowledge_notification") == "true":
+            mark_notification_acknowledged(Notification.objects.get(id=request.POST.get("notification")))
+            return redirect("staff")
     announcements = Announcement.objects.filter(recipient_groups=2)
+    announcements = remove_dismissed_announcements(announcements, request.user)
     forms = Form.objects.filter(recipient_groups=2)
+    forms = remove_submitted_forms(forms, request.user)
+    notifications = Notification.objects.filter(user_id=request.user.id, acknowledged=False)
     return render(request, "staff.html", {"announcements": announcements,
-                                            "forms": forms})
+                                          "forms": forms,
+                                          "notifications": notifications})
 
 
 @group_required("staff")
@@ -256,11 +267,12 @@ def make_announcement(request):
         form = MakeAnnouncementForm(request.POST)
         if form.is_valid():
             form.instance.created_by = DjangoUser.objects.get(id=request.user.id)
+            data = request.POST.copy()
+            user_dict = get_users_and_emails_from_form(data)
             if form.instance.email_recipients:
-                data = request.POST.copy()
-                email_list = get_emails_from_form(data)
-                email_announcement(request, form, email_list)
-            form.save()
+                email_announcement(request, form, user_dict.get("email_list"))
+            announcement = form.save()
+            distribute_announcement(user_dict.get("user_list"), announcement)
             messages.add_message(
                 request, messages.SUCCESS, "Successfully Made Announcement"
             )
@@ -296,10 +308,10 @@ def post_form(request):
                 form.cleaned_data.get("recipient_classrooms")
             )
             messages.add_message(request, messages.SUCCESS, "Successfully Posted Form")
+            data = request.POST.copy()
+            user_dict = get_users_and_emails_from_form(data)
             if form.cleaned_data.get("email_recipients"):
-                data = request.POST.copy()
-                email_list = get_emails_from_form(data)
-                email_posted_form(request, form, email_list)
+                email_announcement(request, form, user_dict.get("email_list"))
             distribute_forms(request, posted_form, form)
             return redirect("staff")
         else:

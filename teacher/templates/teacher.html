@@ -26,6 +26,14 @@
   border-radius: 4px;
   width: 75%;
 }
+
+.notification {
+  padding: 10px 15px 0px;
+  border: 1px solid #e1e1e1;
+  background-color: lightcoral;
+  border-radius: 4px;
+  width: 75%;
+}
 </style>
 
 <div class="sidenav">
@@ -45,7 +53,12 @@
             <h4>{{ announcement.title }}</h4><hr>
             <p>{{ announcement.announcement }}</p><hr>
             <p>{{ announcement.created_by }} on {{ announcement.posted.date }}</p><br>
-            <button class="button">Dismiss (inactive)</button><br><br>
+            <form method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="dismiss_announcement" value="true" />
+              <input type="hidden" name="announcement" value="{{ announcement.id }}" />
+              <button class="button">Dismiss</button><br>
+            </form>
             </div><br>
       {% endfor %}
     {% endif %}
@@ -60,6 +73,24 @@
                 <form action="{% url 'download_form' %}" method="get">
                 <input type="hidden" name="path" value="{{ form.form }}">
                 <button class="button">Download Form</button>
+                </form>
+              </p>
+            </div><br>
+        {% endfor %}
+    {% endif %}
+    {% if notifications %}
+      <h2> Notifications </h2><hr>
+        {% for notification in notifications %}
+            <div class="notification">
+              <h4>{{ notification.subject }}</h4><hr>
+              <p>{{ notification.notification }}</p><br>
+              <p>Mission Bit on {{ notification.notified.date }}</p><br>
+              <p>
+                <form method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" name="acknowledge_notification" value="true" />
+                  <input type="hidden" name="notification" value="{{ notification.id }}" />
+                  <button class="button">Dismiss</button><br><br>
                 </form>
               </p>
             </div><br>

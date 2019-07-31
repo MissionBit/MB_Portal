@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.models import Group
 from home.models.salesforce import ClassEnrollment, Contact, ClassOffering
-from home.models.models import UserProfile, Classroom, Attendance, Session, FormDistribution, Form
+from home.models.models import UserProfile, Classroom, Attendance, Session, FormDistribution, Form, AnnouncementDistribution
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
@@ -149,23 +149,27 @@ def email_classroom(request, email_list, classroom_name):
     messages.add_message(request, messages.SUCCESS, "Email sent successfully")
 
 
-def get_emails_from_form(form):
+def get_users_and_emails_from_form(form):
     email_list = []
+    user_list = []
     groups = form.getlist("recipient_groups")
     for group in groups:
         group_name = Group.objects.get(id=group)
         users = DjangoUser.objects.filter(groups__name=group_name)
         for user in users:
             email_list.append(user.email)
+            user_list.append(user)
     classrooms = form.getlist("recipient_classrooms")
     for classroom in classrooms:
         classroom_object = Classroom.objects.get(id=classroom)
-        teacher = DjangoUser.objects.get(id=classroom_object.teacher_id).email
-        email_list.append(teacher)
+        teacher = DjangoUser.objects.get(id=classroom_object.teacher_id)
+        email_list.append(teacher.email)
+        user_list.append(teacher)
         teacher_assistant = DjangoUser.objects.get(
             id=classroom_object.teacher_assistant_id
-        ).email
-        email_list.append(teacher_assistant)
+        )
+        email_list.append(teacher_assistant.email)
+        user_list.append(teacher_assistant)
         students = DjangoUser.objects.filter(
             classroom_students__course=classroom_object.course
         )
@@ -174,9 +178,12 @@ def get_emails_from_form(form):
         )
         for student in students:
             email_list.append(student.email)
+            user_list.append(student)
         for volunteer in volunteers:
             email_list.append(volunteer.email)
-    return email_list
+            user_list.append(volunteer)
+    return {"email_list": email_list,
+            "user_list": user_list}
 
 
 def get_emails_from_form_distributions(form_distributions):
@@ -210,6 +217,16 @@ def email_announcement(request, form, email_list):
         html_message=msg_html,
     )
     messages.add_message(request, messages.SUCCESS, "Recipients Successfully Emailed")
+
+
+def distribute_announcement(user_list, announcement):
+    for user in user_list:
+        ad = AnnouncementDistribution(
+            user_id=user.id,
+            announcement_id=announcement.id,
+            dismissed=False
+        )
+        ad.save()
 
 
 def email_posted_form(request, form, email_list):
@@ -472,3 +489,32 @@ def email_form_notification(request, form, email_list):
     email.attach_file(str(Form.objects.get(name=request.POST.get("notify_about")).form))
     email.send()
     messages.add_message(request, messages.SUCCESS, "Recipients Successfully Emailed")
+
+
+def remove_dismissed_announcements(announcements, user):
+    res_announcements = []
+    for announcement in announcements:
+        ad = AnnouncementDistribution.objects.get(announcement_id=announcement.id, user_id=user.id)
+        if ad.dismissed is False:
+            res_announcements.append(announcement)
+    return res_announcements
+
+
+def mark_announcement_dismissed(announcement, user):
+    announcement = AnnouncementDistribution.objects.get(announcement_id=announcement.id, user_id=user.id)
+    announcement.dismissed = True
+    announcement.save()
+
+
+def remove_submitted_forms(forms, user):
+    res_forms = []
+    for form in forms:
+        fd = FormDistribution.objects.get(form_id=form.id, user_id=user.id)
+        if fd.submitted is False:
+            res_forms.append(form)
+    return res_forms
+
+
+def mark_notification_acknowledged(notification):
+    notification.acknowledged = True
+    notification.save()
