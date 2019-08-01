@@ -81,9 +81,9 @@ class CreateStaffForm(MissionBitUserCreationForm):
             "owner",
             "title",
         ]
-    widgets = {
-        "birthdate": DateInput()
-    }
+        widgets = {
+            "birthdate": DateInput()
+        }
 
 
 class CreateStudentForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
@@ -111,6 +111,7 @@ class CreateStudentForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
             "birthdate": DateInput()
         }
 
+
 class CreateTeacherForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
     title = forms.CharField(initial="Teacher", disabled=True)
 
@@ -128,10 +129,9 @@ class CreateTeacherForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
             "race",
             "gender",
         ]
-
-    widgets = {
-        "birthdate": DateInput()
-    }
+        widgets = {
+            "birthdate": DateInput()
+        }
 
 
 class CreateVolunteerForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
@@ -151,10 +151,9 @@ class CreateVolunteerForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
             "race",
             "gender",
         ]
-
-    widgets = {
-        "birthdate": DateInput()
-    }
+        widgets = {
+            "birthdate": DateInput()
+        }
 
 
 class CreateClassroomForm(forms.ModelForm):
