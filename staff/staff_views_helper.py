@@ -195,13 +195,18 @@ def get_emails_from_form_distributions(form_distributions):
 
 
 def email_announcement(request, form, email_list):
-    subject = form.instance.title
+    try:
+        subject = form.instance.title
+        message = form.instance.announcement
+    except AttributeError:
+        subject = form.instance.name
+        message = form.instance.description
     msg_html = render_to_string(
         "email_templates/announcement_email.html",
         {
             "subject": subject,
-            "message": form.instance.announcement,
-            "from": form.instance.created_by,
+            "message": message,
+            "from": request.user,
         },
     )
     from_user = settings.EMAIL_HOST_USER
