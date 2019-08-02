@@ -376,8 +376,22 @@ def create_form_notification(request, form, user_id):
 
 
 @group_required("staff")
-def collect_forms(request):
-    return None
+def communication_manager(request):
+    if request.method == "POST":
+        if request.POST.get("delete_announcement"):
+            Announcement.objects.get(id=request.POST.get("announcement_id")).delete()
+        elif request.POST.get("delete_notification"):
+            Notification.objects.get(id=request.POST.get("notification_id")).delete()
+        elif request.POST.get("delete_form"):
+            Form.objects.get(id=request.POST.get("form_id")).delete()
+        messages.add_message(request, messages.SUCCESS, "Deleted Successfully")
+        return redirect("staff")
+    announcements = Announcement.objects.all()
+    notifications = Notification.objects.all()
+    forms = Form.objects.all()
+    return render(request, "communication_manager.html", {"announcements": announcements,
+                                                          "notifications": notifications,
+                                                          "forms": forms})
 
 
 @group_required("staff")
@@ -391,6 +405,8 @@ def create_esign(request):
                 created_by=DjangoUser.objects.get(id=request.user.id)
             )
             esign.save()
+        messages.add_message(request, messages.SUCCESS, "Esign Created Successfully")
+        return redirect("staff")
     form = CreateEsignForm(
         initial={"created_by": DjangoUser.objects.get(id=request.user.id)}
     )
