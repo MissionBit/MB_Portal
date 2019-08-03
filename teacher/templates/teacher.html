@@ -37,11 +37,7 @@
 </style>
 
 <div class="sidenav">
-    <a href="#">My Class</a>
-    <a href="#">Resources</a>
-    <a href="#">Contact Student</a>
-    <a href="#">Contact Mission Bit</a>
-    <a href="https://discordapp.com/channels/589891075456630808/589891075456630816" target="_blank">Discord</a>
+    <a href="{% url 'my_class' %}">My Class</a>
 </div>
 
 <div class="main-container">
@@ -57,7 +53,7 @@
               {% csrf_token %}
               <input type="hidden" name="dismiss_announcement" value="true" />
               <input type="hidden" name="announcement" value="{{ announcement.id }}" />
-              <button class="button">Dismiss</button><br>
+              <button class="button">Dismiss</button><br><br>
             </form>
             </div><br>
       {% endfor %}
@@ -72,7 +68,7 @@
               <p>
                 <form action="{% url 'download_form' %}" method="get">
                 <input type="hidden" name="path" value="{{ form.form }}">
-                <button class="button">Download Form</button>
+                <button class="button">Download Form</button><br>
                 </form>
               </p>
             </div><br>
@@ -90,7 +86,7 @@
                   {% csrf_token %}
                   <input type="hidden" name="acknowledge_notification" value="true" />
                   <input type="hidden" name="notification" value="{{ notification.id }}" />
-                  <button class="button">Dismiss</button><br><br>
+                  <button class="button">Dismiss</button><br>
                 </form>
               </p>
             </div><br>

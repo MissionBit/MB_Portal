@@ -1,0 +1,116 @@
+{% extends "teacher_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<style>
+
+h2 {
+    color: steelblue;
+    padding-left: 10px;
+}
+strong {
+    font-size: 24px;
+    padding-left: 20px;
+    padding-bottom: 1px;
+}
+p {
+    font-size: 16px;
+    padding-left: 30px;
+    padding-top: 10px;
+}
+.button {
+   font-size: 12px;
+   font-family: "American Typewriter";
+   border-radius: 14px;
+   background-color: white;
+   color: #4CAF50;
+   border: 2px solid #4CAF50;
+
+}
+</style>
+
+
+<div class="sidenav">
+  <a href="#">My Class</a>
+  <a href="#">Resources</a>
+  <a href="#">Contact Student</a>
+  <a href="#">Contact Mission Bit</a>
+  <a href="https://discordapp.com/channels/589891075456630808/589891075456630816" target="_blank">Discord</a>
+</div>
+
+<div class="main-container">
+  <h1>My Class</h1><hr>
+  {% if session %}
+    <h1>{{ session.title }} - {{ session.date }}</h1><br>
+    <form action="{% url 'take_attendance' %}" method="GET">
+    <input type="hidden" name="course_id" value="{{ session.classroom.id }}"/>
+    <input type="hidden" name="date" value="{{ session.date }}"/>
+    <button class="button" type="submit">Take Attendance</button>
+    </form>
+    <hr>
+      <h3>Description</h3><br>
+        <p>{{ session.description }}</p><hr>
+      <h3>Lesson Plan</h3><br>
+        {% if session.lesson_plan != "" %}
+          <form action="{% url 'download_form' %}" method="get">
+          <input type="hidden" name="path" value="{{ session.lesson_plan }}">
+          <button class="button">Download Lesson Plan</button><br>
+          </form><hr>
+        {% else %}
+          <p>No Lesson Plan Available</p><hr>
+        {% endif %}
+      <h3>Lecture</h3><br>
+        {% if session.lecture != "" %}
+        <form action="{% url 'download_form' %}" method="get">
+        <input type="hidden" name="path" value="{{ session.lecture }}">
+        <button class="button">Download Lecture</button><br>
+        </form><hr>
+        {% else %}
+          <p>No Lecture Available</p><hr>
+        {% endif %}
+      <h3>Activity</h3><br>
+        {% if session.activity != "" %}
+        <form action="{% url 'download_form' %}" method="get">
+        <input type="hidden" name="path" value="{{ session.activity }}">
+        <button class="button">Download Activity</button><br>
+        </form><hr>
+        {% else %}
+        <p>No Activity Available</p><hr>
+        {% endif %}
+      <h3>Video</h3><br>
+      {% if session.video != NULL %}
+        <a href="{{ session.video }}">View Session Video</a><hr>
+      {% else %}
+       <p>No Video Available</p><hr>
+      {% endif %}
+      <h3>Resources</h3><hr>
+      {% if resources %}
+        {% for resource in resources %}
+          <h5>{{ resource.title }}</h5>
+          {% if resource.file != "" %}
+            <form action="{% url 'download_form' %}" method="get">
+            <input type="hidden" name="path" value="{{ resource.file }}">
+            <button class="button">Download Resource</button><br>
+            </form><hr>
+          {% endif %}
+          {% if resource.link != NULL %}
+            <a href="{{ resource.link }}">Go To Resource</a><hr>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        <p>No Resources</p><hr>
+      {% endif %}
+  {% endif %}
+  <h3>Add Resource for {{ session.date }}</h3>
+  <form enctype="multipart/form-data" method="POST">
+    {% csrf_token %}
+    {{ form|crispy }} <br>
+    <input type="hidden" name="classroom" value="{{ session.classroom.id }}">
+    <input type="hidden" name="session" value="{{ session.id }}">
+    <button class="button" type="submit">Add Resource</button>
+  </form>
+
+</div>
+
+{% endblock content %}
