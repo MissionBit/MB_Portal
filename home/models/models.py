@@ -19,6 +19,7 @@ class UserProfile(mdls.Model):
     change_pwd = mdls.BooleanField(default=False)
     date_of_birth = mdls.DateField(default="1901-01-01")
     salesforce_id = mdls.CharField(default="xxxxxx19010101", max_length=14)
+    in_classroom = mdls.BooleanField(default=False)
 
     @receiver(post_save, sender=DjangoUser)
     def create_user_profile(sender, instance, created, **kwargs):
@@ -28,14 +29,6 @@ class UserProfile(mdls.Model):
     @receiver(post_save, sender=DjangoUser)
     def save_user_profile(sender, instance, **kwargs):
         instance.userprofile.save()
-
-
-class Session(mdls.Model):
-    description = mdls.TextField(max_length=2000, default="No Description Available")
-    lesson_plan = mdls.FileField(default=None)
-    lecture = mdls.FileField(default=None)
-    video = mdls.URLField(default=None, null=True)
-    activity = mdls.FileField(default=None)
 
 
 class Classroom(mdls.Model):
@@ -49,6 +42,8 @@ class Classroom(mdls.Model):
     volunteers = mdls.ManyToManyField(DjangoUser, related_name="classroom_volunteers")
     students = mdls.ManyToManyField(DjangoUser, related_name="classroom_students")
     attendance_summary = JSONField(default=None, null=True)
+    forum_title = mdls.CharField(max_length=240, default=None, null=True)
+    forum = mdls.URLField(default=None, null=True)
 
     def __str__(self):
         return "%s - %s, %s" % (
@@ -56,6 +51,32 @@ class Classroom(mdls.Model):
             self.teacher.last_name,
             self.teacher.first_name,
         )
+
+
+class Session(mdls.Model):
+    title = mdls.CharField(max_length=240, default="No Title")
+    description = mdls.TextField(max_length=2000, default="No Description Available")
+    lesson_plan = mdls.FileField(default=None, upload_to="documents/")
+    lecture = mdls.FileField(default=None, upload_to="documents/")
+    video = mdls.URLField(default=None, null=True)
+    activity = mdls.FileField(default=None, upload_to="documents/")
+    classroom = mdls.ForeignKey(Classroom, related_name="classroom_session", on_delete=mdls.CASCADE, default=None)
+    date = mdls.DateField(default="1901-01-01")
+
+    def __str__(self):
+        return "%s - %s" % (self.classroom, self.date)
+
+
+class Resource(mdls.Model):
+    title = mdls.TextField(max_length=240, default="No Title")
+    description = mdls.TextField(max_length=2000)
+    link = mdls.URLField(default=None, null=True)
+    file = mdls.FileField(default=None, null=True, upload_to="documents/")
+    classroom = mdls.ForeignKey(Classroom, related_name="classroom_resource", on_delete=mdls.CASCADE)
+    session = mdls.ForeignKey(Session, related_name="session_resource", on_delete=mdls.CASCADE)
+
+    def __str__(self):
+        return "%s - %s" % (self.title, self.session)
 
 
 class Attendance(mdls.Model):
