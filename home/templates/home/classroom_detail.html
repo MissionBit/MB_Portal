@@ -79,15 +79,22 @@ function revertASF() {
 <form action="{% url 'attendance' %}" method="GET">
     <input type="hidden" name="course_id" value="{{ object.id }}" />
     <p style="padding-left: 20px"><button class="button" type="submit">View Class Attendance</button></p>
-</form>
+</form><hr>
+<h4 style="padding-left: 20px;">Curriculum</h4>
 <form action="{% url 'curriculum' %}" method="get">
     <input type="hidden" name="classroom_id" value="{{ object.id }}" />
     <p style="padding-left: 20px"><button class="button" type="submit">View Curriculum</button></p>
-  </form>
+  </form><hr>
+{% if object.forum_title  %}
+  <h4 style="padding-left: 20px">Current Forum: {{ object.forum_title }}</h4>
+{% else %}
+  <h4 style="padding-left: 20px">No Forum</h4>
+{% endif %}
 <form action="{% url 'add_forum' %}" method="GET">
   <input type="hidden" name="classroom" value="{{ object.id }}" />
-  <p style="padding-left: 20px"><button class="button" type="submit">Add Class Forum</button></p><hr>
-</form>
+  <p style="padding-left: 20px"><button class="button" type="submit">Add/Change Class Forum</button></p><hr>
+</form><hr>
+
   <table>
     <h3>{{ form_name }}</h3>
       <tr>
