@@ -114,15 +114,15 @@ def compile_daily_attendance_for_course(course_id):
     return daily_attendance_record
 
 
-def get_average_attendance_from_list(list):
+def get_average_attendance_from_list(daily_attendance):
     return (
         sum(
             attendance_object.presence == "Present"
             or attendance_object.presence == "Late"
-            for attendance_object in list
+            for attendance_object in daily_attendance
         )
-        / len(list)
-        if len(list) > 0
+        / len(daily_attendance)
+        if len(daily_attendance) > 0
         else 0
     )
 
@@ -139,7 +139,13 @@ def get_item(dictionary, key):
 
 
 def get_date_from_template_returned_string(string_date):
-    return datetime.strptime(string_date, "%B %d, %Y").date()
+    try:
+        return datetime.strptime(string_date, "%B %d, %Y").date()
+    except Exception:
+        try:
+            return datetime.strptime(string_date, "%b. %d, %Y").date()
+        except Exception:
+            return datetime.strptime(string_date, "%bt. %d, %Y").date()
 
 
 def update_course_attendance_statistic(course_id):
