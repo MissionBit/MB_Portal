@@ -1,6 +1,7 @@
 from django.views.generic import DetailView, ListView
 from django.shortcuts import render, redirect
 from home.decorators import group_required
+from django.http import HttpResponse, Http404
 from home.forms import (
     CreateStaffForm,
     CreateClassroomForm,
@@ -13,13 +14,15 @@ from home.forms import (
     PostFormForm,
     CreateEsignForm,
     CollectForms,
-    NotifyUnsubmittedUsersForm
+    NotifyUnsubmittedUsersForm,
+    AddCurriculumForm,
+    AddForumForm
 )
 from .staff_views_helper import *
+from attendance.views import get_date_from_template_returned_string
 from social_django.models import UserSocialAuth
 from home.models.models import Classroom, Form, Esign, Notification, Announcement
 import os
-from django.http import HttpResponse, Http404
 
 
 @group_required("staff")
@@ -43,6 +46,8 @@ def staff(request):
 
 @group_required("staff")
 def user_management(request):
+    names = DjangoUser.objects.all()
+    context = {"names": names}
     return render(request, "user_management.html")
 
 
@@ -311,7 +316,7 @@ def post_form(request):
             data = request.POST.copy()
             user_dict = get_users_and_emails_from_form(data)
             if form.cleaned_data.get("email_recipients"):
-                email_announcement(request, form, user_dict.get("email_list"))
+                email_posted_form(request, form, user_dict.get("email_list"))
             distribute_forms(request, posted_form, form)
             return redirect("staff")
         else:
@@ -414,8 +419,51 @@ def create_esign(request):
 
 
 @group_required("staff")
+def add_forum(request):
+    if request.method == "POST":
+        form = AddForumForm(request.POST)
+        if form.is_valid():
+            print("valid form")
+            classroom = Classroom.objects.get(id=request.POST.get("classroom"))
+            classroom.forum_title = form.cleaned_data.get("forum_title")
+            classroom.forum = form.cleaned_data.get("forum")
+            classroom.save()
+            print("yay??!??")
+            return redirect("staff")
+    classroom = Classroom.objects.get(id=request.GET.get("classroom"))
+    form = AddForumForm()
+    return render(request, "add_forum.html", {"form": form,
+                                              "classroom": classroom})
+
+
+@group_required("staff")
 def my_account_staff(request):
     return render(request, "my_account_staff.html")
+
+
+@group_required("staff")
+def curriculum(request):
+    classroom = Classroom.objects.get(id=request.GET.get("classroom_id"))
+    sessions = Session.objects.filter(classroom_id=classroom.id).order_by("date")
+    return render(request, "curriculum.html", {"sessions": sessions,
+                                               "classroom": classroom})
+
+
+@group_required("staff")
+def modify_session(request):
+    if request.method == "POST":
+        form = AddCurriculumForm(request.POST, request.FILES)
+        if form.is_valid():
+            update_session(request, form)
+    form = AddCurriculumForm()
+    date = request.GET.get("date")
+    classroom = Classroom.objects.get(id=request.GET.get("classroom"))
+    session = Session.objects.get(classroom_id=request.GET.get("classroom"),
+                                  date=get_date_from_template_returned_string(request.GET.get("date")))
+    return render(request, "modify_session.html", {"form": form,
+                                                   "date": date,
+                                                   "classroom": classroom,
+                                                   "session": session})
 
 
 @group_required("staff")

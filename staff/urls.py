@@ -34,5 +34,8 @@ urlpatterns = [
     path("form_overview", views.form_overview, name="form_overview"),
     path("notify_unsubmitted_users", views.notify_unsubmitted_users, name="notify_unsubmitted_users"),
     path("download_form_staff/", views.download_form_staff, name="download_form_staff"),
-    path("communication_manager/", views.communication_manager, name="communication_manager")
+    path("communication_manager/", views.communication_manager, name="communication_manager"),
+    path("curriculum/", views.curriculum, name="curriculum"),
+    path("modify_session/", views.modify_session, name="modify_session"),
+    path("add_forum/", views.add_forum, name="add_forum")
 ]
