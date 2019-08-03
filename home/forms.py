@@ -2,7 +2,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.models import Group
-from home.models.models import Announcement, Classroom, Form, Esign, FormDistribution, Notification
+from home.models.models import UserProfile
+from home.models.models import Announcement, Classroom, Form, Esign, FormDistribution, Notification, Session, Resource
 from home.models.salesforce import (
     Contact,
     User,
@@ -258,11 +259,10 @@ class ChangeTeacherForm(forms.ModelForm):
 
 
 class AddVolunteersForm(forms.ModelForm):
-    volunteers = forms.ModelMultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple,
+    volunteers = forms.ModelChoiceField(
         queryset=DjangoUser.objects.filter(groups__name="volunteer"),
         required=False,
-        label="",
+        label="Add Volunteer",
     )
 
     class Meta:
@@ -271,11 +271,10 @@ class AddVolunteersForm(forms.ModelForm):
 
 
 class AddStudentsForm(forms.ModelForm):
-    students = forms.ModelMultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple,
+    students = forms.ModelChoiceField(
         queryset=DjangoUser.objects.filter(groups__name="student"),
         required=False,
-        label="",
+        label="Add Student",
     )
 
     class Meta:
@@ -346,4 +345,52 @@ class NotifyUnsubmittedUsersForm(forms.ModelForm):
             "subject",
             "notification",
             "email_recipients",
+        ]
+
+
+class AddCurriculumForm(forms.ModelForm):
+    title = forms.CharField(max_length=240, required=False)
+    description = forms.CharField(max_length=2000, required=False, widget=forms.Textarea)
+    lesson_plan = forms.FileField(required=False)
+    lecture = forms.FileField(required=False)
+    video = forms.URLField(required=False)
+    activity = forms.FileField(required=False)
+
+    class Meta:
+        model = Session
+        fields = [
+            "title",
+            "description",
+            "lesson_plan",
+            "lecture",
+            "video",
+            "activity"
+        ]
+
+
+class AddResourceForm(forms.ModelForm):
+    title = forms.CharField(max_length=240)
+    description = forms.CharField(max_length=2000, widget=forms.Textarea)
+    link = forms.URLField(required=False)
+    file = forms.FileField(required=False)
+
+    class Meta:
+        model = Resource
+        fields = [
+            "title",
+            "description",
+            "link",
+            "file"
+        ]
+
+
+class AddForumForm(forms.ModelForm):
+    forum_title = forms.CharField(max_length=240)
+    forum = forms.URLField()
+
+    class Meta:
+        model = Classroom
+        fields = [
+            "forum_title",
+            "forum",
         ]
