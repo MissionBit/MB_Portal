@@ -12,6 +12,12 @@
  <div class="main-container">
     <h1> User Management Home </h1>
 
+ {% if names %}
+  {% for name in names %}
+    <p>{{ name }}</p>
+  {% endfor %}
+ {% endif %}
+
  </div>
 
 

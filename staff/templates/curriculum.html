@@ -1,0 +1,83 @@
+{% extends "staff_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 75%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: cadetblue;
+}
+
+h2 {
+    color: steelblue;
+    padding-left: 10px;
+}
+strong {
+    font-size: 24px;
+    padding-left: 10px;
+    padding-bottom: 1px;
+}
+p {
+    font-size: 16px;
+    padding-left: 20px;
+    padding-top: 2px;
+}
+.button {
+   font-size: 10px;
+   font-family: "American Typewriter";
+   border-radius: 14px;
+   background-color: white;
+   color: #4CAF50;
+   border: 2px solid #4CAF50;
+}
+
+</style>
+
+
+<div class="sidenav">
+
+</div>
+
+<div class="main-container">
+  <h1>{{ classroom.course }}'s Curriculum</h1><hr><br>
+
+  {% if sessions %}
+    <table>
+      <tr>
+        <th>Date</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Modify</th>
+      </tr>
+     {% for session in sessions %}
+      <tr>
+        <td>{{ session.date }}</td>
+        <td>{{ session.title }}</td>
+        <td>{{ session.description }}</td>
+        <td><form action={% url 'modify_session' %} method="GET">
+          {% csrf_token %}
+          <input type="hidden" name="modify_session" value="True" />
+          <input type="hidden" name="date" value="{{ session.date }}" />
+          <input type="hidden" name="classroom" value="{{ session.classroom_id }}">
+          <button class="button" type="submit">View/Change Curriculum</button>
+        </form></td>
+      </tr>
+    {% endfor %}
+    </table>
+  {% endif %}
+
+</div>
+
+{% endblock content %}
