@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from home.decorators import group_required
-from home.models.models import Announcement, Form, Notification
+from home.models.models import Announcement, Form, Notification, Attendance, Classroom, Session, Resource
+from attendance.views import get_average_attendance_from_list, get_date_from_template_returned_string
 import os
 from staff.staff_views_helper import mark_announcement_dismissed, remove_dismissed_announcements, remove_submitted_forms, mark_notification_acknowledged
 from django.conf import settings
 from django.http import HttpResponse, Http404
+from datetime import datetime
 
 
 @group_required("student")
@@ -36,3 +38,32 @@ def download_form_student(request):
             response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
             return response
     raise Http404
+
+
+@group_required("student")
+def attendance_student(request):
+    classroom = Classroom.objects.get(students__id=request.user.id)
+    attendance = Attendance.objects.filter(student_id=request.user.id,
+                                           date__range=["2000-01-01", datetime.today().date()]).order_by("date")
+    attendance_percentage = get_average_attendance_from_list(attendance) * 100
+    return render(request, "attendance_student.html", {"attendance": attendance,
+                                                       "attendance_percentage": attendance_percentage,
+                                                       "classroom": classroom})
+
+
+@group_required("student")
+def my_class_student(request):
+    classroom = Classroom.objects.get(students__id=request.user.id)
+    sessions = Session.objects.filter(classroom_id=classroom.id,
+                                      date__range=["2000-01-01", datetime.today().date()]).order_by("date")
+    return render(request, "my_class_student.html", {"classroom": classroom,
+                                                     "sessions": sessions})
+
+
+@group_required("student")
+def session_view_student(request):
+    session = Session.objects.get(classroom_id=request.GET.get("classroom"),
+                                  date=get_date_from_template_returned_string(request.GET.get("session_date")))
+    resources = Resource.objects.filter(session_id=session.id)
+    return render(request, "session_view_student.html", {"session": session,
+                                                         "resources": resources})
