@@ -531,7 +531,7 @@ def remove_dismissed_announcements(announcements, user):
     res_announcements = []
     for announcement in announcements:
         ad = AnnouncementDistribution.objects.get(announcement_id=announcement.id, user_id=user.id)
-        if ad.dismissed is False:
+        if not ad.dismissed:
             res_announcements.append(announcement)
     return res_announcements
 
@@ -546,7 +546,7 @@ def remove_submitted_forms(forms, user):
     res_forms = []
     for form in forms:
         fd = FormDistribution.objects.get(form_id=form.id, user_id=user.id)
-        if fd.submitted is False:
+        if not fd.submitted:
             res_forms.append(form)
     return res_forms
 
