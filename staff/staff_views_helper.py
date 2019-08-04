@@ -56,8 +56,6 @@ def setup_classroom_teachers(request, form):
     teacher_assistant = UserProfile.objects.get(
             salesforce_id=form.cleaned_data.get("teacher_assistant").client_id.lower()
         )
-    mark_user_in_classroom(teacher)
-    mark_user_in_classroom(teacher_assistant)
     classroom = Classroom.objects.create(
         teacher_id=teacher.user_id,
         teacher_assistant_id=teacher_assistant.user_id,
@@ -80,7 +78,6 @@ def add_volunteers_and_students_to_classroom(request, form, classroom):
         django_user = UserProfile.objects.get(
             salesforce_id=volunteer.client_id.lower()
         ).user_id
-        mark_user_in_classroom(django_user)
         classroom.volunteers.add(django_user)
         email_list.append(DjangoUser.objects.get(id=django_user).email)
     for student in form.cleaned_data.get("students"):
@@ -88,15 +85,9 @@ def add_volunteers_and_students_to_classroom(request, form, classroom):
         django_user = UserProfile.objects.get(
             salesforce_id=student.client_id.lower()
         ).user_id
-        mark_user_in_classroom(django_user)
         classroom.students.add(django_user)
         email_list.append(DjangoUser.objects.get(id=django_user).email)
     email_classroom(request, email_list, classroom.course)
-
-
-def mark_user_in_classroom(user):
-    user.in_classroom = True
-    user.save()
 
 
 def generate_classroom_sessions_and_attendance(classroom):
@@ -289,7 +280,6 @@ def add_volunteers_to_volunteer_dict(classroom):
 
 def change_classroom_teacher(request):
     django_user = UserProfile.objects.get(user_id=request.POST["former_teacher"])
-    mark_user_not_in_classroom(django_user)
     teacher_contact = get_contact_by_user_id(django_user.user_id)
     class_offering = get_class_offering_by_id(request.POST["course_id"])
     new_teacher = get_contact_by_user_id(request.POST["teacher"])
@@ -308,8 +298,6 @@ def change_classroom_teacher(request):
 
 
 def change_classroom_ta(request):
-    django_user = UserProfile.objects.get(user_id=request.POST["former_ta"])
-    mark_user_not_in_classroom(django_user)
     ta_contact = get_contact_by_user_id(request.POST["former_ta"])
     class_offering = get_class_offering_by_id(request.POST["course_id"])
     new_ta = get_contact_by_user_id(request.POST["teacher"])
@@ -326,8 +314,6 @@ def change_classroom_ta(request):
 
 
 def remove_volunteer(request):
-    django_user = UserProfile.objects.get(user_id=request.POST["former_vol"])
-    mark_user_not_in_classroom(django_user)
     vol_contact = get_contact_by_user_id(request.POST["former_vol"])
     class_offering = get_class_offering_by_id(request.POST["course_id"])
     classroom = Classroom.objects.get(id=request.POST["course_id"])
@@ -336,18 +322,11 @@ def remove_volunteer(request):
 
 
 def remove_student(request):
-    django_user = UserProfile.objects.get(user_id=request.POST["former_student"])
-    mark_user_not_in_classroom(django_user)
     student_contact = get_contact_by_user_id(request.POST["former_student"])
     class_offering = get_class_offering_by_id(request.POST["course_id"])
     classroom = Classroom.objects.get(id=request.POST["course_id"])
     classroom.students.remove(request.POST["former_student"])
     remove_enrollment(student_contact, class_offering)
-
-
-def mark_user_not_in_classroom(user):
-    user.in_classroom = False
-    user.save()
 
 
 def add_volunteers(request):
@@ -357,7 +336,6 @@ def add_volunteers(request):
     if form.is_valid():
         volunteer = form.cleaned_data.get("volunteers")
         django_user = UserProfile.objects.get(user_id=volunteer)
-        mark_user_in_classroom(django_user)
         vol_contact = get_contact_by_user_id(volunteer)
         ClassEnrollment.objects.create(
             created_by=class_offering.created_by,
@@ -374,8 +352,6 @@ def add_students(request):
     classroom = Classroom.objects.get(id=request.POST["course_id"])
     if form.is_valid():
         student = form.cleaned_data.get("students")
-        django_user = UserProfile.objects.get(user_id=student)
-        mark_user_in_classroom(django_user)
         student_contact = get_contact_by_user_id(student)
         ClassEnrollment.objects.create(
             created_by=class_offering.created_by,
