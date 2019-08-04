@@ -452,7 +452,7 @@ def get_course_attendance_statistic(course_id):
         sum(
             attendance_object.presence == "Present"
             or attendance_object.presence == "Late"
-            for attendance_object in list
+            for attendance_object in class_attendance
         )
         / len(class_attendance)
         if len(class_attendance) > 0
