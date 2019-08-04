@@ -108,7 +108,36 @@ NA
 
 * Thank you Bob Ippolito and Juliana de Heer for their ideation and guidance on this project.
 
-# Getting Started With Mission Bit and Python-Django
+## Developing with docker-compose
+
+Using docker-compose, it's not necessary to have a local installation of
+Python, PostgreSQL, or anything but
+[Docker Desktop](https://www.docker.com/products/docker-desktop)
+(or a Linux installation of docker-compose). Conveniently, we can also use
+this to run emulated versions of services we depend on such as Azure Storage.
+
+This will start up the Django server, PostgreSQL database, and
+Azure Storage server accessible at
+[http://localhost:8000/](http://localhost:8000/):
+
+```bash
+docker-compose up
+```
+
+To start over with a fresh environment:
+
+```bash
+docker-compose down --volumes
+```
+
+You can run Django commands through this environment using docker-compose as
+well, such as:
+
+```bash
+docker-compose run web python manage.py createsuperuser
+```
+
+## Getting Started With Mission Bit and Python-Django
 
 Welcome!  These instructions will help you get started with Python Django and use our Mission Bit web app all in one.  Use these if you've never used Python before on your computer!  Be excited!
 

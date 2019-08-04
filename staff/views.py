@@ -526,18 +526,6 @@ def get_item(dictionary, key):
     return dictionary.get(key)
 
 
-@group_required("staff")
-def download_form_staff(request):
-    path = request.GET.get("path")
-    file_path = os.path.join(path)
-    if os.path.exists(file_path):
-        with open(file_path, 'rb') as fh:
-            response = HttpResponse(fh.read(), content_type="pdf/text")
-            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
-            return response
-    raise Http404
-
-
 class ClassroomDetailView(DetailView):
     model = Classroom
 

@@ -30,18 +30,6 @@ def student(request):
 
 
 @group_required("student")
-def download_form_student(request):
-    path = request.GET.get("path")
-    file_path = os.path.join(path)
-    if os.path.exists(file_path):
-        with open(file_path, 'rb') as fh:
-            response = HttpResponse(fh.read(), content_type="pdf/text")
-            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
-            return response
-    raise Http404
-
-
-@group_required("student")
 def attendance_student(request):
     classroom = get_classroom_by_django_user(request.user)
     attendance = Attendance.objects.filter(student_id=request.user.id,

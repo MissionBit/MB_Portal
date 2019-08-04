@@ -32,18 +32,6 @@ def teacher(request):
 
 
 @group_required("teacher")
-def download_form(request):
-    path = request.GET.get("path")
-    file_path = os.path.join(path)
-    if os.path.exists(file_path):
-        with open(file_path, 'rb') as fh:
-            response = HttpResponse(fh.read(), content_type="pdf/text")
-            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
-            return response
-    raise Http404
-
-
-@group_required("teacher")
 def my_class(request):
     classroom = get_classroom_by_django_user(request.user)
     sessions = Session.objects.filter(classroom_id=classroom.id).order_by("date")

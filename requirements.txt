@@ -24,3 +24,5 @@ djangorestframework==3.9.4
 django-salesforce==0.8.1
 unittest-xml-reporting==2.5.1
 django-q==1.0.1
+django-storages[azure]==1.7.1
+Werkzeug==0.15.5

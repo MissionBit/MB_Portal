@@ -131,3 +131,5 @@ dmypy.json
 /migrations
 
 **/TEST-*.xml
+
+.DS_Store
