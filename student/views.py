@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.models import Group
 from home.decorators import group_required
 from home.models.models import Announcement, Form, Notification, Attendance, Classroom, Session, Resource
 from attendance.views import get_average_attendance_from_list, get_date_from_template_returned_string
 import os
 from staff.staff_views_helper import mark_announcement_dismissed, remove_dismissed_announcements, remove_submitted_forms, mark_notification_acknowledged
-from missionbit.settings import GROUP_IDS
 from django.http import HttpResponse, Http404
 from datetime import datetime
 
@@ -18,9 +18,9 @@ def student(request):
         elif request.POST.get("acknowledge_notification") == "true":
             mark_notification_acknowledged(Notification.objects.get(id=request.POST.get("notification")))
             return redirect("student")
-    announcements = Announcement.objects.filter(recipient_groups=GROUP_IDS.get("student"))
+    announcements = Announcement.objects.filter(recipient_groups=Group.objects.get(name="student").id)
     announcements = remove_dismissed_announcements(announcements, request.user)
-    forms = Form.objects.filter(recipient_groups=GROUP_IDS.get("student"))
+    forms = Form.objects.filter(recipient_groups=Group.objects.get(name="student").id)
     forms = remove_submitted_forms(forms, request.user)
     notifications = Notification.objects.filter(user_id=request.user.id, acknowledged=False)
     return render(request, "student.html", {"announcements": announcements,
