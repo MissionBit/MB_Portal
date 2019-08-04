@@ -273,12 +273,12 @@ def make_announcement(request):
         form = MakeAnnouncementForm(request.POST)
         if form.is_valid():
             form.instance.created_by = DjangoUser.objects.get(id=request.user.id)
-            data = request.POST.copy()
-            user_dict = get_users_and_emails_from_form(data)
+            user_list = get_users_from_form(form)
+            email_list = [user.email for user in user_list]
             if form.instance.email_recipients:
-                email_announcement(request, form, user_dict.get("email_list"))
+                email_announcement(request, form, email_list)
             announcement = form.save()
-            distribute_announcement(user_dict.get("user_list"), announcement)
+            distribute_announcement(user_list, announcement)
             messages.add_message(
                 request, messages.SUCCESS, "Successfully Made Announcement"
             )
@@ -314,10 +314,10 @@ def post_form(request):
                 form.cleaned_data.get("recipient_classrooms")
             )
             messages.add_message(request, messages.SUCCESS, "Successfully Posted Form")
-            data = request.POST.copy()
-            user_dict = get_users_and_emails_from_form(data)
+            user_list = get_users_from_form(form)
+            email_list = [user.email for user in user_list]
             if form.cleaned_data.get("email_recipients"):
-                email_posted_form(request, form, user_dict.get("email_list"))
+                email_posted_form(request, form, email_list)
             distribute_forms(request, posted_form, form)
             return redirect("staff")
         else:

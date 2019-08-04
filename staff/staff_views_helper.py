@@ -163,26 +163,21 @@ def email_classroom(request, email_list, classroom_name):
     messages.add_message(request, messages.SUCCESS, "Email sent successfully")
 
 
-def get_users_and_emails_from_form(form):
-    email_list = []
+def get_users_from_form(form):
     user_list = []
-    groups = form.getlist("recipient_groups")
+    groups = form.cleaned_data.get("recipient_groups")
     for group in groups:
-        group_name = Group.objects.get(id=group)
-        users = DjangoUser.objects.filter(groups__name=group_name)
+        users = DjangoUser.objects.filter(groups__name=group.name)
         for user in users:
-            email_list.append(user.email)
             user_list.append(user)
-    classrooms = form.getlist("recipient_classrooms")
+    classrooms = form.cleaned_data.get("recipient_classrooms")
     for classroom in classrooms:
         classroom_object = Classroom.objects.get(id=classroom)
         teacher = DjangoUser.objects.get(id=classroom_object.teacher_id)
-        email_list.append(teacher.email)
         user_list.append(teacher)
         teacher_assistant = DjangoUser.objects.get(
             id=classroom_object.teacher_assistant_id
         )
-        email_list.append(teacher_assistant.email)
         user_list.append(teacher_assistant)
         students = DjangoUser.objects.filter(
             classroom_students__course=classroom_object.course
@@ -191,13 +186,10 @@ def get_users_and_emails_from_form(form):
             classroom_volunteers__course=classroom_object.course
         )
         for student in students:
-            email_list.append(student.email)
             user_list.append(student)
         for volunteer in volunteers:
-            email_list.append(volunteer.email)
             user_list.append(volunteer)
-    return {"email_list": email_list,
-            "user_list": user_list}
+    return user_list
 
 
 def get_emails_from_form_distributions(form_distributions):
