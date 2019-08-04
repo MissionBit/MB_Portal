@@ -18,6 +18,7 @@ from home.forms import (
     AddCurriculumForm,
     AddForumForm
 )
+from missionbit.settings import GROUP_IDS
 from .staff_views_helper import *
 from attendance.views import get_date_from_template_returned_string
 from social_django.models import UserSocialAuth
@@ -34,9 +35,9 @@ def staff(request):
         elif request.POST.get("acknowledge_notification") == "true":
             mark_notification_acknowledged(Notification.objects.get(id=request.POST.get("notification")))
             return redirect("staff")
-    announcements = Announcement.objects.filter(recipient_groups=2)
+    announcements = Announcement.objects.filter(recipient_groups=GROUP_IDS.get("staff"))
     announcements = remove_dismissed_announcements(announcements, request.user)
-    forms = Form.objects.filter(recipient_groups=2)
+    forms = Form.objects.filter(recipient_groups=GROUP_IDS.get("staff"))
     forms = remove_submitted_forms(forms, request.user)
     notifications = Notification.objects.filter(user_id=request.user.id, acknowledged=False)
     return render(request, "staff.html", {"announcements": announcements,

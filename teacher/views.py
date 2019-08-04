@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from home.decorators import group_required
 from home.models.models import Announcement, Form, Notification, Classroom, Session, Resource
 from home.forms import AddResourceForm
+from missionbit.settings import GROUP_IDS
 from attendance.views import get_date_from_template_returned_string
 from staff.staff_views_helper import mark_announcement_dismissed, remove_dismissed_announcements, \
     remove_submitted_forms, mark_notification_acknowledged
@@ -19,9 +20,9 @@ def teacher(request):
         elif request.POST.get("acknowledge_notification") == "true":
             mark_notification_acknowledged(Notification.objects.get(id=request.POST.get("notification")))
             return redirect("teacher")
-    announcements = Announcement.objects.filter(recipient_groups=4)
+    announcements = Announcement.objects.filter(recipient_groups=GROUP_IDS.get("teacher"))
     announcements = remove_dismissed_announcements(announcements, request.user)
-    forms = Form.objects.filter(recipient_groups=4)
+    forms = Form.objects.filter(recipient_groups=GROUP_IDS.get("teacher"))
     forms = remove_submitted_forms(forms, request.user)
     notifications = Notification.objects.filter(user_id=request.user.id)
     return render(request, "teacher.html", {"announcements": announcements,

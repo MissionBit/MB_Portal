@@ -193,3 +193,11 @@ LOGIN_URL = "home-landing_page"
 LOGIN_REDIRECT_URL = "home-home"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+GROUP_IDS = {
+              "student": 1,
+              "staff": 2,
+              "donor": 3,
+              "teacher": 4,
+              "volunteer": 5
+            }
