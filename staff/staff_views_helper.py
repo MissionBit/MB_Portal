@@ -176,10 +176,8 @@ def get_users_from_form(form):
         volunteers = DjangoUser.objects.filter(
             classroom_volunteers__course=classroom_object.course
         )
-        for student in students:
-            user_list.append(student)
-        for volunteer in volunteers:
-            user_list.append(volunteer)
+        user_list.extend(students)
+        user_list.extend(volunteers)
     return user_list
 
 
