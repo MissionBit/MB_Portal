@@ -200,13 +200,7 @@ def get_emails_from_form_distributions(form_distributions):
     return email_list
 
 
-def email_announcement(request, form, email_list):
-    try:
-        subject = form.instance.title
-        message = form.instance.announcement
-    except AttributeError:
-        subject = form.instance.name
-        message = form.instance.description
+def email_announcement(request, subject, message, email_list):
     msg_html = render_to_string(
         "email_templates/announcement_email.html",
         {

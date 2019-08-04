@@ -276,7 +276,9 @@ def make_announcement(request):
             user_list = get_users_from_form(form)
             email_list = [user.email for user in user_list]
             if form.instance.email_recipients:
-                email_announcement(request, form, email_list)
+                subject = form.cleaned_data.get("title")
+                message = form.cleaned_data.get("announcement")
+                email_announcement(request, subject, message, email_list)
             announcement = form.save()
             distribute_announcement(user_list, announcement)
             messages.add_message(
@@ -317,7 +319,9 @@ def post_form(request):
             user_list = get_users_from_form(form)
             email_list = [user.email for user in user_list]
             if form.cleaned_data.get("email_recipients"):
-                email_posted_form(request, form, email_list)
+                subject = form.cleaned_data.get("name")
+                message = form.cleaned_data.get("description")
+                email_posted_form(request, subject, message, email_list)
             distribute_forms(request, posted_form, form)
             return redirect("staff")
         else:
