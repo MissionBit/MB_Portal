@@ -12,6 +12,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.contrib import messages
+import statistics
 
 
 @group_required_multiple(["staff", "teacher"])
@@ -49,6 +50,7 @@ def take_attendance(request):
 
 @group_required_multiple(["staff", "teacher"])
 def notify_absent_students(request):
+    """This method is a candidate for an async_task"""
     date = get_date_from_template_returned_string(request.GET.get("date"))
     course = Classroom.objects.get(id=request.GET.get("course_id"))
     absences = Attendance.objects.filter(date=date, classroom_id=course.id, presence="Absent")
@@ -115,16 +117,10 @@ def compile_daily_attendance_for_course(course_id):
 
 
 def get_average_attendance_from_list(daily_attendance):
-    return (
-        sum(
-            attendance_object.presence == "Present"
+    attendance_list = [attendance_object.presence == "Present"
             or attendance_object.presence == "Late"
-            for attendance_object in daily_attendance
-        )
-        / len(daily_attendance)
-        if len(daily_attendance) > 0
-        else 0
-    )
+            for attendance_object in daily_attendance]
+    return statistics.mean(attendance_list) if len(attendance_list) > 0 else 0
 
 
 def get_classroom_meeting_dates(course_id):
