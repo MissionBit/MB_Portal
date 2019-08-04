@@ -135,13 +135,12 @@ def get_item(dictionary, key):
 
 
 def get_date_from_template_returned_string(string_date):
-    try:
-        return datetime.strptime(string_date, "%B %d, %Y").date()
-    except Exception:
+    for date_format in ["%B %d, %Y", "%b. %d, %Y", "%bt. %d, %Y"]:
         try:
-            return datetime.strptime(string_date, "%b. %d, %Y").date()
-        except Exception:
-            return datetime.strptime(string_date, "%bt. %d, %Y").date()
+            return datetime.strptime(string_date, date_format).date()
+        except ValueError:
+            pass
+    raise ValueError("time data {!r} does not match any expected date format".format(string_date))
 
 
 def update_course_attendance_statistic(course_id):
