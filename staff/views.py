@@ -462,9 +462,7 @@ def modify_session(request):
 @group_required("staff")
 def classroom_detail(request):
     if request.method == "POST":
-        print("swap teacher: ", request.POST.get("swap_teacher"))
         if request.POST.get("swap_teacher"):
-            print("Why the fuck am I here")
             form = ChangeTeacherForm(request.POST)
             if form.is_valid():
                 change_classroom_lead(request.POST.get("fmr_teacher", None),
