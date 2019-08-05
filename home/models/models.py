@@ -32,24 +32,21 @@ class UserProfile(mdls.Model):
 
 class Classroom(mdls.Model):
     course = mdls.CharField(max_length=255, choices=COURSE_CHOICES)
-    teacher = mdls.ForeignKey(
-        DjangoUser, related_name="classroom_lead_teacher", on_delete=mdls.CASCADE
-    )
-    teacher_assistant = mdls.ForeignKey(
-        DjangoUser, related_name="classroom_teacher_assistant", on_delete=mdls.CASCADE
-    )
-    volunteers = mdls.ManyToManyField(DjangoUser, related_name="classroom_volunteers")
-    students = mdls.ManyToManyField(DjangoUser, related_name="classroom_students")
+    members = mdls.ManyToManyField(DjangoUser, through="ClassroomMembership")
     attendance_summary = JSONField(default=None, null=True)
     forum_title = mdls.CharField(max_length=240, default=None, null=True)
     forum = mdls.URLField(default=None, null=True)
 
     def __str__(self):
-        return "%s - %s, %s" % (
-            self.course,
-            self.teacher.last_name,
-            self.teacher.first_name,
+        return "%s" % (
+            self.course
         )
+
+
+class ClassroomMembership(mdls.Model):
+    member = mdls.ForeignKey(DjangoUser, related_name="classroom_member", on_delete=mdls.CASCADE)
+    classroom = mdls.ForeignKey(Classroom, related_name="membership_classroom", on_delete=mdls.CASCADE)
+    membership_type = mdls.CharField(max_length=240, choices=CLASSROOM_MEMBERSHIP_CHOICES)
 
 
 class Session(mdls.Model):
