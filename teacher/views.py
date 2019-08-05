@@ -3,6 +3,7 @@ from home.decorators import group_required
 from home.models.models import Announcement, Form, Notification, Classroom, Session, Resource
 from home.forms import AddResourceForm
 from attendance.views import get_date_from_template_returned_string
+from staff.staff_views_helper import get_classroom_by_django_user
 from staff.staff_views_helper import mark_announcement_dismissed, remove_dismissed_announcements, \
     remove_submitted_forms, mark_notification_acknowledged
 import os
@@ -44,10 +45,7 @@ def download_form(request):
 
 @group_required("teacher")
 def my_class(request):
-    try:
-        classroom = Classroom.objects.get(teacher_id=request.user.id)
-    except Exception:
-        classroom = Classroom.objects.get(teacher_assistant_id=request.user.id)
+    classroom = get_classroom_by_django_user(request.user)
     sessions = Session.objects.filter(classroom_id=classroom.id).order_by("date")
     return render(request, "my_class.html", {"sessions": sessions,
                                              "classroom": classroom})

@@ -37,5 +37,6 @@ urlpatterns = [
     path("communication_manager/", views.communication_manager, name="communication_manager"),
     path("curriculum/", views.curriculum, name="curriculum"),
     path("modify_session/", views.modify_session, name="modify_session"),
-    path("add_forum/", views.add_forum, name="add_forum")
+    path("add_forum/", views.add_forum, name="add_forum"),
+    path("classroom_detail/", views.classroom_detail, name="classroom_detail")
 ]

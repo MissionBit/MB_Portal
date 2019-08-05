@@ -3,6 +3,7 @@ from django.contrib.auth.models import Group
 from home.decorators import group_required
 from home.models.models import Announcement, Form, Notification, Attendance, Classroom, Session, Resource
 from attendance.views import get_average_attendance_from_list, get_date_from_template_returned_string
+from staff.staff_views_helper import get_classroom_by_django_user
 import os
 from staff.staff_views_helper import mark_announcement_dismissed, remove_dismissed_announcements, remove_submitted_forms, mark_notification_acknowledged
 from django.http import HttpResponse, Http404
@@ -42,7 +43,7 @@ def download_form_student(request):
 
 @group_required("student")
 def attendance_student(request):
-    classroom = Classroom.objects.get(students__id=request.user.id)
+    classroom = get_classroom_by_django_user(request.user)
     attendance = Attendance.objects.filter(student_id=request.user.id,
                                            date__range=["2000-01-01", datetime.today().date()]).order_by("date")
     attendance_percentage = get_average_attendance_from_list(attendance) * 100
@@ -53,7 +54,7 @@ def attendance_student(request):
 
 @group_required("student")
 def my_class_student(request):
-    classroom = Classroom.objects.get(students__id=request.user.id)
+    classroom = get_classroom_by_django_user(request.user)
     sessions = Session.objects.filter(classroom_id=classroom.id,
                                       date__range=["2000-01-01", datetime.today().date()]).order_by("date")
     return render(request, "my_class_student.html", {"classroom": classroom,

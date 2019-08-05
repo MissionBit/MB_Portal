@@ -1,4 +1,6 @@
 from django.views.generic import DetailView, ListView
+from django.contrib.auth.models import Group
+from django.template.defaulttags import register
 from django.shortcuts import render, redirect
 from home.decorators import group_required
 from django.http import HttpResponse, Http404
@@ -16,7 +18,9 @@ from home.forms import (
     CollectForms,
     NotifyUnsubmittedUsersForm,
     AddCurriculumForm,
-    AddForumForm
+    AddForumForm,
+    AddVolunteerForm,
+    AddStudentForm
 )
 from .staff_views_helper import *
 from attendance.views import get_date_from_template_returned_string
@@ -53,25 +57,12 @@ def user_management(request):
 
 @group_required("staff")
 def classroom_management(request):
-    all_classrooms = {}
-    for classroom in Classroom.objects.all():
-        teacher_user = DjangoUser.objects.get(id=classroom.teacher_id)
-        teacher_assistant_user = DjangoUser.objects.get(
-            id=classroom.teacher_assistant_id
-        )
-        student_list = add_students_to_student_dict(classroom)
-        volunteer_list = add_volunteers_to_volunteer_dict(classroom)
-        class_dict = {
-            "id": classroom.id,
-            "teacher": "%s %s" % (teacher_user.first_name, teacher_user.last_name),
-            "teacher_assistant": "%s %s"
-            % (teacher_assistant_user.first_name, teacher_assistant_user.last_name),
-            "student_list": student_list,
-            "volunteer_list": volunteer_list,
-        }
-        all_classrooms[str(classroom.course)] = class_dict
-
-    return render(request, "classroom_management.html", {"classrooms": all_classrooms})
+    class_dict = {}
+    classroom_list = Classroom.objects.all()
+    for classroom in classroom_list:
+        class_dict.update({classroom.course: get_class_member_dict(classroom)})
+    return render(request, "classroom_management.html", {"classrooms": classroom_list,
+                                                         "class_dicts": class_dict})
 
 
 @group_required("staff")
@@ -230,14 +221,11 @@ def create_classroom(request):
     if request.method == "POST":
         form = CreateClassroomForm(request.POST)
         if form.is_valid():
-            classroom = setup_classroom_teachers(request, form)
-            add_volunteers_and_students_to_classroom(request, form, classroom)
-            generate_classroom_sessions_and_attendance(classroom)
+            setup_classroom(request, form)
             messages.success(
                 request,
                 f'Classroom {form.cleaned_data.get("course")} Successfully Created',
             )
-            classroom.save()
             return redirect("staff")
         else:
             messages.error(
@@ -255,6 +243,9 @@ def create_class_offering(request):
         form = CreateClassOfferingForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.add_message(
+                request, messages.SUCCESS, "Successfully Added Class Offering"
+            )
             return redirect("staff")
         else:
             messages.error(
@@ -427,12 +418,10 @@ def add_forum(request):
     if request.method == "POST":
         form = AddForumForm(request.POST)
         if form.is_valid():
-            print("valid form")
             classroom = Classroom.objects.get(id=request.POST.get("classroom"))
             classroom.forum_title = form.cleaned_data.get("forum_title")
             classroom.forum = form.cleaned_data.get("forum")
             classroom.save()
-            print("yay??!??")
             return redirect("staff")
     classroom = Classroom.objects.get(id=request.GET.get("classroom"))
     form = AddForumForm()
@@ -471,6 +460,75 @@ def modify_session(request):
 
 
 @group_required("staff")
+def classroom_detail(request):
+    if request.method == "POST":
+        print("swap teacher: ", request.POST.get("swap_teacher"))
+        if request.POST.get("swap_teacher"):
+            print("Why the fuck am I here")
+            form = ChangeTeacherForm(request.POST)
+            if form.is_valid():
+                change_classroom_lead(request.POST.get("fmr_teacher", None),
+                                      form.cleaned_data.get("teacher").id,
+                                      request.POST.get("course_id", None),
+                                      "teacher")
+                messages.add_message(request, messages.SUCCESS, "Teacher Successfully Changed")
+                return redirect("staff")
+            else:
+                messages.add_message(request, messages.ERROR, "Invalid Form")  # Need to have fall through here
+                return redirect("staff")
+        if request.POST.get("swap_teacher_assistant"):
+            form = ChangeTeacherForm(request.POST)
+            if form.is_valid():
+                change_classroom_lead(request.POST.get("fmr_teacher_assistant", None),
+                                      form.cleaned_data.get("teacher").id,
+                                      request.POST.get("course_id", None),
+                                      "teacher_assistant")
+                messages.add_message(request, messages.SUCCESS, "Teacher Assistant Successfully Changed")
+                return redirect("staff")
+            else:
+                messages.add_message(request, messages.ERROR, "Invalid Form")  # Need to have fall through here
+                return redirect("staff")
+        if request.POST.get("remove_student"):  # Input Validation Needed
+            remove_user_from_classroom(request.POST["fmr_student"], request.POST["course_id"])
+            messages.add_message(request, messages.SUCCESS, "Student Successfully Removed From Class")
+            return redirect("staff")
+        if request.POST.get("remove_volunteer"):  # Input Validation Needed
+            remove_user_from_classroom(request.POST["fmr_volunteer"], request.POST["course_id"])
+            messages.add_message(request, messages.SUCCESS, "Volunteer Successfully Removed From Class")
+            return redirect("staff")
+        if request.POST.get("add_volunteer"):
+            form = AddVolunteerForm(request.POST)
+            if form.is_valid():
+                add_user_to_classroom(form.cleaned_data.get("volunteer").id, request.POST["course_id"], "volunteer")
+                messages.add_message(request, messages.SUCCESS, "Volunteer Added To Class")
+                return redirect("staff")
+            else:
+                messages.add_message(request, messages.ERROR, "Invalid Form")  # Need to have fall through here
+                return redirect("staff")
+        if request.POST.get("add_student"):
+            form = AddStudentForm(request.POST)
+            if form.is_valid():
+                add_user_to_classroom(form.cleaned_data.get("student").id, request.POST["course_id"], "student")
+                messages.add_message(request, messages.SUCCESS, "Student Added To Class")
+                return redirect("staff")
+            else:
+                messages.add_message(request, messages.ERROR, "Invalid Form")  # Need to have fall through here
+                return redirect("staff")
+    classroom = Classroom.objects.get(id=request.GET.get("course_id"))
+    class_members = get_class_member_dict(classroom)
+    return render(request, "classroom_detail.html", {"change_teacher_form": ChangeTeacherForm(),
+                                                     "add_volunteer_form": AddVolunteerForm(),
+                                                     "add_student_form": AddStudentForm(),
+                                                     "classroom": classroom,
+                                                     "class_members": class_members})
+
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
+
+
+@group_required("staff")
 def download_form_staff(request):
     path = request.GET.get("path")
     file_path = os.path.join(path)
@@ -488,8 +546,8 @@ class ClassroomDetailView(DetailView):
     def get_forms(self):
         return {
             "change_teacher_form": ChangeTeacherForm(),
-            "add_volunteers_form": AddVolunteersForm(),
-            "add_students_form": AddStudentsForm(),
+            "add_volunteers_form": AddVolunteerForm(),
+            "add_students_form": AddStudentForm(),
         }
 
     def get_context_data(self, **kwargs):
@@ -499,22 +557,36 @@ class ClassroomDetailView(DetailView):
 
     def post(self, request, *args, **kwargs):
         if request.POST["change_who"] == "teacher":
-            change_classroom_teacher(request)
-            messages.success(request, "Teacher Changed")
+            form = ChangeTeacherForm(request.POST)
+            if form.is_valid():
+                change_classroom_lead(request.POST["teacher"],
+                                      form.cleaned_data.get("teacher").id,
+                                      request.POST["course_id"],
+                                      "teacher")
+                messages.success(request, "Teacher Changed")
         elif request.POST["change_who"] == "ta":
-            change_classroom_ta(request)
+            form = ChangeTeacherForm(request.POST)
+            if form.is_valid():
+                change_classroom_lead(request.POST["teacher"],
+                                      form.cleaned_data.get("teacher").id,
+                                      request.POST["course_id"],
+                                      "teacher_assistant")
             messages.success(request, "TA Changed")
         elif request.POST["change_who"] == "remove_vol":
-            remove_volunteer(request)
+            remove_user_from_classroom(request.POST["former_vol"], request.POST["course_id"])
             messages.success(request, "Volunteer Removed")
         elif request.POST["change_who"] == "add_vols":
-            add_volunteers(request)
+            form = AddVolunteerForm(request.POST)
+            if form.is_valid():
+                add_user_to_classroom(form.cleaned_data.get("volunteer").id, request.POST["course_id"], "volunteer")
             messages.success(request, "Volunteers Added")
         elif request.POST["change_who"] == "delete_student":
-            remove_student(request)
+            remove_user_from_classroom(request.POST["former_student"], request.POST["course_id"])
             messages.success(request, "Student Removed")
         elif request.POST["change_who"] == "add_students":
-            add_students(request)
+            form = AddStudentForm(request.POST)
+            if form.is_valid():
+                add_user_to_classroom(form.cleaned_data.get("student").id, request.POST["course_id"], "student")
             messages.success(request, "Students Added")
         return redirect("classroom_management")
 

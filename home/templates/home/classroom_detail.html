@@ -42,7 +42,6 @@ p {
    color: #4CAF50;
    border: 2px solid #4CAF50;
 }
-
 </style>
 
 <script>
@@ -156,7 +155,7 @@ function revertASF() {
 
     <form method="post">
         <div id="add_vols_div"  style="display:none; width: 200px; padding-left: 25px" class="inline-group">
-          {% csrf_token %} {{ add_volunteers_form | crispy }}
+          {% csrf_token %} {{ add_volunteer_form | crispy }}
         <p><button class="button" type="submit">Submit</button>&emsp;</p>
         </div>
         <input type="hidden" name="change_who" value="add_vols"/>
@@ -166,7 +165,7 @@ function revertASF() {
     <p style="padding-left: 20px;"><button id="add_vols_button" class="button" onclick="addVolunteersForm()">Add Volunteers</button></p>
   <form method="post">
         <div id="add_stus_div"  style="display:none; width: 200px; padding-left: 25px" class="inline-group">
-          {% csrf_token %} {{ add_students_form | crispy }}
+          {% csrf_token %} {{ add_student_form | crispy }}
         <p><button class="button" type="submit">Submit</button>&emsp;</p>
         </div>
         <input type="hidden" name="change_who" value="add_students"/>
