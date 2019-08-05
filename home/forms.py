@@ -2,8 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.models import Group
-from home.models.models import UserProfile
-from home.models.models import Announcement, Classroom, Form, Esign, FormDistribution, Notification, Session, Resource
+from home.models.models import Announcement, Classroom, Form, Esign, FormDistribution, Notification, Session, Resource, ClassroomMembership
 from home.models.salesforce import (
     Contact,
     User,
@@ -186,8 +185,6 @@ class CreateClassOfferingForm(forms.ModelForm):
         queryset=Account.objects.filter(npe01_systemis_individual=False)
     )
     created_by = forms.ModelChoiceField(queryset=User.objects.filter(is_active=True))
-    start_date = forms.DateField(label="Start Date")
-    end_date = forms.DateField(label="End Date")
     description = forms.CharField(label="Description", max_length=100)
     instructor = forms.ModelChoiceField(
         queryset=Contact.objects.filter(title="Teacher", is_deleted=False)
@@ -206,6 +203,10 @@ class CreateClassOfferingForm(forms.ModelForm):
             "instructor",
             "meeting_days",
         ]
+        widgets = {
+            "start_date": DateInput(),
+            "end_date": DateInput()
+        }
 
     def __str__(self):
         return "%s" % self.name
@@ -246,7 +247,7 @@ class MakeAnnouncementForm(forms.ModelForm):
         ]
 
 
-class ChangeTeacherForm(forms.ModelForm):
+class ChangeTeacherForm(forms.Form):
     teacher = forms.ModelChoiceField(
         queryset=DjangoUser.objects.filter(groups__name="teacher"),
         required=False,
@@ -254,31 +255,28 @@ class ChangeTeacherForm(forms.ModelForm):
     )
 
     class Meta:
-        model = Classroom
         fields = ["teacher"]
 
 
-class AddVolunteersForm(forms.ModelForm):
-    volunteers = forms.ModelChoiceField(
+class AddVolunteerForm(forms.Form):
+    volunteer = forms.ModelChoiceField(
         queryset=DjangoUser.objects.filter(groups__name="volunteer"),
         required=False,
         label="Add Volunteer",
     )
 
     class Meta:
-        model = Classroom
         fields = ["volunteers"]
 
 
-class AddStudentsForm(forms.ModelForm):
-    students = forms.ModelChoiceField(
+class AddStudentForm(forms.Form):
+    student = forms.ModelChoiceField(
         queryset=DjangoUser.objects.filter(groups__name="student"),
         required=False,
         label="Add Student",
     )
 
     class Meta:
-        model = Classroom
         fields = ["students"]
 
 
