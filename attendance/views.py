@@ -50,7 +50,7 @@ def take_attendance(request):
 
 @group_required_multiple(["staff", "teacher"])
 def notify_absent_students(request):
-    """This method is a candidate for an async_task"""
+    # This method is a candidate for an async_task
     date = get_date_from_template_returned_string(request.GET.get("date"))
     course = Classroom.objects.get(id=request.GET.get("course_id"))
     absences = Attendance.objects.filter(date=date, classroom_id=course.id, presence="Absent")
