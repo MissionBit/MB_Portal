@@ -206,6 +206,10 @@ AZURE_CUSTOM_DOMAIN = os.getenv('AZURE_CUSTOM_DOMAIN', f'{AZURE_ACCOUNT_NAME}.bl
 AZURE_PROTOCOL = 'http' if AZURE_EMULATED_MODE else 'https'
 MEDIA_URL = os.getenv('MEDIA_URL', f'{AZURE_PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/')
 
+<<<<<<< HEAD
 # Instagram Setup
+=======
+#Instagram setup
+>>>>>>> ece4f729e917a237a35451eff7cbd1ac7d6a7b14
 INSTATOKEN= os.getenv('INSTATOKEN')
 INSTAUSERID= os.getenv('INSTAUSERID')
