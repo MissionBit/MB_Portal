@@ -14,6 +14,7 @@ def get_name(self):
 
 DjangoUser.add_to_class("__str__", get_name)
 
+
 def mk_upload_to(attr):
     def upload_to(instance, filename):
         return '/'.join([
@@ -24,6 +25,7 @@ def mk_upload_to(attr):
             secure_filename(filename)
         ])
     return upload_to
+
 
 class UserProfile(mdls.Model):
     user = mdls.OneToOneField(DjangoUser, on_delete=mdls.CASCADE)
