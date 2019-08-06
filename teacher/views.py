@@ -4,12 +4,10 @@ from home.models.models import Announcement, Form, Notification, Classroom, Sess
 from home.forms import AddResourceForm
 from attendance.views import get_date_from_template_returned_string
 from staff.staff_views_helper import get_classroom_by_django_user
-from staff.staff_views_helper import mark_announcement_dismissed, remove_dismissed_announcements, \
-    remove_submitted_forms, mark_notification_acknowledged
+from staff.staff_views_helper import mark_announcement_dismissed, mark_notification_acknowledged, get_my_announcements, get_my_forms
 import os
 from django.http import HttpResponse, Http404
 from django.contrib import messages
-from django.contrib.auth.models import Group
 
 
 @group_required("teacher")
@@ -21,10 +19,8 @@ def teacher(request):
         elif request.POST.get("acknowledge_notification") == "true":
             mark_notification_acknowledged(Notification.objects.get(id=request.POST.get("notification")))
             return redirect("teacher")
-    announcements = Announcement.objects.filter(recipient_groups=Group.objects.get(name="teacher").id)
-    announcements = remove_dismissed_announcements(announcements, request.user)
-    forms = Form.objects.filter(recipient_groups=Group.objects.get(name="teacher").id)
-    forms = remove_submitted_forms(forms, request.user)
+    announcements = get_my_announcements(request, "staff")
+    forms = get_my_forms(request, "staff")
     notifications = Notification.objects.filter(user_id=request.user.id)
     return render(request, "teacher.html", {"announcements": announcements,
                                             "forms": forms,

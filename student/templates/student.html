@@ -55,13 +55,13 @@
       <h2> Announcements </h2><hr>
       {% for announcement in announcements reversed %}
             <div class="announcement">
-            <h4>{{ announcement.title }}</h4><hr>
-            <p>{{ announcement.announcement }}</p><hr>
-            <p>{{ announcement.created_by }} on {{ announcement.posted.date }}</p><br>
+            <h4>{{ announcement.announcement.title }}</h4><hr>
+            <p>{{ announcement.announcement.announcement }}</p><hr>
+            <p>{{ announcement.announcement.created_by }} on {{ announcement.announcement.posted.date }}</p><br>
             <form method="POST">
               {% csrf_token %}
               <input type="hidden" name="dismiss_announcement" value="true" />
-              <input type="hidden" name="announcement" value="{{ announcement.id }}" />
+              <input type="hidden" name="announcement" value="{{ announcement.announcement.id }}" />
               <button class="button">Dismiss</button><br><br>
             </form>
             </div><br>
@@ -72,8 +72,8 @@
     <h2> Forms </h2><hr>
         {% for form in forms %}
             <div class="form">
-              <h4>{{ form.name }}</h4><hr>
-              <p>{{ form.created_by }} on {{ form.posted.date }}</p><br>
+              <h4>{{ form.form.name }}</h4><hr>
+              <p>{{ form.form.created_by }} on {{ form.form.posted.date }}</p><br>
               <p>
                 <a href="{{ form.form.url }}" class="btn btn-primary" target="_blank">Download Form</a>
               </p>

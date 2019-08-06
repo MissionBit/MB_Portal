@@ -54,12 +54,8 @@ def notify_absent_students(request):
     date = get_date_from_template_returned_string(request.GET.get("date"))
     course = Classroom.objects.get(id=request.GET.get("course_id"))
     absences = Attendance.objects.filter(date=date, classroom_id=course.id, presence="Absent")
-    email_list = []
-    for absence in absences:
-        student = DjangoUser.objects.get(id=absence.student_id)
-        email_list.append(student.email)
-        create_absence_notification(request, student, date, absence)
-    email_absence_notifications(request, email_list, date)
+    student_list = list(DjangoUser.objects.filter(id__in=[absence.student_id for absence in absences]))
+    create_absence_notifications(request, student_list, absences, date)
     messages.add_message(request, messages.SUCCESS, "Absent Students Successfully Notified")
     return redirect("attendance")
 
@@ -159,16 +155,17 @@ def get_course_attendance_statistic(course_id):
     )
 
 
-def create_absence_notification(request, student, date, absence):
-    notification = Notification(
+def create_absence_notifications(request, student_list, absences, date):
+    notifications = [Notification(
         subject="%s %s absence on %s" % (student.first_name, student.last_name, date),
         notification=get_generic_absence_notification(student, date),
         user_id=student.id,
-        attendance_id=absence.id,
+        attendance_id=absences[x].id,
         created_by=DjangoUser.objects.get(id=request.user.id),
         email_recipients=True
-    )
-    notification.save()
+    ) for x, student in enumerate(student_list)]
+    Notification.objects.bulk_create(notifications)
+    email_absence_notifications(request, student_list, date)
 
 
 def email_absence_notifications(request, email_list, date):
@@ -185,9 +182,8 @@ def email_absence_notifications(request, email_list, date):
     recipient_list = [
         "tyler.iams@gmail.com",
         "iams.sophia@gmail.com",
-        "christina@missionbit.com",
-        "cora@missionbit.com"
-    ]  # Will replace with email_list
+    ]
+    # Will replace with [user.email for user in email_list]
     email = EmailMultiAlternatives(
         subject, text_content, settings.EMAIL_HOST_USER, recipient_list
     )
