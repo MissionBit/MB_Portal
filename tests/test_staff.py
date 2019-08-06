@@ -1,7 +1,7 @@
 from django.test import TestCase, RequestFactory
 from staff.views import *
 from django.contrib.auth.models import User as DjangoUser
-from home.models.models import Classroom, UserProfile
+from home.models.models import Classroom, UserProfile, ClassroomMembership
 from django.urls import reverse
 from rest_framework import status
 from home.models.salesforce import (
@@ -15,11 +15,6 @@ from home.models.salesforce import (
 
 class BaseTestCase(TestCase):
     def setUp(self) -> None:
-        Group.objects.create(name="student")
-        Group.objects.create(name="teacher")
-        Group.objects.create(name="volunteer")
-        Group.objects.create(name="donor")
-        Group.objects.create(name="staff")
         teacher = DjangoUser.objects.create_user(
             username="classroom_teacher",
             email="teacher@email.com",
@@ -61,10 +56,28 @@ class BaseTestCase(TestCase):
         volunteer.save()
         Group.objects.get(name="teacher").user_set.add(volunteer)
         classroom = Classroom.objects.create(
-            course="Test_Course", teacher=teacher, teacher_assistant=t_a
+            course="Test_Course"
         )
-        classroom.students.add(student)
-        classroom.volunteers.add(volunteer)
+        ClassroomMembership.objects.create(
+            member=teacher,
+            classroom=classroom,
+            membership_type="teacher"
+        )
+        ClassroomMembership.objects.create(
+            member=t_a,
+            classroom=classroom,
+            membership_type="teacher_assistant"
+        )
+        ClassroomMembership.objects.create(
+            member=volunteer,
+            classroom=classroom,
+            membership_type="volunteer"
+        )
+        ClassroomMembership.objects.create(
+            member=student,
+            classroom=classroom,
+            membership_type="student"
+        )
 
     def create_staff_user(self):
         user = DjangoUser.objects.create_user(

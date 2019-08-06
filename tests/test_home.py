@@ -9,13 +9,6 @@ from home.views import *
 
 
 class BaseTestCase(TestCase):
-    def setUp(self) -> None:
-        Group.objects.create(name="student")
-        Group.objects.create(name="teacher")
-        Group.objects.create(name="volunteer")
-        Group.objects.create(name="donor")
-        Group.objects.create(name="staff")
-
     def create_user(self):
         DjangoUser.objects.create_user(
             username="testuser",
@@ -208,7 +201,6 @@ class HomeViewsTest(BaseTestCase):
         setattr(request, "session", "session")
         messages = FallbackStorage(request)
         setattr(request, "_messages", messages)
-        Group.objects.get_or_create(name="student")
         response = register_as_student(request)
         self.assertEqual(
             DjangoUser.objects.filter(first_name="test").first().first_name, "test"

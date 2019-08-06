@@ -38,6 +38,15 @@
 .sidenav a:hover {
   color: #666666;
 }
+
+.button {
+   font-size: 10px;
+   font-family: "American Typewriter";
+   border-radius: 14px;
+   background-color: white;
+   color: #4CAF50;
+   border: 2px solid #4CAF50;
+}
 </style>
 
 <div class="sidenav">
@@ -47,22 +56,16 @@
 </div>
 
 <div class="wrapper">
-
-
   {% if classrooms %}
-    {% for class, class_dict in classrooms.items %}
+    {% for classroom in classrooms %}
       <div style="border-style: groove; border-color: darkslateblue; width: 350px; padding-left: 10px; padding-bottom: 20px;">
-          <h3><a href="./{{ class_dict.id }}">{{ class }}</a></h3>
-          {% for theclassdict, classmember in class_dict.items %}
-              {% if theclassdict == 'student_list' or theclassdict == 'volunteer_list' %}
-                  <strong>{{ theclassdict }}</strong> : <br>
-                  {% for peopleinclass, person in classmember.items %}
-                      {{ person }} <br>
-                  {% endfor %}
-              {% elif theclassdict != 'id' %}
-                  <strong>{{ theclassdict }}</strong> : {{ classmember }} <br>
-              {% endif %}
-          {% endfor %}
+          <h3>{{ classroom }}</h3>
+          <h6>{{ class_dicts|get_item:classroom.course|get_item:"teacher" }}</h6>
+          <h6>{{ class_dicts|get_item:classroom.course|get_item:"teacher_assistant" }}</h6>
+              <form action="{% url 'classroom_detail' %}" method="get">
+              <input type="hidden" name="course_id" value="{{ classroom.id }}" />
+              <button class="button" type="submit">Go To Classroom</button>
+          </form>
       </div><br>
     {% endfor %}
   {% endif %}

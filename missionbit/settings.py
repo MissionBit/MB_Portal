@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     "crispy_forms",  # <- Crispy forms
     "coverage",  # <- for testing
     "salesforce",  # <- salesforce database
-    'django_q', # <- For queueing tasks
+    "django_q",  # <- For queueing tasks
+    "storages", # <- Storing uploaded files in Azure Storage
 ]
 
 MIDDLEWARE = [
@@ -146,18 +147,17 @@ SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 # Django Q Settings
 
 Q_CLUSTER = {
-    'name': 'DjangoORM',
-    'timeout': 1200,
-    'save_limit': 10,
-    'catch_up': False,
-    'orm': 'default'
+    "name": "DjangoORM",
+    "timeout": 1200,
+    "save_limit": 10,
+    "catch_up": False,
+    "orm": "default",
 }
 
 CACHES = {
-    'default': {
-        'BACKEND':
-            'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'djangoq-localmem',
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "djangoq-localmem",
     }
 }
 
@@ -194,3 +194,13 @@ LOGIN_URL = "home-landing_page"
 LOGIN_REDIRECT_URL = "home-home"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+# Azure file storage
+DEFAULT_FILE_STORAGE = 'missionbit.azure_storage_backend.CustomAzureStorage'
+AZURE_EMULATED_MODE = os.getenv('AZURE_EMULATED_MODE') == 'true'
+AZURE_ACCOUNT_NAME = os.getenv('AZURE_ACCOUNT_NAME')
+AZURE_ACCOUNT_KEY = os.getenv('AZURE_ACCOUNT_KEY')
+AZURE_CONTAINER = os.getenv('AZURE_CONTAINER')
+AZURE_CUSTOM_DOMAIN = os.getenv('AZURE_CUSTOM_DOMAIN', f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net')
+AZURE_PROTOCOL = 'http' if AZURE_EMULATED_MODE else 'https'
+MEDIA_URL = os.getenv('MEDIA_URL', f'{AZURE_PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/')

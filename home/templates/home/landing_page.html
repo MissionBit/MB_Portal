@@ -10,20 +10,50 @@
 {% endfor %}
 {% endif %}
 
+<style>
+.announcement {
+  padding: 10px 15px 0px;
+  border: 1px solid #e1e1e1;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  width: 75%;
+}
+
+.button {
+   font-size: 10px;
+   font-family: "American Typewriter";
+   border-radius: 14px;
+   background-color: white;
+   color: #4CAF50;
+   border: 2px solid #000080;
+}
+
+.form {
+  padding: 10px 15px 0px;
+  border: 1px solid #e1e1e1;
+  background-color: plum;
+  border-radius: 4px;
+  width: 75%;
+}
+</style>
+
     <div class="sidenav">
 
     </div>
 
     <div class="main-container">
-        <h4>Please Log In Or Register</h4>
+        <h4>Please Log In Or Register with Mission Bit</h4><br><br>
         <div class='content-section'>
-              <a href="{% url 'login' %}">Log In</a><br>
-              <br>
-              <p><strong>-- OR --</strong></p>
-              <a href="{% url 'social:begin' 'google-oauth2' %}">Login with Google</a><br>
-              <br>
-              <p><strong>-- OR --</strong></p>
-              <a href="{% url 'home-register' %}">Register</a><br>
+          <div class="announcement">
+            <h5><a href="{% url 'login' %}">Log In with Username</a></h5>
+          </div><br>
+          <div class="announcement">
+            <h5><a href="{% url 'social:begin' 'google-oauth2' %}">Log In with Gmail</a></h5>
+          </div><br>
+          <div class="announcement">
+            <h5><a href="{% url 'home-register' %}">Register</a><br></h5>
+          </div>
+
         </div>
     </div>
 

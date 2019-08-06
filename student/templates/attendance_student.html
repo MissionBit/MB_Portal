@@ -1,0 +1,47 @@
+{% extends "student_base.html" %}
+
+{% block content %}
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 75%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+
+<div class="sidenav">
+    <a href="#">My Class</a>
+    <a href="#">Discord</a>
+</div>
+
+
+<div class="main-container">
+    <h1>{{ classroom.course }}</h1>
+    <h4>My Attendance - {{ attendance_percentage }}%</h4>
+    <table>
+      <tr>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Session</th>
+      </tr>
+      {% for attendance_day in attendance %}
+      <tr>
+        <td>{{ attendance_day.date }}</td>
+        <td>{{ attendance_day.presence }}</td>
+        <td>{{ attendance_day.session.title }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+</div>
+
+{% endblock content %}

@@ -2,17 +2,48 @@
 
 {% block content %}
 
+<style>
+.announcement {
+  padding: 10px 15px 0px;
+  border: 1px solid #e1e1e1;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  width: 35%;
+}
+
+.button {
+   font-size: 10px;
+   font-family: "American Typewriter";
+   border-radius: 14px;
+   background-color: white;
+   color: #4CAF50;
+   border: 2px solid #000080;
+}
+
+.form {
+  padding: 10px 15px 0px;
+  border: 1px solid #e1e1e1;
+  background-color: plum;
+  border-radius: 4px;
+  width: 35%;
+}
+
+.notification {
+  padding: 10px 15px 0px;
+  border: 1px solid #e1e1e1;
+  background-color: lightcoral;
+  border-radius: 4px;
+  width: 35%;
+}
+</style>
+
 
 <div class="sidenav">
-    <a href="{% url 'user_management' %}">Manage Users</a>
-
-    <a href="{% url 'classroom_management' %}">Classroom Management</a>
-
     <a href="{% url 'create_class_offering' %}">Create Class Offering</a>
-
-    <a href="{% url 'make_announcement' %}">Make Announcement</a>
-
-    <a href="{% url 'attendance' %}">Attendance</a>
+    <a href="{% url 'create_classroom' %}">Create Classroom</a>
+    <a href="{% url 'make_announcement' %}">Create Announcement</a>
+    <a href="{% url 'post_form' %}">Create/Post Form</a>
+    <a href="{% url 'create_esign' %}">Create e-sign</a>
 </div>
 
 
@@ -24,8 +55,57 @@
         </div>
         {% endfor %}
         {% endif %}
-    <h1> Staff User Home Main Section </h1>
-    <h3> Announcements </h3>
+    <h1> Staff User Home</h1><br>
+    {% if announcements %}
+      <h2> Announcements </h2><hr>
+      {% for announcement in announcements reversed %}
+            <div class="announcement">
+            <h4>{{ announcement.announcement.title }}</h4><hr>
+            <p>{{ announcement.announcement.announcement }}</p><hr>
+            <p>{{ announcement.announcement.created_by }} on {{ announcement.announcement.posted.date }}</p><br>
+            <form method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="dismiss_announcement" value="true" />
+              <input type="hidden" name="announcement" value="{{ announcement.announcement.id }}" />
+              <button class="button">Dismiss</button><br><br>
+            </form>
+            </div><br>
+      {% endfor %}
+    {% endif %}
+    {% if forms %}
+      <h2> Forms </h2><hr>
+        {% for form in forms reversed %}
+            <div class="form">      
+              <h4>{{ form.form.name }}</h4><hr>
+              <p>{{ form.form.description }}</p><br>
+              <p>{{ form.form.created_by }} on {{ form.form.posted.date }}</p><br><hr>
+              {% if form.form.esign != NULL %}
+                <p><a href="{{ form.form.esign.template }}">Esign Here</a></p><br>
+              {% endif %}
+              <p>
+              <a href="{{ form.form.url }}" class="btn btn-primary" target="_blank">Download Form</a>
+              </p>
+            </div><br>
+        {% endfor %}
+    {% endif %}
+    {% if notifications %}
+      <h2> Notifications </h2><hr>
+        {% for notification in notifications %}
+            <div class="notification">
+              <h4>{{ notification.subject }}</h4><hr>
+              <p>{{ notification.notification }}</p><br>
+              <p>Mission Bit on {{ notification.notified.date }}</p><br>
+              <p>
+                <form method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" name="acknowledge_notification" value="true" />
+                  <input type="hidden" name="notification" value="{{ notification.id }}" />
+                  <button class="button">Dismiss</button><br><br>
+                </form>
+              </p>
+            </div><br>
+        {% endfor %}
+    {% endif %}
 </div>
 
 

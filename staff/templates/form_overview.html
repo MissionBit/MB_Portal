@@ -1,0 +1,90 @@
+{% extends "staff_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 75%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: cadetblue;
+}
+
+.buttonSub {
+   font-size: 10px;
+   font-family: "American Typewriter";
+   border-radius: 14px;
+   background-color: white;
+   color: #4CAF50;
+   border: 2px solid #000080;
+}
+
+.buttonNotify {
+   font-size: 14px;
+   font-family: "American Typewriter";
+   border-radius: 16px;
+   background-color: white;
+   color: #4CAF50;
+   border: 2px solid #000080;
+}
+</style>
+
+
+<div class="sidenav">
+  <a href={% url 'staff' %}>Staff Home</a>
+</div>
+
+
+
+    <div class="main-container">
+    <h1 style="padding-bottom: 20px"> Form Overview </h1>
+    <hr><br>
+        {% if outstanding_form_dict %}
+          {% for form_name, distributions in outstanding_form_dict.items %}
+          <table>
+            <h3>{{ form_name }}</h3>
+            <tr>
+              <th>Form Name</th>
+              <th>Distribution</th>
+              <th>Submitted</th>
+              <th>Collect</th>
+              <th></th>
+            </tr>
+            {% for distribution in distributions %}
+              <tr>
+              <form method="POST">
+                <td>{{ form_name }}</td>
+                <td>{{ distribution.user.first_name }} {{ distribution.user.last_name }}</td>
+                <td>{{ distribution.submitted }}</td>
+                <td>
+                  <div style="padding-top: 15px">
+                    {% csrf_token %} {{ form|crispy }}
+                    <input type="hidden" name="form_name" value="{{ form_name }}" />
+                    <input type="hidden" name="user_id" value="{{ distribution.user.id }}" />
+                  </div>
+                </td>
+                <td><button class="buttonSub" type="submit">Collect</button></td>
+                </form>
+              </tr>
+            {% endfor %}
+          </table>
+            <form action={% url 'notify_unsubmitted_users' %} method="GET">
+              <input type="hidden" name="notify_unsubmitted_users" value="{{ form_name }}" />
+              <br><td><button class="buttonNotify" type="submit">Notify Unsubmitted Users</button></td>
+            </form>
+          {% endfor %}
+      {% else %}
+          <h3>No outstanding Forms</h3>
+      {% endif %}
+
+    </div>
+{% endblock content %}

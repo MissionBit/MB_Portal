@@ -1,38 +1,34 @@
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
+from home.decorators import group_required_multiple
+from django.contrib.auth.models import User as DjangoUser
 from django.shortcuts import render, redirect
-from home.models.models import Classroom, Attendance
+from home.models.models import Classroom, Attendance, Notification
 from home.models.salesforce import ClassOffering
-from staff.staff_views_helper import class_offering_meeting_dates, sync_attendance_with_salesforce_class_offerings
+from staff.staff_views_helper import class_offering_meeting_dates
 from datetime import datetime
 from django.template.defaulttags import register
+from django_q.tasks import async_task
+from home.generic_notifications import get_generic_absence_notification
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.conf import settings
+from django.contrib import messages
+import statistics
 
 
-@login_required
+@group_required_multiple(["staff", "teacher"])
 def attendance(request):
     if request.method == "POST":
-        if request.POST.get("attendance_taken") is not None:
-            store_attendance_data(request)
-            attendance_averages = compile_attendance_averages_for_all_courses()
-            context = {
-                "classrooms": Classroom.objects.all(),
-                "attendance_averages": attendance_averages,
-            }
-            return render(request, "attendance.html", context)
-        else:
-            context = take_attendance_context(
-                request.POST.get("course_id"),
-                get_date_from_template_returned_string(request.POST.get("date")),
-            )
-            return render(request, "attendance.html", context)
+        store_attendance_data(request)
+        async_task(
+            "attendance.views.update_course_attendance_statistic",
+            request.POST.get("course_id"),
+        )
+        return redirect("attendance")
     if request.GET.get("course_id") is not None:
-        context = get_classroom_attendance(request.GET.get("course_id"))
+        course_id = request.GET.get("course_id")
+        context = get_classroom_attendance(course_id)
         context.update(
-            {
-                "attendance_statistic": get_course_attendance_statistic(
-                    request.GET.get("course_id")
-                )
-            }
+            {"attendance_statistic": get_course_attendance_statistic(course_id)}
         )
     else:
         attendance_averages = compile_attendance_averages_for_all_courses()
@@ -41,6 +37,27 @@ def attendance(request):
             "attendance_averages": attendance_averages,
         }
     return render(request, "attendance.html", context)
+
+
+@group_required_multiple(["staff", "teacher"])
+def take_attendance(request):
+    context = take_attendance_context(
+        request.GET.get("course_id"),
+        get_date_from_template_returned_string(request.GET.get("date")),
+    )
+    return render(request, "attendance.html", context)
+
+
+@group_required_multiple(["staff", "teacher"])
+def notify_absent_students(request):
+    # This method is a candidate for an async_task
+    date = get_date_from_template_returned_string(request.GET.get("date"))
+    course = Classroom.objects.get(id=request.GET.get("course_id"))
+    absences = Attendance.objects.filter(date=date, classroom_id=course.id, presence="Absent")
+    student_list = list(DjangoUser.objects.filter(id__in=[absence.student_id for absence in absences]))
+    create_absence_notifications(request, student_list, absences, date)
+    messages.add_message(request, messages.SUCCESS, "Absent Students Successfully Notified")
+    return redirect("attendance")
 
 
 def get_classroom_attendance(course_id):
@@ -67,6 +84,7 @@ def take_attendance_context(course_id, date):
     }
 
 
+@group_required_multiple(["staff", "teacher"])
 def store_attendance_data(request):
     date = get_date_from_template_returned_string(request.POST.get("date"))
     course_id = request.POST.get("course_id")
@@ -74,12 +92,6 @@ def store_attendance_data(request):
     for attendance_object in attendance_objects:
         attendance_object.presence = request.POST.get(str(attendance_object.student))
         attendance_object.save()
-
-
-def get_course_attendance_statistic(course_id):
-    class_attendance = Attendance.objects.filter(classroom_id=course_id, date__range=["2000-01-01", datetime.today().date()])
-    average = get_average_attendance_from_list(class_attendance)
-    return round(average * 100, 2)
 
 
 def compile_attendance_averages_for_all_courses():
@@ -100,11 +112,11 @@ def compile_daily_attendance_for_course(course_id):
     return daily_attendance_record
 
 
-def get_average_attendance_from_list(list):
-    return sum(
-        attendance_object.presence == "Present" or attendance_object.presence == "Late"
-        for attendance_object in list
-    ) / len(list)
+def get_average_attendance_from_list(daily_attendance):
+    attendance_list = [attendance_object.presence == "Present"
+            or attendance_object.presence == "Late"
+            for attendance_object in daily_attendance]
+    return statistics.mean(attendance_list) if len(attendance_list) > 0 else 0
 
 
 def get_classroom_meeting_dates(course_id):
@@ -119,4 +131,62 @@ def get_item(dictionary, key):
 
 
 def get_date_from_template_returned_string(string_date):
-    return datetime.strptime(string_date, "%B %d, %Y").date()
+    for date_format in ["%B %d, %Y", "%b. %d, %Y", "%bt. %d, %Y"]:
+        try:
+            return datetime.strptime(string_date, date_format).date()
+        except ValueError:
+            pass
+    raise ValueError("time data {!r} does not match any expected date format".format(string_date))
+
+
+def update_course_attendance_statistic(course_id):
+    class_attendance = Attendance.objects.filter(
+        classroom_id=course_id, date__range=["2000-01-01", datetime.today().date()]
+    )
+    average = get_average_attendance_from_list(class_attendance)
+    classroom = Classroom.objects.get(id=course_id)
+    classroom.attendance_summary = {"attendance_statistic": round(average * 100, 2)}
+    classroom.save()
+
+
+def get_course_attendance_statistic(course_id):
+    return Classroom.objects.get(id=course_id).attendance_summary.get(
+        "attendance_statistic"
+    )
+
+
+def create_absence_notifications(request, student_list, absences, date):
+    notifications = [Notification(
+        subject="%s %s absence on %s" % (student.first_name, student.last_name, date),
+        notification=get_generic_absence_notification(student, date),
+        user_id=student.id,
+        attendance_id=absences[x].id,
+        created_by=DjangoUser.objects.get(id=request.user.id),
+        email_recipients=True
+    ) for x, student in enumerate(student_list)]
+    Notification.objects.bulk_create(notifications)
+    email_absence_notifications(request, student_list, date)
+
+
+def email_absence_notifications(request, email_list, date):
+    subject = "Absence on %s" % date
+    msg_html = render_to_string(
+        "email_templates/absence_email.html",
+        {
+            "subject": subject,
+            "date": date,
+            "from": DjangoUser.objects.get(id=request.user.id),
+        },
+    )
+    text_content = "You are being notified about something"
+    recipient_list = [
+        "tyler.iams@gmail.com",
+        "iams.sophia@gmail.com",
+    ]
+    # Will replace with [user.email for user in email_list]
+    email = EmailMultiAlternatives(
+        subject, text_content, settings.EMAIL_HOST_USER, recipient_list
+    )
+    email.attach_alternative(msg_html, "text/html")
+    email.send()
+    messages.add_message(request, messages.SUCCESS, "Recipients Successfully Emailed")

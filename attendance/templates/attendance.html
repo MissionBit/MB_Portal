@@ -11,7 +11,7 @@ table {
 
 td, th {
   border: 1px solid #dddddd;
-  text-align: left;
+  text-align: center;
   padding: 8px;
 }
 
@@ -49,26 +49,36 @@ tr:nth-child(even) {
         <th>Date</th>
         <th>Daily Attendance</th>
         <th>Take Attendance</th>
+        <th>Send Absent Notifications</th>
       </tr>
       {% for date in dates %}
       <tr>
         <td>{{ date }}</td>
         <td>{{ daily_attendance|get_item:date }}%</td>
         <td>
-        <form method="post">
+        <form action= "{% url 'take_attendance' %}" method="GET">
           {% csrf_token %}
           <input type="hidden" name="date" value="{{ date }}" />
           <input type="hidden" name="course_id" value={{ course_id }} />
           <input type="hidden" name="date_id" value={{ id }} />
-          <button class="button" type="submit">Take Attendance</button>
+          <button class="button" type="submit">View/Take Attendance</button>
         </form>
+        </td>
+        <td>
+          <form action= "{% url 'notify_absent_students' %}" method="GET">
+          {% csrf_token %}
+          <input type="hidden" name="date" value="{{ date }}" />
+          <input type="hidden" name="course_id" value={{ course_id }} />
+          <input type="hidden" name="date_id" value={{ id }} />
+          <button class="button" type="submit">Notify Absent Students</button>
+          </form>
         </td>
       </tr>
     {% endfor %}
     </table>
     {% elif attendance_objects %}
-    <h1 style="padding-bottom: 30px"> {{ course_name }} </h1>
-    <form method="POST" style="width: 80%">
+    <h1 style="padding-bottom: 30px"> {{ course_name }} {{ attendance_objects.first.date }} </h1>
+    <form action= "{% url 'attendance' %}" method="POST" style="width: 80%">
     {% csrf_token %}
       <table>
       <tr>

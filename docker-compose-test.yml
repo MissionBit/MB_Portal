@@ -3,6 +3,10 @@ version: '3'
 services:
   db:
     image: postgres
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    ports:
+      - "10000:10000"
   test:
     build: .
     command: ./ci/run-tests.sh
@@ -16,9 +20,15 @@ services:
       - SALESFORCE_PASSWORD
       - SALESFORCE_HOST
       - DEFAULT_WORKING_DIRECTORY
+      - AZURE_EMULATED_MODE=true
+      - AZURE_ACCOUNT_NAME=devstoreaccount1
+      - AZURE_ACCOUNT_KEY=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==
+      - AZURE_CONTAINER=media
+      - AZURE_CUSTOM_DOMAIN=azurite:10000
     volumes:
       - .:/code
     ports:
       - "8000:8000"
     depends_on:
       - db
+      - azurite

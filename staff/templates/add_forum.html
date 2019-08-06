@@ -1,0 +1,20 @@
+{% extends "staff_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="sidenav">
+  <a href={% url 'staff' %}>Staff Home</a>
+</div>
+
+    <div class="main-container">
+    <h1 style="padding-bottom: 20px"> Add Forum to Classroom - {{ classroom.course }} </h1>
+        <form enctype="multipart/form-data" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+        <br>
+        <input type="hidden" name="classroom" value="{{ classroom.id }}" />
+        <button type="submit" class="btn btn-primary">Add Forum</button>
+        </form>
+    </div>
+{% endblock content %}
