@@ -1,5 +1,3 @@
-from django.views.generic import DetailView, ListView
-from django.contrib.auth.models import Group
 from django.template.defaulttags import register
 from django.shortcuts import render, redirect
 from home.decorators import group_required
