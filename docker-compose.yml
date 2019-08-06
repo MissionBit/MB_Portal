@@ -3,15 +3,28 @@ version: '3'
 services:
   db:
     image: postgres
+    environment:
+      - POSTGRES_USER=mbdb
+      - POSTGRES_DB=mbdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite
     ports:
       - "10000:10000"
-  test:
+    volumes:
+      - azdata:/data
+  web:
     build: .
-    command: ./ci/run-tests.sh
+    command:
+    - bash
+    - '-c'
+    - |
+      pip install -r requirements.txt &&
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000
     environment:
-      - DATABASE_URL=postgres://postgres@db/mbdb
+      - DATABASE_URL=postgres://mbdb@db/mbdb
       - SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
       - SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
       - SALESFORCE_CONSUMER_KEY
@@ -25,6 +38,7 @@ services:
       - AZURE_ACCOUNT_KEY=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==
       - AZURE_CONTAINER=media
       - AZURE_CUSTOM_DOMAIN=azurite:10000
+      - MEDIA_URL=http://localhost:10000/media/
     volumes:
       - .:/code
     ports:
@@ -32,3 +46,7 @@ services:
     depends_on:
       - db
       - azurite
+
+volumes:
+  pgdata:
+  azdata:

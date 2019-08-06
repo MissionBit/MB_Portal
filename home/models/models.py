@@ -1,3 +1,4 @@
+from time import strftime
 from django.db import models as mdls
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.models import Group
@@ -5,7 +6,7 @@ from django.contrib.postgres.fields import JSONField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from home.choices import *
-
+from werkzeug import secure_filename
 
 def get_name(self):
     return "%s %s" % (self.first_name, self.last_name)
@@ -13,6 +14,16 @@ def get_name(self):
 
 DjangoUser.add_to_class("__str__", get_name)
 
+def mk_upload_to(attr):
+    def upload_to(instance, filename):
+        return '/'.join([
+            secure_filename(type(instance).__name__),
+            attr,
+            strftime('%Y/%m/%d'),
+            instance.id or '0',
+            secure_filename(filename)
+        ])
+    return upload_to
 
 class UserProfile(mdls.Model):
     user = mdls.OneToOneField(DjangoUser, on_delete=mdls.CASCADE)
@@ -52,10 +63,10 @@ class ClassroomMembership(mdls.Model):
 class Session(mdls.Model):
     title = mdls.CharField(max_length=240, default="No Title")
     description = mdls.TextField(max_length=2000, default="No Description Available")
-    lesson_plan = mdls.FileField(default=None, upload_to="documents/")
-    lecture = mdls.FileField(default=None, upload_to="documents/")
+    lesson_plan = mdls.FileField(default=None, upload_to=mk_upload_to("lesson_plan"))
+    lecture = mdls.FileField(default=None, upload_to=mk_upload_to("lecture"))
     video = mdls.URLField(default=None, null=True)
-    activity = mdls.FileField(default=None, upload_to="documents/")
+    activity = mdls.FileField(default=None, upload_to=mk_upload_to("activity"))
     classroom = mdls.ForeignKey(Classroom, related_name="classroom_session", on_delete=mdls.CASCADE, default=None)
     date = mdls.DateField(default="1901-01-01")
 
@@ -67,7 +78,7 @@ class Resource(mdls.Model):
     title = mdls.TextField(max_length=240, default="No Title")
     description = mdls.TextField(max_length=2000)
     link = mdls.URLField(default=None, null=True)
-    file = mdls.FileField(default=None, null=True, upload_to="documents/")
+    file = mdls.FileField(default=None, null=True, upload_to=mk_upload_to("file"))
     classroom = mdls.ForeignKey(Classroom, related_name="classroom_resource", on_delete=mdls.CASCADE)
     session = mdls.ForeignKey(Session, related_name="session_resource", on_delete=mdls.CASCADE)
 
@@ -133,7 +144,7 @@ class Esign(mdls.Model):
 class Form(mdls.Model):
     name = mdls.CharField(max_length=240, unique=True)
     description = mdls.TextField(max_length=2500)
-    form = mdls.FileField(upload_to="documents/")
+    form = mdls.FileField(upload_to=mk_upload_to("form"))
     esign = mdls.ForeignKey(Esign, related_name="esign_form", on_delete=mdls.CASCADE, null=True)
     posted = mdls.DateTimeField(db_index=True, auto_now=True)
     recipient_groups = mdls.ManyToManyField(Group, related_name="form_user_groups")
