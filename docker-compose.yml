@@ -16,7 +16,13 @@ services:
       - azdata:/data
   web:
     build: .
-    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command:
+    - bash
+    - '-c'
+    - |
+      pip install -r requirements.txt &&
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000
     environment:
       - DATABASE_URL=postgres://mbdb@db/mbdb
       - SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
