@@ -137,6 +137,12 @@ well, such as:
 docker-compose run web python manage.py createsuperuser
 ```
 
+or:
+
+```bash
+docker-compose run web python manage.py makemigrations
+```
+
 ## Getting Started With Mission Bit and Python-Django
 
 Welcome!  These instructions will help you get started with Python Django and use our Mission Bit web app all in one.  Use these if you've never used Python before on your computer!  Be excited!
