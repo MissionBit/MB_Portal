@@ -38,10 +38,8 @@ def staff(request):
         elif request.POST.get("acknowledge_notification") == "true":
             mark_notification_acknowledged(Notification.objects.get(id=request.POST.get("notification")))
             return redirect("staff")
-    announcements = Announcement.objects.filter(recipient_groups=Group.objects.get(name="staff").id)
-    announcements = remove_dismissed_announcements(announcements, request.user)
-    forms = Form.objects.filter(recipient_groups=Group.objects.get(name="staff").id)
-    forms = remove_submitted_forms(forms, request.user)
+    announcements = get_my_announcements(request, "staff")
+    forms = get_my_forms(request, "staff")
     notifications = Notification.objects.filter(user_id=request.user.id, acknowledged=False)
     return render(request, "staff.html", {"announcements": announcements,
                                           "forms": forms,
@@ -50,8 +48,6 @@ def staff(request):
 
 @group_required("staff")
 def user_management(request):
-    names = DjangoUser.objects.all()
-    context = {"names": names}
     return render(request, "user_management.html")
 
 
@@ -270,7 +266,7 @@ def make_announcement(request):
                 message = form.cleaned_data.get("announcement")
                 email_announcement(request, subject, message, email_list)
             announcement = form.save()
-            distribute_announcement(user_list, announcement)
+            bulk_distribute_announcement(user_list, announcement)
             messages.add_message(
                 request, messages.SUCCESS, "Successfully Made Announcement"
             )
@@ -311,8 +307,8 @@ def post_form(request):
             if form.cleaned_data.get("email_recipients"):
                 subject = form.cleaned_data.get("name")
                 message = form.cleaned_data.get("description")
-                email_posted_form(request, subject, message, email_list)
-            distribute_forms(request, posted_form, form)
+                email_posted_form(request, form.cleaned_data.get("esign", None), subject, message, email_list)
+            distribute_forms(request, posted_form, user_list)
             return redirect("staff")
         else:
             messages.error(
@@ -536,60 +532,3 @@ def download_form_staff(request):
             response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
             return response
     raise Http404
-
-
-class ClassroomDetailView(DetailView):
-    model = Classroom
-
-    def get_forms(self):
-        return {
-            "change_teacher_form": ChangeTeacherForm(),
-            "add_volunteers_form": AddVolunteerForm(),
-            "add_students_form": AddStudentForm(),
-        }
-
-    def get_context_data(self, **kwargs):
-        context = super(ClassroomDetailView, self).get_context_data(**kwargs)
-        context.update(self.get_forms())
-        return context
-
-    def post(self, request, *args, **kwargs):
-        if request.POST["change_who"] == "teacher":
-            form = ChangeTeacherForm(request.POST)
-            if form.is_valid():
-                change_classroom_lead(request.POST["teacher"],
-                                      form.cleaned_data.get("teacher").id,
-                                      request.POST["course_id"],
-                                      "teacher")
-                messages.success(request, "Teacher Changed")
-        elif request.POST["change_who"] == "ta":
-            form = ChangeTeacherForm(request.POST)
-            if form.is_valid():
-                change_classroom_lead(request.POST["teacher"],
-                                      form.cleaned_data.get("teacher").id,
-                                      request.POST["course_id"],
-                                      "teacher_assistant")
-            messages.success(request, "TA Changed")
-        elif request.POST["change_who"] == "remove_vol":
-            remove_user_from_classroom(request.POST["former_vol"], request.POST["course_id"])
-            messages.success(request, "Volunteer Removed")
-        elif request.POST["change_who"] == "add_vols":
-            form = AddVolunteerForm(request.POST)
-            if form.is_valid():
-                add_user_to_classroom(form.cleaned_data.get("volunteer").id, request.POST["course_id"], "volunteer")
-            messages.success(request, "Volunteers Added")
-        elif request.POST["change_who"] == "delete_student":
-            remove_user_from_classroom(request.POST["former_student"], request.POST["course_id"])
-            messages.success(request, "Student Removed")
-        elif request.POST["change_who"] == "add_students":
-            form = AddStudentForm(request.POST)
-            if form.is_valid():
-                add_user_to_classroom(form.cleaned_data.get("student").id, request.POST["course_id"], "student")
-            messages.success(request, "Students Added")
-        return redirect("classroom_management")
-
-
-class ClassroomListView(ListView):
-    model = Classroom
-    template_name = "classroom_management.html"
-    context_object_name = "classrooms"
