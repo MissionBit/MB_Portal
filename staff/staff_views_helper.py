@@ -356,7 +356,7 @@ def create_form_distribution(posted_form, user):
 def get_outstanding_forms():
     outstanding_form_dict = {}
     for form in Form.objects.all():
-        distributions = FormDistribution.objects.filter(form__in=form)
+        distributions = FormDistribution.objects.filter(form=form)
         outstanding_form_dict.update({form.name: distributions})
     return outstanding_form_dict
 
