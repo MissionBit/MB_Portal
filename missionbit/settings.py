@@ -19,6 +19,16 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.9/howto/static-files/
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
+
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -64,6 +74,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # <- Whitenoise for serving static assets
 ]
 
 ROOT_URLCONF = "missionbit.urls"
@@ -206,10 +217,6 @@ AZURE_CUSTOM_DOMAIN = os.getenv('AZURE_CUSTOM_DOMAIN', f'{AZURE_ACCOUNT_NAME}.bl
 AZURE_PROTOCOL = 'http' if AZURE_EMULATED_MODE else 'https'
 MEDIA_URL = os.getenv('MEDIA_URL', f'{AZURE_PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/')
 
-<<<<<<< HEAD
 # Instagram Setup
-=======
-#Instagram setup
->>>>>>> ece4f729e917a237a35451eff7cbd1ac7d6a7b14
-INSTATOKEN= os.getenv('INSTATOKEN')
-INSTAUSERID= os.getenv('INSTAUSERID')
+INSTATOKEN = os.getenv('INSTATOKEN')
+INSTAUSERID = os.getenv('INSTAUSERID')

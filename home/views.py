@@ -65,7 +65,7 @@ def register(request):
 
 
 def landing_page(request):
-    return render(request, "home/landing_page.html")
+    return render(request, "home/landing_page_MUI.html")
 
 
 @login_required
