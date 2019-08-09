@@ -107,10 +107,10 @@ def generate_classroom_sessions_and_attendance(classroom):
     classroom_students = get_users_of_type_from_classroom(classroom, "student")
     attendances = [Attendance(
             student_id=student.id,
-            session_id=sessions[x].id,
+            session_id=session.id,
             classroom_id=classroom.id,
-            date=day,
-        ) for student in classroom_students for x, day in enumerate(dates)]
+            date=session.date,
+        ) for student in classroom_students for session in sessions]
     Attendance.objects.bulk_create(attendances)
 
 
