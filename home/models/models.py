@@ -9,8 +9,10 @@ from django.dispatch import receiver
 from home.choices import *
 from werkzeug import secure_filename
 
+
 def get_name(self):
     return "%s %s" % (self.first_name, self.last_name)
+
 
 DjangoUser.add_to_class("__str__", get_name)
 

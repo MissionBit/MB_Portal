@@ -93,6 +93,7 @@ TEMPLATES = [
                 "social_django.context_processors.backends",  # <- Social Django Oauth Google
                 "social_django.context_processors.login_redirect",  # <- Social Django Oauth Google
                 "staff.context_processors.social_media_info",  # <- Instagram
+                "home.context_processors.google_info",  # <- Sign in with Google Button
             ]
         },
     }
