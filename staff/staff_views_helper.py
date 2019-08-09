@@ -8,12 +8,13 @@ from django.utils.html import strip_tags
 from django.conf import settings
 from django.contrib import messages
 from datetime import timedelta, datetime
+from django.core.exceptions import MultipleObjectsReturned
 
 
 def create_user_with_profile(form, random_password):
+    username = validate_username("%s.%s" % (form.cleaned_data.get("first_name"), form.cleaned_data.get("last_name")), "")
     new_user = DjangoUser.objects.create_user(
-        username="%s.%s"
-        % (form.cleaned_data.get("first_name"), form.cleaned_data.get("last_name")),
+        username=username,
         email=form.cleaned_data.get("email"),
         first_name=form.cleaned_data.get("first_name"),
         last_name=form.cleaned_data.get("last_name"),
@@ -22,6 +23,17 @@ def create_user_with_profile(form, random_password):
     new_user = parse_new_user(new_user, form)
     new_user.save()
     return new_user
+
+
+def validate_username(username, string):
+    username = username + string
+    if DjangoUser.objects.filter(username=username).count() == 0:
+        return username
+    else:
+        if string is "":
+            validate_username(username, 1)
+        else:
+            validate_username(username, string + 1)
 
 
 def parse_new_user(new_user, form):
