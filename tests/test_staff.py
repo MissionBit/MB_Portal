@@ -246,7 +246,7 @@ class StaffViewsTest(BaseTestCase):
     def test_create_staff_user_invalid_form(self):
         self.client.force_login(self.create_staff_user())
         response = self.client.post(reverse("create_staff_user"), {})
-        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.url, reverse("create_staff_user"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
     def test_create_teacher_user(self):
@@ -266,7 +266,7 @@ class StaffViewsTest(BaseTestCase):
     def test_create_teacher_user_invalid_form(self):
         self.client.force_login(self.create_staff_user())
         response = self.client.post(reverse("create_teacher_user"), {})
-        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.url, reverse("create_teacher_user"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
     def test_create_student_user(self):
@@ -286,7 +286,7 @@ class StaffViewsTest(BaseTestCase):
     def test_create_student_user_invalid_form(self):
         self.client.force_login(self.create_staff_user())
         response = self.client.post(reverse("create_student_user"), {})
-        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.url, reverse("create_student_user"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
     def test_create_volunteer_user(self):
@@ -306,5 +306,5 @@ class StaffViewsTest(BaseTestCase):
     def test_create_volunteer_user_invalid_form(self):
         self.client.force_login(self.create_staff_user())
         response = self.client.post(reverse("create_volunteer_user"), {})
-        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.url, reverse("create_volunteer_user"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)

@@ -33,6 +33,7 @@ class UserRegisterForm(UserCreationForm):
 
 class DateInput(forms.DateInput):
     input_type = "date"
+    is_required = True
 
 
 class MissionBitUserCreationForm(forms.ModelForm):
