@@ -251,10 +251,6 @@ button {
     display: none;
 }
 
-.sidenav-content section div{
-    display: none;
-}
-
 .sidenav-content section div a{
     padding-bottom: 15px;
     height: 20px;
@@ -266,7 +262,9 @@ button {
     height: 22px;
 }
 
-.sidenav-content section:target div{
-    display: block;
+.intro div{
+  display: none;
 }
-
+.deintro div{
+  display: block;
+}

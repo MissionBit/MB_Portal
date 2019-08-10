@@ -53,6 +53,19 @@
           $('.js-hide-sidedrawer').on('click', hideSidedrawer);
         });
     </script>
+    <script>
+    $(document).ready(function(){
+      alert('js loaded');
+      $(".intro").click(function(){
+        if ($(this).hasClass("intro")){
+            $(this).removeClass("intro").addClass("deintro");
+        }else if($(this).hasClass("deintro")){
+            $(this).removeClass("deintro").addClass("intro");
+        }
+
+      });
+    });
+    </script>
 </head>
 <body class="hide-sidedrawer">
     <header id="header" style="box-shadow: 0px 3px 35px 0px gray">
@@ -97,14 +110,14 @@
             <a href="{% url 'home-home' %}"><p style="text-align: center; font-size: 25px;">{{ user.username }}</p></a>
             <hr/>
             <div class="sidenav-content">
-             <section id="item1">
+             <section id="intro">
                <a class="mainslide" href="{% url 'staff' %}">Home</a>
                <div>
                    <!-- Dropdown content here -->
                    <!--a href="link to redirect">Name Of Item</a> -->
                </div>
              </section>
-             <section id="item2">
+             <section class="intro">
                <a class="mainslide" href="#item2">Courses</a>
                <div>
                    <!-- Dropdown content here -->
@@ -115,7 +128,7 @@
                    <hr style="width: 80%;">
                </div>
              </section>
-             <section id="item3">
+             <section class="intro">
                <a class="mainslide" href="#item3">Users</a>
                <div>
                    <!-- Dropdown content here -->
@@ -127,7 +140,7 @@
                    <hr style="width: 80%;">
                </div>
              </section>
-             <section id="item4">
+             <section class="intro">
                <a class="mainslide" href="#item4">Forms</a>
                <div>
                    <!-- Dropdown content here -->
@@ -138,27 +151,17 @@
                    <hr style="width: 80%;">
                </div>
              </section>
-             <section id="item5">
-                 <a class="mainslide" href="#item5">Announcements</a>
-                 <div>
+             <section class="intro">
+                 <a class="mainslide" href="#item5">Communication</a>
+                 <div style="">
                      <!-- Dropdown content here -->
                    <hr style="width: 80%;">
                    <a href="{% url 'make_announcement' %}">Create Announcement</a>
-                   <a href="{% url 'communication_manager' %}">Announcement Manager</a>
+                   <a href="{% url 'communication_manager' %}">Communication Manager</a>
                    <hr style="width: 80%;">
                </div>
              </section>
-             <section id="item6">
-                 <a class="mainslide" href="#item6">Notifications</a>
-                 <div>
-                     <!-- Dropdown content here -->
-                     <!-- TYLER FILL HERE
-                   <a href="">Notifications Manager</a>
-                   -->
-                   <hr style="width: 80%;">
-               </div>
-             </section>
-             <section id="item7">
+             <section id="intro">
                <a class="mainslide" href="{% url 'attendance' %}">Attendance</a>
                <div>
                    <!-- Dropdown content here -->
