@@ -3,14 +3,6 @@
 
 {% block content %}
 
-
-    <div class="sidenav">
-        <a href="{% url 'social:begin' 'google-oauth2' %}">Sign In With Google</a>
-        <a href="{% url 'home-register' %}">Register</a><br>
-    </div>
-
-
-
     <div class="main-container">
     {% if messages %}
     {% for message in messages %}
@@ -20,16 +12,17 @@
     {% endfor %}
     {% endif %}
 
-    <h4>Please Log In</h4>
-    <form method = "POST">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <button class="btn btn-success" type="submit">Login</button>
+    <form style="width: 25%; padding-left: 10%; padding-top: 3%" class="mui-form" method = "POST">
+      <h4>Please Log In</h4>
+      {% csrf_token %}
+      <div class="mui-textfield">
+        Username: {{ form.username }}
+      </div>
+      <div class="mui-textfield">
+        Password: {{ form.password }}
+      </div>
+      <button class="mui-btn" type="submit">Login</button>
     </form>
     </div>
-
-
-
-
 
 {% endblock content %}

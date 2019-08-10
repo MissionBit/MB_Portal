@@ -2,24 +2,21 @@
 
 {% block content %}
 
-    <div class="sidenav">
-        <a href="{% url 'social:begin' 'google-oauth2' %}">Sign In With Google</a>
-        <a href="{% url 'login' %}">Sign In With Username and Password</a>
-        <a href="{% url 'home-register' %}">Register</a><br>
+    <div id="content-wrapper" class="mui--text-center">
+      <h1>You have been logged out</h1>
+      <div class="mui--appbar-height"></div>
+      <br>
+      <form action="{% url 'social:begin' 'google-oauth2' %}">
+        <button type="submit" class="loginBtn loginBtn--google mui-btn mui-btn--raised">LOGIN WITH GOOGLE</button>
+      </form>
+      <form action="{% url 'login' %}">
+        <button class="mui-btn mui-btn--raised">Login with Username</button>
+      </form>
+      <br>
+      <br>
     </div>
 
 
-    <div class="main-container">
-    {% if messages %}
-    {% for message in messages %}
-        <div class = "alert alert-{{message.tags}}">
-            {{ message }}
-        </div>
-    {% endfor %}
-    {% endif %}
-    <h1>You have been logged out</h1>
-    <div class="border-top pt-3">
-    </div>
-    </div>
+
 
 {% endblock content %}
