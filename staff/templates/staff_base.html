@@ -6,7 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="//cdn.muicss.com/mui-0.9.43/css/mui.min.css" rel="stylesheet" type="text/css" />
+<<<<<<< HEAD
     <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+=======
+    <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static  'css/mui_assets_staff.css' %}"/>
+>>>>>>> 30a61c116b7c37bdeaeb4e5036449edbd96e6c3a
     <link rel="icon" href="https://github.com/Ernesto2004/MB_Portal_Design/blob/master/mblogo.png?raw=true"> <!-- LOGO ON THE TAB BAR -->
     <!-- MDL STUFF -->
 
@@ -15,7 +20,7 @@
     <script src="//cdn.muicss.com/mui-0.9.43/js/mui.min.js"></script>
     <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/mui_assets.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mui_assets_home.css' %}">
     <title>Mission Bit</title>
     <script type="text/javascript">
         jQuery(function($) {
@@ -53,17 +58,15 @@
         });
     </script>
 </head>
-
 <body class="hide-sidedrawer">
     <header id="header" style="box-shadow: 0px 3px 35px 0px gray">
       <div class="mui-appbar mui--appbar-line-height">
         <div class="mui-container-fluid">
           <a class="sidedrawer-toggle mui--visible-xs-inline-block mui--visible-sm-inline-block js-show-sidedrawer">☰</a>
           <a class="sidedrawer-toggle mui--hidden-xs mui--hidden-sm js-hide-sidedrawer">☰</a>
-          <td class="mui--appbar-height"><a class="appbarnav" href="{% url 'user_management' %}">Manage Users</a></td>
-          <td class="mui--appbar-height"><a class="appbarnav" href="{% url 'attendance' %}">Attendance</a></td>
-          <td class="mui--appbar-height"><a class="appbarnav" href="{% url 'classroom_management' %}">Classroom Management</a></td>
-          <td class="mui--appbar-height"><a class="appbarnav" href="{% url 'form_overview' %}">Form Overview</a></td>
+          <!--
+            <td class="mui--appbar-height"><a class="appbarnav" href="{% url 'user_management' %}">Manage Users   </a></td>
+            -->
         </div>
       </div>
     </header>
@@ -95,14 +98,76 @@
           </div>
           <div class="mui-divider"></div>
             <br>
-        <a href="{% url 'home-home' %}"><p style="text-align: center; font-size: 25px;">{{ user.username }}</p></a>
+            <a href="{% url 'home-home' %}"><p style="text-align: center; font-size: 25px;">{{ user.username }}</p></a>
             <hr/>
             <div class="sidenav-content">
-             <a href="{% url 'staff' %}">Home</a>
-             <a href="{% url 'create_class_offering' %}">Create Class Offering</a>
-             <a href="{% url 'make_announcement' %}">Make Announcement</a>
-             <a href="{% url 'post_form' %}">Post New Form</a>
-             <a href="{% url 'create_esign' %}">Create e-sign</a>
+             <section id="item1">
+               <a class="mainslide" href="{% url 'staff' %}">Home</a>
+               <div>
+                   <!-- Dropdown content here -->
+                   <!--a href="link to redirect">Name Of Item</a> -->
+               </div>
+             </section>
+             <section id="item2">
+               <a class="mainslide" href="#item2">Courses</a>
+               <div>
+                   <!-- Dropdown content here -->
+                   <hr style="width: 80%;">
+                   <a href="{% url 'create_classroom' %}">Create Classroom</a>
+                   <a href="{% url 'create_class_offering' %}">Create Class Offering</a>
+                   <a href="{% url 'classroom_management' %}">Classroom Management</a>
+                   <hr style="width: 80%;">
+               </div>
+             </section>
+             <section id="item3">
+               <a class="mainslide" href="#item3">Users</a>
+               <div>
+                   <!-- Dropdown content here -->
+                   <hr style="width: 80%;">
+                   <a href="{% url 'create_staff_user' %}">Create Staff User</a>
+                   <a href="{% url 'create_student_user' %}">Create Student User</a>
+                   <a href="{% url 'create_teacher_user' %}">Create Teacher User</a>
+                   <a href="{% url 'create_volunteer_user' %}">Create Volunteer User</a>
+                   <hr style="width: 80%;">
+               </div>
+             </section>
+             <section id="item4">
+               <a class="mainslide" href="#item4">Forms</a>
+               <div>
+                   <!-- Dropdown content here -->
+                   <hr style="width: 80%;">
+                   <a href="{% url 'form_overview' %}">Form Overview</a>
+                   <a href="{% url 'post_form' %}">Post New Form</a>
+                   <a href="{% url 'create_esign' %}">Create Esign</a>
+                   <hr style="width: 80%;">
+               </div>
+             </section>
+             <section id="item5">
+                 <a class="mainslide" href="#item5">Announcements</a>
+                 <div>
+                     <!-- Dropdown content here -->
+                   <hr style="width: 80%;">
+                   <a href="{% url 'make_announcement' %}">Create Announcement</a>
+                   <a href="{% url 'communication_manager' %}">Announcement Manager</a>
+                   <hr style="width: 80%;">
+               </div>
+             </section>
+             <section id="item6">
+                 <a class="mainslide" href="#item6">Notifications</a>
+                 <div>
+                     <!-- Dropdown content here -->
+                     <!-- TYLER FILL HERE
+                   <a href="">Notifications Manager</a>
+                   -->
+                   <hr style="width: 80%;">
+               </div>
+             </section>
+             <section id="item7">
+               <a class="mainslide" href="{% url 'attendance' %}">Attendance</a>
+               <div>
+                   <!-- Dropdown content here -->
+               </div>
+             </section>
           </div>
     </div>
   </body>
