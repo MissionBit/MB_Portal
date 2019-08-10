@@ -1,19 +1,30 @@
 {% extends "staff_base.html" %}
-{% load crispy_forms_tags %}
 
 {% block content %}
-
-<div class="sidenav">
-
-</div>
-
-    <div class="main-container">
-    <h1 style="padding-bottom: 20px"> Make Announcement </h1>
-        <form style="width: 400px" method="post">
-            {% csrf_token %}
-            {{ form|crispy }}
-        <br>
-        <button type="submit" class="btn btn-primary">Make Announcement</button>
-        </form>
-    </div>
+    <form style="width: 40%; padding-left: 10%" class="mui-form" method="post">
+      <legend>Announcement</legend><br>
+      <div class="mui-textfield">
+        {{ form.title }}
+        <label>Title</label>
+      </div>
+      <div class="mui-textfield">
+        {{ form.announcement }}
+        <label>Announcement</label>
+      </div><br>
+      <div class="mui-checkbox">
+        <label>Recipient Groups</label>
+        {{ form.recipient_groups }}
+      </div><br>
+      <div class="mui-checkbox">
+        <label>Recipient Classrooms</label>
+        {{ form.recipient_classrooms }}
+      </div><br>
+      <div class="mui-radio">
+        <label>Email Recipients</label>
+        {{ form.email_recipients }}
+      </div><br>
+      <div style="padding-left: 20px">
+        <button type="submit" class="mui-btn mui-btn--raised">Submit</button>
+      </div>
+    </form><br><br><br>
 {% endblock content %}
