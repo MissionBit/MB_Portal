@@ -92,7 +92,6 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "social_django.context_processors.backends",  # <- Social Django Oauth Google
                 "social_django.context_processors.login_redirect",  # <- Social Django Oauth Google
-                "staff.context_processors.social_media_info",  # <- Instagram
             ]
         },
     }
@@ -217,6 +216,4 @@ AZURE_CUSTOM_DOMAIN = os.getenv('AZURE_CUSTOM_DOMAIN', f'{AZURE_ACCOUNT_NAME}.bl
 AZURE_PROTOCOL = 'http' if AZURE_EMULATED_MODE else 'https'
 MEDIA_URL = os.getenv('MEDIA_URL', f'{AZURE_PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/')
 
-# Instagram Setup
-INSTATOKEN = os.getenv('INSTATOKEN')
-INSTAUSERID = os.getenv('INSTAUSERID')
+

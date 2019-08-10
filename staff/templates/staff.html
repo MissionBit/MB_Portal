@@ -3,15 +3,6 @@
 {% block content %}
 
 
-<div class="sidenav">
-    <a href="{% url 'create_class_offering' %}">Create Class Offering</a>
-    <a href="{% url 'create_classroom' %}">Create Classroom</a>
-    <a href="{% url 'make_announcement' %}">Create Announcement</a>
-    <a href="{% url 'post_form' %}">Create/Post Form</a>
-    <a href="{% url 'create_esign' %}">Create e-sign</a>
-</div>
-
-
 <div class="main-container">
     {% if messages %}
     {% for message in messages %}
@@ -25,14 +16,17 @@
       <h2> Announcements </h2><hr>
       {% for announcement in announcements reversed %}
             <div class="announcement">
-            <h4>{{ announcement.announcement.title }}</h4><hr>
-            <p>{{ announcement.announcement.announcement }}</p><hr>
-            <p>{{ announcement.announcement.created_by }} on {{ announcement.announcement.posted.date }}</p><br>
+            <h2>{{ announcement.announcement.title }}</h2><hr>
+            <p>{{ announcement.announcement.announcement }}</p><br>
+            <p>{{ announcement.announcement.created_by }} on {{ announcement.announcement.posted.date }}</p><hr/>
+            <br>
             <form method="POST">
               {% csrf_token %}
+                <p style="padding-bottom: 10px;">
+                    <button class="mui-btn">Dismiss</button>
+                </p>
               <input type="hidden" name="dismiss_announcement" value="true" />
               <input type="hidden" name="announcement" value="{{ announcement.announcement.id }}" />
-              <button class="button">Dismiss</button><br><br>
             </form>
             </div><br>
       {% endfor %}
@@ -41,14 +35,14 @@
       <h2> Forms </h2><hr>
         {% for form in forms reversed %}
             <div class="form">
-              <h4>{{ form.form.name }}</h4><hr>
+              <h2>{{ form.form.name }}</h2><hr>
               <p>{{ form.form.description }}</p><br>
               <p>{{ form.form.created_by }} on {{ form.form.posted.date }}</p><br><hr>
               {% if form.form.esign != NULL %}
                 <p><a href="{{ form.form.esign.template }}">Esign Here</a></p><br>
               {% endif %}
-              <p>
-              <a href="{{ form.form.url }}" class="btn btn-primary" target="_blank">Download Form</a>
+              <p style="padding-bottom: 10px;">
+                  <input type="button" class="mui-btn" value="Download Form" onclick="window.location.href='{{ form.form.url }}'"/>
               </p>
             </div><br>
         {% endfor %}
@@ -57,7 +51,7 @@
       <h2> Notifications </h2><hr>
         {% for notification in notifications %}
             <div class="notification">
-              <h4>{{ notification.subject }}</h4><hr>
+              <h2>{{ notification.subject }}</h2><hr>
               <div>
               <p>{{ notification.notification }}</p><br>
               <p>Mission Bit on {{ notification.notified.date }}</p><br>
@@ -66,26 +60,12 @@
                   {% csrf_token %}
                   <input type="hidden" name="acknowledge_notification" value="true" />
                   <input type="hidden" name="notification" value="{{ notification.id }}" />
-                  <button class="button">Dismiss</button><br><br>
+                  <p style="padding-bottom: 10px;">
+                     <button class="mui-btn">Dismiss</button>
+                  </p>
                 </form>
               </p>
               </div>
-            <script type="text/javascript">
-                $(document).ready(function(){
-                  $('.notification').addClass("notehidden");
-
-                  $('.notification').mouseover(function() {
-                    var $this = $(this);
-
-                    if ($this.hasClass("notehidden")) {
-                      $(this).removeClass("notehidden").addClass("notevisible");
-
-                    } else {
-                      $(this).removeClass("notevisible").addClass("notehidden");
-                    }
-                  });
-                });
-              </script>
             </div><br>
         {% endfor %}
     {% endif %}

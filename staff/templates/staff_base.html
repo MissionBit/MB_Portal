@@ -1,79 +1,108 @@
-{% load static %}
 <!DOCTYPE html>
-<html>
+{% load static %}
+<html lang="en">
 <head>
-  <title>Mission Bit</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-  <link href="https://fonts.googleapis.com/css?family=Maven+Pro:400,500&display=swap" rel="stylesheet">
-  <link rel="icon" href="https://github.com/Ernesto2004/MB_Portal_Design/blob/master/mblogo.png?raw=true"> <!-- LOGO ON THE TAB BAR -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-  <!-- INSTAFEED EXECUTION -->
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/instafeed.js/1.4.1/instafeed.min.js"></script>
-  <script type="text/javascript">
-    var galleryFeed = new Instafeed({
-    get: "user",
-    userId: 2052224602,
-    accessToken: "2052224602.1677ed0.1292ba7a40024b4091eb308010d4ac7e",
-    resolution: "standard_resolution",
-    useHttp: "true",
-    limit: 5,
-    target: "instafeed",
-    template: '<h4 class="slot-description">\{\{location\}\}</h4>' +
-        '<a class="instafeedimg" href="\{\{image\}\}" target="_blank"><img src="\{\{image\}\}"></a>' +
-        '<h4 class="slot-description">\{\{caption\}\}</h4><h4 class="slot-description"><img src="https://github.com/Ernesto2004/MB_Portal_Design/blob/master/heart-icon.png?raw=true" width="30" height="30" style="opacity: 0.75">\{\{likes\}\} ' +
-        '<img src="https://github.com/Ernesto2004/MB_Portal_Design/blob/master/comment-icon.png?raw=true" style="opacity: 0.75" width="30" height="30">\{\{model.comments.count\}\}' +
-        '</h4><hr style="width: 90%; height:2px;border:none;color:gray;background-color:gray; opacity: 0.3" />'
-        // CHANGE TEMPLATE IF YOU WANT TO
-  });
-  galleryFeed.run();
-</script>
-<style>
-  /* STYLE IMPORTING */
-  {% include 'css/design.css' %}
-</style>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//cdn.muicss.com/mui-0.9.43/css/mui.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,700&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://github.com/Ernesto2004/MB_Portal_Design/blob/master/mblogo.png?raw=true"> <!-- LOGO ON THE TAB BAR -->
+    <script src="//cdn.muicss.com/mui-0.9.43/js/mui.min.js"></script>
+    <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+    <title>Mission Bit</title>
+    <script type="text/javascript">
+        jQuery(function($) {
+          var $bodyEl = $('body'),
+              $sidedrawerEl = $('#sidedrawer');
 
+
+          function showSidedrawer() {
+            // show overlay
+            var options = {
+              onclose: function() {
+                $sidedrawerEl
+                  .removeClass('active')
+                  .appendTo(document.body);
+              }
+            };
+
+            var $overlayEl = $(mui.overlay('on', options));
+
+            // show element
+            $sidedrawerEl.appendTo($overlayEl);
+            setTimeout(function() {
+              $sidedrawerEl.addClass('active');
+            }, 20);
+          }
+
+
+          function hideSidedrawer() {
+            $bodyEl.toggleClass('hide-sidedrawer');
+          }
+
+
+          $('.js-show-sidedrawer').on('click', showSidedrawer);
+          $('.js-hide-sidedrawer').on('click', hideSidedrawer);
+        });
+    </script>
 </head>
-<nav class="navbar navbar-default navbar-fixed-top">
-  <div style="height: 80px; box-shadow: 5px 2px 5px rgb(200,200,200);" class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="https://github.com/MissionBit/">
-        <img src="https://raw.githubusercontent.com/MissionBit/missionbit.github.io/master/images/missionbit-logo.png"
-             height="55" width="205">
-      </a>
-    </div>
-    <ul style="padding-top: 17px; font-family: 'Maven Pro', sans-serif; font-size: 18px" class="nav navbar-nav">
-      <li><a href="{% url 'home-home' %}">{{ user.username }}</a></li>
-      <li><a href="{% url 'user_management' %}">Manage Users</a></li>
-      <li><a href="{% url 'attendance' %}">Attendance</a></li>
-      <li><a href="{% url 'classroom_management' %}">Classroom Management</a></li>
-      <li><a href="{% url 'form_overview' %}">Form Overview</a></li>
-    </ul>
-    <a href="{% url 'home-logout' %}">
-      <h5 class="logout">Logout</h5>
-    </a>
-  </div>
-</nav>
-<body>
-<!-- LEFT PANEL SETTINGS -->
-<div class="sidenav">
-    <a href="{% url 'staff' %}" class="ripplebutton">Staff Home</a>
-    <a href="{% url 'create_class_offering' %}" class="ripplebutton">Create Class Offering</a>
-    <a href="{% url 'make_announcement' %}" class="ripplebutton">Make Announcement</a>
-    <a href="{% url 'post_form' %}" class="ripplebutton">Post New Form</a>
-    <a href="{% url 'create_esign' %}" class="ripplebutton">Create e-sign</a>
-</div>
-<!-- RIGHT PANEL SETTINGS -->
-<div class="rsidenav">
-  <h2 style="text-align: center; padding-bottom: 18px; font-family: 'Maven Pro', sans-serif; font-size: 35px; color: #474747;"><a href="https://www.instagram.com/missionbit/?hl=en" target="_blank"><img src="https://cdn3.iconfinder.com/data/icons/transparent-on-dark-grey/500/icon-04-512.png" width="45" height="45" style="opacity: 0.85;"></a> Instagram Feed</h2><hr style="width: 90%; height:2px;border:none;color:gray;background-color:gray; opacity: 0.2" />
-  <div id="instafeed">
-    <!-- INSTAFEED STUFF DOWN HERE !!!DO NOT CODE DOWN BELOW!!! -->
-  </div>
-</div>
-{% block content %}
+<style>
+    /* STYLE IMPORTING */
+  {% include 'css/mui_assets.css' %}
+</style>
+<body class="hide-sidedrawer">
+    <header id="header" style="box-shadow: 0px 3px 35px 0px gray">
+      <div class="mui-appbar mui--appbar-line-height">
+        <div class="mui-container-fluid">
+          <a class="sidedrawer-toggle mui--visible-xs-inline-block mui--visible-sm-inline-block js-show-sidedrawer">☰</a>
+          <a class="sidedrawer-toggle mui--hidden-xs mui--hidden-sm js-hide-sidedrawer">☰</a>
+          <td class="mui--appbar-height"><a class="appbarnav" href="{% url 'user_management' %}">Manage Users   </a></td>
+          <td class="mui--appbar-height"><a class="appbarnav" href="{% url 'attendance' %}">Attendance </a></td>
+          <td class="mui--appbar-height"><a class="appbarnav" href="{% url 'classroom_management' %}">Classroom Management</a></td>
+          <td class="mui--appbar-height"><a class="appbarnav" href="{% url 'form_overview' %}">Form Overview</a></td>
+        </div>
+      </div>
+    </header>
+    <div id="content-wrapper">
+      <div class="mui--appbar-height"></div>
+      <div class="mui-container-fluid">
+        <br>
+        {% block content %}
 
-{% endblock %}
-</body>
+        {% endblock %}
+      </div>
+    </div>
+    <footer id="footer" style="background-color: #5c5c5c; text-align: center">
+      <div class="mui-container-fluid">
+        <!-- Links down below -->
+        <br>
+        <div style="text-align: center; vertical-align: text-bottom">
+            <br>
+            <br>
+        </div>
+      </div>
+      <h4>© Copyright 2019</h4>
+      <h5>bla-bla-bla</h5>
+    </footer>
+
+
+    <div id="sidedrawer" class="mui--no-user-select">
+          <div id="sidedrawer-brand" class="mui--appbar-line-height">
+          </div>
+          <div class="mui-divider"></div>
+            <br>
+        <a href="{% url 'home-home' %}"><p style="text-align: center; font-size: 25px;">{{ user.username }}</p></a>
+            <hr/>
+            <div class="sidenav-content">
+             <a href="{% url 'staff' %}">Home</a>
+             <a href="{% url 'create_class_offering' %}">Create Class Offering</a>
+             <a href="{% url 'make_announcement' %}">Make Announcement</a>
+             <a href="{% url 'post_form' %}">Post New Form</a>
+             <a href="{% url 'create_esign' %}">Create e-sign</a>
+          </div>
+    </div>
+  </body>
 </html>

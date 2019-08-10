@@ -1,0 +1,236 @@
+html,
+body {
+  height: 100%;
+  background-color: #eee;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+html,
+body,
+input,
+textarea,
+button {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
+}
+
+
+/**
+ * Layout CSS
+ */
+#header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 2;
+  transition: left 0.2s;
+}
+
+#sidedrawer {
+  position: fixed;
+  top:0;
+  bottom: 0;
+  width: 200px;
+  left: -200px;
+  overflow: auto;
+  z-index: 2;
+  background-color: #fff;
+  transition: transform 0.2s;
+}
+
+#content-wrapper {
+  min-height: 100%;
+  overflow-x: hidden;
+  margin-left: 0px;
+  transition: margin-left 0.2s;
+
+  /* sticky bottom */
+  margin-bottom: -160px;
+  padding-bottom: 160px;
+}
+
+#footer {
+  height: 160px;
+  margin-left: 0px;
+  transition: margin-left 0.2s;
+}
+
+@media (min-width: 768px) {
+  #header {
+    left: 200px;
+  }
+
+  #sidedrawer {
+    transform: translate(200px);
+  }
+
+  #content-wrapper {
+    margin-left: 200px;
+  }
+
+  #footer {
+    margin-left: 200px;
+  }
+
+  body.hide-sidedrawer #header {
+    left: 0;
+  }
+
+  body.hide-sidedrawer #sidedrawer {
+    transform: translate(0px);
+  }
+
+  body.hide-sidedrawer #content-wrapper {
+    margin-left: 0;
+  }
+
+  body.hide-sidedrawer #footer {
+    margin-left: 0;
+  }
+}
+
+
+/**
+ * Toggle Side drawer
+ */
+#sidedrawer.active {
+  transform: translate(200px);
+}
+
+
+/**
+ * Header CSS
+ */
+.sidedrawer-toggle {
+  color: #fff;
+  cursor: pointer;
+  font-size: 32px;
+  line-height: 20px;
+  margin-right: 20px;
+}
+
+.sidedrawer-toggle:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+
+/**
+ * Footer CSS
+ */
+#footer {
+  background-color: #0288D1;
+  color: #fff;
+}
+
+#footer a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://example.com/MaterialIcons-Regular.eot); /* For IE6-8 */
+  src: local('Material Icons'),
+    local('MaterialIcons-Regular'),
+    url(https://example.com/MaterialIcons-Regular.woff2) format('woff2'),
+    url(https://example.com/MaterialIcons-Regular.woff) format('woff'),
+    url(https://example.com/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+.sidenav-content a{
+  position: relative;
+  height: 30px;
+  text-align: center;
+  padding-top: 20px;
+  padding-left: 5px;
+  text-decoration: #333333;
+  font-size: 18px;
+  color: steelblue;
+  display: block;
+  transition: all 0.3s ease 0s;
+}
+
+.sidenav-content a:hover {
+  color: #ffffff;
+  padding-left: 10px;
+  padding-bottom: 16px;
+  background: gray;
+  overflow: hidden;
+}
+
+.announcement {
+  padding: 10px 15px 0px;
+  background-image: linear-gradient(to right bottom, #db1bb2 , #5300ff);
+  border-radius: 14px 14px 14px 14px;
+  color: white;
+  font-size: 20px;
+  box-shadow: 3px 3px 12px 5px lightgray;
+  width: 35%;
+}
+
+.form {
+  padding: 10px 15px 0px;
+  background-image: linear-gradient(to right bottom, #ff9b09 , #f65b11);
+  border-radius: 14px 14px 14px 14px;
+  font-size: 20px;
+  color: white;
+  box-shadow: 3px 3px 12px 5px lightgray;
+  width: 35%;
+}
+
+
+.notification {
+  padding: 10px 15px 0px;
+  background-image: linear-gradient(to right bottom, #0925ff , #11bdf6);
+  border-radius: 14px 14px 14px 14px;
+  color: white;
+  transition: all 0.3s ease 0s;
+  box-shadow: 3px 3px 12px 5px lightgray;
+  font-size: 20px;
+  width: 35%;
+}
+
+.appbarnav {
+    color: white;
+    font-size: 20px;
+    padding-left: 15px;
+    transition: all 0.2s ease 0s;
+}
+
+.appbarnav:hover{
+    color: lightskyblue;
+    text-decoration: none;
+}
+
+
+
