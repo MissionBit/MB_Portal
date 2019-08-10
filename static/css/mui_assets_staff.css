@@ -2,7 +2,7 @@ html,
 body {
   height: 100%;
   background-color: #eee;
-  font-family: 'Ubuntu', sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 
 html,
@@ -174,13 +174,17 @@ button {
   padding-top: 20px;
   padding-left: 5px;
   text-decoration: #333333;
-  font-size: 18px;
+  font-size: 16px;
   color: steelblue;
   display: block;
   transition: all 0.3s ease 0s;
 }
 
-.sidenav-content a:hover {
+.mainslide{
+    font-weight: bold;
+}
+
+.mainslide:hover {
   color: #ffffff;
   padding-left: 10px;
   padding-bottom: 16px;
@@ -217,6 +221,7 @@ button {
   transition: all 0.3s ease 0s;
   box-shadow: 3px 3px 12px 5px lightgray;
   font-size: 20px;
+    width: 35%;
 }
 
 .appbarnav {
@@ -230,6 +235,7 @@ button {
     color: lightskyblue;
     text-decoration: none;
 }
+
 
 .alert{
     padding-left: 5px;
@@ -245,4 +251,22 @@ button {
     display: none;
 }
 
+.sidenav-content section div{
+    display: none;
+}
+
+.sidenav-content section div a{
+    padding-bottom: 15px;
+    height: 20px;
+    font-size: 14px;
+}
+
+.sidenav-content section div a:hover{
+    background-color: lightgray;
+    height: 22px;
+}
+
+.sidenav-content section:target div{
+    display: block;
+}
 
