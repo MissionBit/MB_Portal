@@ -1,6 +1,11 @@
-{% load staticfiles %}
+{% load static %}
 
 <html>
+
+<style>
+  {% include 'css/landing_pg.css' %}
+</style>
+
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,20 +16,23 @@
     <link rel="stylesheet" href="//cdn.muicss.com/mui-0.9.43/extra/mui-colors.min.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <script src="//cdn.muicss.com/mui-0.9.43/extra/mui-combined.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+    <script>
+      new WOW().init();
+    </script>
   </head>
   <body>
-    <!-- Tutorial HTML goes here -->
+
     <header class="mui-appbar mui--z1">
-      <!-- Appbar HTML goes here -->
+
       <div class="mui-container">
         <table>
           <tbody>
           <tr class="mui--appbar-height">
-            <td class="mui--text-title">Brand.io</td>
+            <td class="mui--text-title">Mission Bit</td>
             <td class="mui--text-right">
               <ul class="mui-list--inline mui--text-body2">
-                <li><a href="www.espn.com">About</a></li>
-                <li><a href="www.theonion.com"><i class="fa fa-user"></i>Login</a></li>
+                <li><a class="mui--text-right" href="https://www.missionbit.com/about-us/">About</a></li>
               </ul>
             </td>
           </tr>
@@ -34,26 +42,28 @@
     </header>
 
     <div id="content-wrapper" class="mui--text-center">
-      <!-- Content HTML goes here -->
       <div class="mui--appbar-height"></div>
       <br>
+      <div class="mui--text-display3 row wow zoomInDown"><img class="logo" src="{% static 'logo-fb.png' %}"/> </div>
+      <form action="{% url 'social:begin' 'google-oauth2' %}">
+        <button type="submit" class="loginBtn loginBtn--google">LOGIN WITH GOOGLE</button>
+      </form>
+      <form action="{% url 'login' %}">
+        <button class="mui-btn mui-btn--raised">Login with Username</button>
+      </form>
+      <form action="{% url 'home-register' %}">
+        <button class="mui-btn mui-btn--raised">Register</button>
+      </form>
       <br>
-      <div class="mui--text-display3 row wow zoomInDown"><img src="{% static 'logo-fb.png' %}"/> </div>
       <br>
-      <br>
-      <button class="mui-btn mui-btn--raised">Get started</button>
-      <br>
-      <br>
-      <i class="fa fa-university fa-5x mui--text-display3 mui--color-pink-A100 row wow zoomIn" aria-hidden="true"></i>
     </div>
-    <footer>
-      <div class="mui-container mui--text-center">
-        Made with ♥ by <a href="https://www.muicss.com">MUICSS</a>
-      </div>
+
+    <footer class="footer">
+        <div style="text-align: center; vertical-align: top">
+        <h4>© Copyright 2019</h4>
+        </div>
     </footer>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
-    <script>
-      new WOW().init();
-    </script>
+
   </body>
+
 </html>
