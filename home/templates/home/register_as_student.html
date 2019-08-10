@@ -2,10 +2,6 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-      <div class="sidenav">
-        <a href="{% url 'social:begin' 'google-oauth2' %}">Sign In With Google</a>
-        <a href="{% url 'home-register' %}">Register</a><br>
-    </div>
 
   <div class="main-container">
   {% if messages %}
@@ -16,13 +12,29 @@
     {% endfor %}
     {% endif %}
 
-    <h3>Register As Mission Bit Student</h3>
-    <form method="post">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <br>
-    <button type="submit" class="btn btn-primary">Register</button>
-  </form>
+
+    <form style="width: 40%; padding-left: 12%; padding-top: 3%" class="mui-form" method="post">
+      <h3>Register As Mission Bit Student</h3>
+      {% csrf_token %}
+      <div class="mui-textfield">
+        Choose Username: {{ form.username }}
+      </div>
+      <div class="mui-textfield">
+        First Name: {{ form.first_name }}
+      </div>
+      <div class="mui-textfield">
+        Last Name: {{ form.last_name }}
+      </div>
+      <div class="mui-textfield">
+        Password: {{ form.password1 }}
+      </div>
+      <div class="mui-textfield">
+        Enter Same Password: {{ form.password1 }}
+      </div>
+      <button class="mui-btn" type="submit">Submit</button>
+      <br>
+      <br>
+    </form>
 
   </div>
 

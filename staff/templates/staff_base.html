@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="//cdn.muicss.com/mui-0.9.43/css/mui.min.css" rel="stylesheet" type="text/css" />
-    <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,700&display=swap" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
     <link rel="icon" href="https://github.com/Ernesto2004/MB_Portal_Design/blob/master/mblogo.png?raw=true"> <!-- LOGO ON THE TAB BAR -->
     <!-- MDL STUFF -->
 
@@ -14,8 +14,8 @@
     <!-- -->
     <script src="//cdn.muicss.com/mui-0.9.43/js/mui.min.js"></script>
     <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/mui_assets.css' %}">
     <title>Mission Bit</title>
     <script type="text/javascript">
         jQuery(function($) {
@@ -35,7 +35,7 @@
 
             var $overlayEl = $(mui.overlay('on', options));
 
-            // show element
+
             $sidedrawerEl.appendTo($overlayEl);
             setTimeout(function() {
               $sidedrawerEl.addClass('active');
@@ -53,22 +53,18 @@
         });
     </script>
 </head>
-<style>
-    /* STYLE IMPORTING */
-  {% include 'css/mui_assets.css' %}
-</style>
+
 <body class="hide-sidedrawer">
     <header id="header" style="box-shadow: 0px 3px 35px 0px gray">
       <div class="mui-appbar mui--appbar-line-height">
         <div class="mui-container-fluid">
           <a class="sidedrawer-toggle mui--visible-xs-inline-block mui--visible-sm-inline-block js-show-sidedrawer">☰</a>
           <a class="sidedrawer-toggle mui--hidden-xs mui--hidden-sm js-hide-sidedrawer">☰</a>
-          <td class="mui--appbar-height"><a class="appbarnav" href="{% url 'user_management' %}">Manage Users   </a></td>
-          <td class="mui--appbar-height"><a class="appbarnav" href="{% url 'attendance' %}">Attendance </a></td>
+          <td class="mui--appbar-height"><a class="appbarnav" href="{% url 'user_management' %}">Manage Users</a></td>
+          <td class="mui--appbar-height"><a class="appbarnav" href="{% url 'attendance' %}">Attendance</a></td>
           <td class="mui--appbar-height"><a class="appbarnav" href="{% url 'classroom_management' %}">Classroom Management</a></td>
           <td class="mui--appbar-height"><a class="appbarnav" href="{% url 'form_overview' %}">Form Overview</a></td>
         </div>
-        <template
       </div>
     </header>
     <div id="content-wrapper">

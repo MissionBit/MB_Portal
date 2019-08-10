@@ -2,10 +2,6 @@
 
 <html>
 
-<style>
-  {% include 'css/landing_pg.css' %}
-</style>
-
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -15,6 +11,7 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
     <link rel="stylesheet" href="//cdn.muicss.com/mui-0.9.43/extra/mui-colors.min.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/landing_pg.css' %}">
     <script src="//cdn.muicss.com/mui-0.9.43/extra/mui-combined.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
     <script>
@@ -24,7 +21,6 @@
   <body>
 
     <header class="mui-appbar mui--z1">
-
       <div class="mui-container">
         <table>
           <tbody>
@@ -46,13 +42,19 @@
       <br>
       <div class="mui--text-display3 row wow zoomInDown"><img class="logo" src="{% static 'logo-fb.png' %}"/> </div>
       <form action="{% url 'social:begin' 'google-oauth2' %}">
-        <button type="submit" class="loginBtn loginBtn--google">LOGIN WITH GOOGLE</button>
+        <button type="submit" class="loginBtn loginBtn--google mui-btn mui-btn--raised">LOGIN WITH GOOGLE</button>
       </form>
       <form action="{% url 'login' %}">
         <button class="mui-btn mui-btn--raised">Login with Username</button>
       </form>
-      <form action="{% url 'home-register' %}">
-        <button class="mui-btn mui-btn--raised">Register</button>
+      <form action="{% url 'home-register_as_student' %}">
+        <button class="mui-btn mui-btn--raised">Register as Student</button>
+      </form>
+      <form action="{% url 'home-register_as_volunteer' %}">
+        <button class="mui-btn mui-btn--raised">Register as Volunteer</button>
+      </form>
+      <form action="{% url 'home-register_as_donor' %}">
+        <button class="mui-btn mui-btn--raised">Register as Donor</button>
       </form>
       <br>
       <br>
