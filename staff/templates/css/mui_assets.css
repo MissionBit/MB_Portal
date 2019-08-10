@@ -217,7 +217,6 @@ button {
   transition: all 0.3s ease 0s;
   box-shadow: 3px 3px 12px 5px lightgray;
   font-size: 20px;
-  width: 35%;
 }
 
 .appbarnav {
@@ -232,5 +231,18 @@ button {
     text-decoration: none;
 }
 
+.alert{
+    padding-left: 5px;
+    vertical-align: center;
+    background-color: #4CAF50;
+    height: 40px;
+    width: 70%;
+    font-size: 25px;
+    border-radius: 14px 14px 14px 14px;
+}
+
+.alert-close{
+    display: none;
+}
 
 
