@@ -2,117 +2,98 @@
 
 {% block content %}
 
-<style>
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 75%;
-}
-
-td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-
-tr:nth-child(even) {
-  background-color: cadetblue;
-}
-
-.buttonSub {
-   font-size: 10px;
-   font-family: "American Typewriter";
-   border-radius: 14px;
-   background-color: white;
-   color: #4CAF50;
-   border: 2px solid #000080;
-}
-</style>
-
-
-<div class="sidenav">
-  <a href={% url 'staff' %}>Staff Home</a>
-</div>
 
     <div class="main-container">
     <h1 style="padding-bottom: 20px"> Communication Manager </h1><hr>
     {% if announcements %}
-      <h3>Announcements</h3><hr>
-      <table>
-        <tr>
-          <th>Title</th>
-          <th>Announcement</th>
-          <th>Created By - Date</th>
-          <th>Delete</th>
-        </tr>
-      {% for announcement in announcements %}
-        <tr>
-          <td><h5>{{ announcement.title }}</h5></td>
-          <td><p>{{ announcement.announcement }}</p></td>
-          <td><p>{{ announcement.created_by }} - {{ announcement.posted }}</p></td>
-          <td>
-            <form method="post">
-              {% csrf_token %}
-              <input type="hidden" name="delete_announcement" value="True" />
-              <input type="hidden" name="announcement_id" value="{{ announcement.id }}" />
-              <button class="buttonSub" type="submit">Delete Announcement</button>
-            </form>
-          </td>
-        </tr>
-      {% endfor %}
-      </table>
+      <div style="padding-left: 10%">
+        <div style="width: 70%" class="mui-panel">
+          <h3>Announcements</h3><hr>
+          <table class="mui-table mui-table--bordered">
+            <tr>
+              <th>Title</th>
+              <th>Announcement</th>
+              <th>Created By - Date</th>
+              <th>Delete</th>
+            </tr>
+            {% for announcement in announcements %}
+            <tr>
+              <td><h5>{{ announcement.title }}</h5></td>
+              <td><p>{{ announcement.announcement }}</p></td>
+              <td><p>{{ announcement.created_by }} - {{ announcement.posted.date }}</p></td>
+              <td>
+                <form method="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="delete_announcement" value="True" />
+                  <input type="hidden" name="announcement_id" value="{{ announcement.id }}" />
+                  <button class="mui-btn mui-btn--raised" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+      </div>
     {% endif %}
     {% if notifications %}
-      <h3>Notifications</h3><hr>
-      <table>
-        <tr>
-          <th>Subject</th>
-          <th>Notification</th>
-          <th>Notified User - Date</th>
-          <th>Delete</th>
-        </tr>
-      {% for notification in notifications %}
-        <tr>
-          <td><h5>{{ notification.subject }}</h5></td>
-          <td><p>{{ notification.notification }}</p></td>
-          <td><p>{{ notification.user }} - {{ notification.notified }}</p></td>
-          <td>
-            <form method="post">
-              {% csrf_token %}
-              <input type="hidden" name="delete_notification" value="True">
-              <input type="hidden" name="notification_id" value="{{ notification.id }}">
-              <button class="buttonSub" type="submit">Delete Notification</button>
-            </form>
-          </td>
-        </tr>
-      {% endfor %}
-      </table>
+     <div style="padding-left: 10%">
+      <div style="width: 70%" class="mui-panel">
+        <h3>Notifications</h3><hr>
+        <table class="mui-table mui-table--bordered">
+          <tr>
+            <th>Subject</th>
+            <th>Notification</th>
+            <th>Notified User - Date</th>
+            <th>Delete</th>
+          </tr>
+            {% for notification in notifications %}
+          <tr>
+            <td><h5>{{ notification.subject }}</h5></td>
+            <td><p>{{ notification.notification }}</p></td>
+            <td><p>{{ notification.user }} - {{ notification.notified.date }}</p></td>
+            <td>
+              <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="delete_notification" value="True">
+                <input type="hidden" name="notification_id" value="{{ notification.id }}">
+                <button class="mui-btn mui-btn--raised" type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+        </table>
+      </div>
+     </div>
       {% endif %}
       {% if forms %}
-      <h3>Forms</h3><hr>
-      <table>
-        <tr>
-          <th>Name</th>
-          <th>description</th>
-          <th>Created By - Date</th>
-          <th>Delete</th>
-        </tr>
-      {% for form in forms %}
-        <tr>
-          <td><h5>{{ form.name }}</h5></td>
-          <td><p>{{ form.description }}</p></td>
-          <td><p>{{ form.created_by }} - {{ form.posted }}</p></td>
-          <td>
-            <form method="post">
-              {% csrf_token %}
-              <input type="hidden" name="delete_form" value="True">
-              <input type="hidden" name="form_id" value="{{ form.id }}">
-              <button class="buttonSub" type="submit">Delete Form</button>
-            </form>
-          </td>
-        </tr>
-      {% endfor %}
-      </table>
+     <div style="padding-left: 10%">
+      <div style="width: 70%" class="mui-panel">
+        <h3>Forms</h3><hr>
+        <table class="mui-table mui-table--bordered">
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Created By - Date</th>
+            <th>Delete</th>
+          </tr>
+        {% for form in forms %}
+          <tr>
+            <td><h5>{{ form.name }}</h5></td>
+            <td><p>{{ form.description }}</p></td>
+            <td><p>{{ form.created_by }} - {{ form.posted.date }}</p></td>
+            <td>
+              <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="delete_form" value="True">
+                <input type="hidden" name="form_id" value="{{ form.id }}">
+                <button class="mui-btn mui-btn--raised" type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+        </table>
+      </div>
+     </div>
       {% endif %}
     </div>
 {% endblock content %}
