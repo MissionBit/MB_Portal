@@ -22,7 +22,6 @@ from home.forms import (
 )
 from .staff_views_helper import *
 from attendance.views import get_date_from_template_returned_string
-from social_django.models import UserSocialAuth
 from home.models.models import Classroom, Form, Esign, Notification, Announcement
 import os
 
@@ -59,31 +58,15 @@ def create_staff_user(request):
     if request.method == "POST":
         form = CreateStaffForm(request.POST)
         if form.is_valid():
-            form.save()
-            random_password = DjangoUser.objects.make_random_password()
-            new_user = create_user_with_profile(form, random_password)
-            email = form.cleaned_data.get("email")
-            staff_group = Group.objects.get(name="staff")
-            staff_group.user_set.add(new_user)
-            UserSocialAuth.objects.create(
-                uid=form.cleaned_data.get("email"),
-                user_id=new_user.userprofile.user_id,
-                provider="google-oauth2",
-            )
-            first_name = form.cleaned_data.get("first_name")
-            messages.success(
-                request, f"Staff Account Successfully Created For {first_name}"
-            )
-            email_new_user(
-                request, email, first_name, "staff", new_user.username, random_password
-            )
+            save_user_to_salesforce(request, form)
+            create_mission_bit_user(request, form, "staff")
             return redirect("staff")
         else:
             messages.error(
                 request,
                 "Staff User NOT created, your form was not valid, please try again.",
             )
-            return redirect("staff")
+            return redirect("create_staff_user")
     form = CreateStaffForm()
     return render(request, "create_staff_user.html", {"form": form})
 
@@ -93,36 +76,15 @@ def create_teacher_user(request):
     if request.method == "POST":
         form = CreateTeacherForm(request.POST)
         if form.is_valid():
-            form.save()
-            random_password = DjangoUser.objects.make_random_password()
-            new_user = create_user_with_profile(form, random_password)
-            email = form.cleaned_data.get("email")
-            teacher_group = Group.objects.get(name="teacher")
-            teacher_group.user_set.add(new_user)
-            UserSocialAuth.objects.create(
-                uid=form.cleaned_data.get("email"),
-                user_id=new_user.userprofile.user_id,
-                provider="google-oauth2",
-            )
-            first_name = form.cleaned_data.get("first_name")
-            messages.success(
-                request, f"Teacher Account Successfully Created For {first_name}"
-            )
-            email_new_user(
-                request,
-                email,
-                first_name,
-                "teacher",
-                new_user.username,
-                random_password,
-            )
+            save_user_to_salesforce(request, form)
+            create_mission_bit_user(request, form, "teacher")
             return redirect("staff")
         else:
             messages.error(
                 request,
                 "Teacher User NOT created, your form was not valid, please try again.",
             )
-            return redirect("staff")
+            return redirect("create_teacher_user")
     form = CreateTeacherForm()
     return render(request, "create_teacher_user.html", {"form": form})
 
@@ -133,35 +95,14 @@ def create_student_user(request):
         form = CreateStudentForm(request.POST)
         if form.is_valid():
             form.save()
-            random_password = DjangoUser.objects.make_random_password()
-            new_user = create_user_with_profile(form, random_password)
-            email = form.cleaned_data.get("email")
-            student_group = Group.objects.get(name="student")
-            student_group.user_set.add(new_user)
-            UserSocialAuth.objects.create(
-                uid=form.cleaned_data.get("email"),
-                user_id=new_user.userprofile.user_id,
-                provider="google-oauth2",
-            )
-            first_name = form.cleaned_data.get("first_name")
-            messages.success(
-                request, f"Student Account Successfully Created For {first_name}"
-            )
-            email_new_user(
-                request,
-                email,
-                first_name,
-                "student",
-                new_user.username,
-                random_password,
-            )
+            create_mission_bit_user(request, form, "student")
             return redirect("staff")
         else:
             messages.error(
                 request,
                 "Student User NOT created, your form was not valid, please try again.",
             )
-            return redirect("staff")
+            return redirect("create_student_user")
     form = CreateStudentForm()
     return render(request, "create_student_user.html", {"form": form})
 
@@ -171,36 +112,15 @@ def create_volunteer_user(request):
     if request.method == "POST":
         form = CreateVolunteerForm(request.POST)
         if form.is_valid():
-            form.save()
-            random_password = DjangoUser.objects.make_random_password()
-            new_user = create_user_with_profile(form, random_password)
-            email = form.cleaned_data.get("email")
-            volunteer_group = Group.objects.get(name="volunteer")
-            volunteer_group.user_set.add(new_user)
-            UserSocialAuth.objects.create(
-                uid=form.cleaned_data.get("email"),
-                user_id=new_user.userprofile.user_id,
-                provider="google-oauth2",
-            )
-            first_name = form.cleaned_data.get("first_name")
-            messages.success(
-                request, f"Volunteer Account Successfully Created For {first_name}"
-            )
-            email_new_user(
-                request,
-                email,
-                first_name,
-                "volunteer",
-                new_user.username,
-                random_password,
-            )
+            save_user_to_salesforce(request, form)
+            create_mission_bit_user(request, form, "volunteer")
             return redirect("staff")
         else:
             messages.error(
                 request,
                 "Volunteer User NOT created, your form was not valid, please try again.",
             )
-            return redirect("staff")
+            return redirect("create_volunteer_user")
     form = CreateVolunteerForm()
     return render(request, "create_volunteer_user.html", {"form": form})
 

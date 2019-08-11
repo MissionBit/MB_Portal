@@ -1,19 +1,22 @@
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.models import Group
+from django.shortcuts import redirect
 from home.models.salesforce import ClassEnrollment, Contact, ClassOffering
 from home.models.models import Announcement, UserProfile, Classroom, ClassroomMembership, Attendance, Session, FormDistribution, Form, AnnouncementDistribution
+from social_django.models import UserSocialAuth
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
 from django.contrib import messages
 from datetime import timedelta, datetime
+from salesforce.dbapi.exceptions import *
 
 
 def create_user_with_profile(form, random_password):
+    username = validate_username("%s.%s" % (form.cleaned_data.get("first_name"), form.cleaned_data.get("last_name")))
     new_user = DjangoUser.objects.create_user(
-        username="%s.%s"
-        % (form.cleaned_data.get("first_name"), form.cleaned_data.get("last_name")),
+        username=username,
         email=form.cleaned_data.get("email"),
         first_name=form.cleaned_data.get("first_name"),
         last_name=form.cleaned_data.get("last_name"),
@@ -24,8 +27,18 @@ def create_user_with_profile(form, random_password):
     return new_user
 
 
+def validate_username(username):
+    i = 1
+    while DjangoUser.objects.filter(username=username).count() > 0:
+        username = username + str(i)
+        i += 1
+    return username
+
+
 def parse_new_user(new_user, form):
     birthdate = form.cleaned_data.get("birthdate")
+    if birthdate is None:
+        birthdate = datetime.strptime("January 1, 1901", "%B %d, %Y")
     new_user.userprofile.change_pwd = True
     new_user.userprofile.salesforce_id = "%s%s%s%s%s" % (
         form.cleaned_data.get("first_name")[:3].lower(),
@@ -36,6 +49,42 @@ def parse_new_user(new_user, form):
     )
     new_user.userprofile.date_of_birth = birthdate
     return new_user
+
+
+def save_user_to_salesforce(request, form):
+    try:
+        form.save()
+    except SalesforceError:
+        messages.error(
+            request,
+            "Error Saving User To Salesforce Database.",
+        )
+        return redirect("staff")
+
+
+def create_mission_bit_user(request, form, group):
+    random_password = DjangoUser.objects.make_random_password()
+    new_user = create_user_with_profile(form, random_password)
+    email = form.cleaned_data.get("email")
+    student_group = Group.objects.get(name=group)
+    student_group.user_set.add(new_user)
+    UserSocialAuth.objects.create(
+        uid=form.cleaned_data.get("email"),
+        user_id=new_user.userprofile.user_id,
+        provider="google-oauth2",
+    )
+    first_name = form.cleaned_data.get("first_name")
+    messages.success(
+        request, f"Student Account Successfully Created For {first_name}"
+    )
+    email_new_user(
+        request,
+        email,
+        first_name,
+        group,
+        new_user.username,
+        random_password,
+    )
 
 
 def enroll_in_class(form, contact):
@@ -107,10 +156,10 @@ def generate_classroom_sessions_and_attendance(classroom):
     classroom_students = get_users_of_type_from_classroom(classroom, "student")
     attendances = [Attendance(
             student_id=student.id,
-            session_id=sessions[x].id,
+            session_id=session.id,
             classroom_id=classroom.id,
-            date=day,
-        ) for student in classroom_students for x, day in enumerate(dates)]
+            date=session.date,
+        ) for student in classroom_students for session in sessions]
     Attendance.objects.bulk_create(attendances)
 
 
