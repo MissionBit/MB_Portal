@@ -3,19 +3,45 @@
 
 {% block content %}
 
-
-<div class="sidenav">
-
-</div>
-
-    <div class="main-container">
-    <h1 style="padding-bottom: 20px"> Create Staff User </h1>
-        <form method="post">
+  <div style="padding-left: 10%">
+    <div style="width: 70%" class="mui-panel">
+        <form class="mui-form" method="post">
+          <legend>Create Staff User</legend>
             {% csrf_token %}
-            {{ form|crispy }}
-        <br>
-        <button type="submit" class="btn btn-primary">Create User</button>
+            <div class="mui-textfield mui-textfield--float-label">
+            <label>First Name*</label>
+            {{ form.first_name }}
+            </div>
+            <div class="mui-textfield mui-textfield--float-label">
+            <label>Last Name*</label>
+            {{ form.last_name }}
+            </div>
+            <div class="mui-textfield">
+            <label>Email</label>
+            {{ form.email }}
+            </div>
+            <div class="mui-textfield">
+            <label>Birth date</label>
+            {{ form.birthdate }}
+            </div>
+            <div class="mui-textfield">
+            <label>Title</label>
+            {{ form.title }}
+            </div>
+            <div class="mui-textfield">
+            <label>Account</label>
+            {{ form.account }}
+            </div>
+            <div class="mui-textfield">
+            <label>Owner</label>
+            {{ form.owner }}
+            </div>
+        <button type="submit" class="mui-btn mui-btn--raised">Create User</button>
         </form>
     </div>
+    </div>
+
+
+
 
 {% endblock content %}

@@ -7,13 +7,42 @@
 
 </div>
 
-    <div class="main-container">
-    <h1 style="padding-bottom: 20px"> Create Class Offering </h1>
-        <form method="post">
+  <div style="padding-left: 10%">
+    <div style="width: 60%" class="mui-panel">
+        <form style="width: 40%; padding-left: 10%" class="mui-form" method="post">
             {% csrf_token %}
-            {{ form|crispy }}
+            <legend>Create Class Offering</legend>
+            <div class="mui-textfield mui-textfield--float-label">
+              {{ form.name}}
+              <label>Name*</label>
+            </div>
+            <div class="mui-textfield mui-textfield--float-label">
+              {{ form.description}}
+              <label>Description*</label>
+            </div>
+            <div class="mui-textfield">
+              <label>Instructor*</label>
+              {{ form.instructor }}
+            </div>
+            <div class="mui-textfield">
+              <label>Start Date*</label>
+              {{ form.start_date }}
+            </div>
+            <div class="mui-textfield">
+              <label>End Date*</label>
+              {{ form.end_date }}
+            </div>
+            <div class="mui-textfield">
+              <label>Meeting Days*</label>
+              {{ form.meeting_days }}
+            </div>
+            <div class="mui-textfield">
+              <label>Created By*</label>
+              {{ form.created_by }}
+            </div>
         <br>
-        <button type="submit" class="btn btn-primary">Create Class Offering</button>
+        <button type="submit" class="mui-btn mui-btn--primary">Create Class Offering</button>
         </form>
     </div>
+  </div>
 {% endblock content %}

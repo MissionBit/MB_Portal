@@ -1,142 +1,104 @@
-{% extends "home/home.html" %}
+{% extends "staff_base.html" %}
 
 {% block content %}
 
-<style>
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 75%;
-}
-
-td, th {
-  border: 1px solid #dddddd;
-  text-align: center;
-  padding: 8px;
-}
-
-tr:nth-child(even) {
-  background-color: cadetblue;
-}
-
-.button {
-   font-size: 10px;
-   font-family: "American Typewriter";
-   border-radius: 14px;
-   background-color: white;
-   color: #4CAF50;
-   border: 2px solid #000080;
-}
-.buttonSub {
-   font-size: 14px;
-   font-family: "American Typewriter";
-   border-radius: 18px;
-   background-color: white;
-   color: #4CAF50;
-   border: 2px solid #000080;
-}
-</style>
-
-<div class="sidenav">
-  <li><a href="{% url 'home-home' %}">Home</a></li>
-</div>
-
-<div class="main-container">
-    {% if course %}
-    <h1 style="padding-bottom: 30px"> Attendance for {{ course }} </h1>
-      <table>
-      <tr>
-        <th>Date</th>
-        <th>Daily Attendance</th>
-        <th>Take Attendance</th>
-        <th>Send Absent Notifications</th>
-      </tr>
-      {% for date in dates %}
-      <tr>
-        <td>{{ date }}</td>
-        <td>{{ daily_attendance|get_item:date }}%</td>
-        <td>
-        <form action= "{% url 'take_attendance' %}" method="GET">
-          {% csrf_token %}
-          <input type="hidden" name="date" value="{{ date }}" />
-          <input type="hidden" name="course_id" value={{ course_id }} />
-          <input type="hidden" name="date_id" value={{ id }} />
-          <button class="button" type="submit">View/Take Attendance</button>
-        </form>
-        </td>
-        <td>
-          <form action= "{% url 'notify_absent_students' %}" method="GET">
-          {% csrf_token %}
-          <input type="hidden" name="date" value="{{ date }}" />
-          <input type="hidden" name="course_id" value={{ course_id }} />
-          <input type="hidden" name="date_id" value={{ id }} />
-          <button class="button" type="submit">Notify Absent Students</button>
+<div style="padding-left: 10%">
+  <div style="width: 90%" class="mui-panel">
+      {% if course %}
+      <h1 style="padding-bottom: 30px"> Attendance for {{ course }} </h1>
+        <table class="mui-table mui-table--bordered">
+        <tr>
+          <th>Date</th>
+          <th>Daily Attendance</th>
+          <th>Take Attendance</th>
+          <th>Send Absent Notifications</th>
+        </tr>
+        {% for date in dates %}
+        <tr>
+          <td>{{ date }}</td>
+          <td>{{ daily_attendance|get_item:date }}%</td>
+          <td>
+          <form action= "{% url 'take_attendance' %}" method="GET">
+            {% csrf_token %}
+            <input type="hidden" name="date" value="{{ date }}" />
+            <input type="hidden" name="course_id" value={{ course_id }} />
+            <input type="hidden" name="date_id" value={{ id }} />
+            <button class="mui-btn mui-btn--primary mui-btn--small" type="submit">View/Take</button>
           </form>
-        </td>
-      </tr>
-    {% endfor %}
-    </table>
-    {% elif attendance_objects %}
-    <h1 style="padding-bottom: 30px"> {{ course_name }} {{ attendance_objects.first.date }} </h1>
-    <form action= "{% url 'attendance' %}" method="POST" style="width: 80%">
-    {% csrf_token %}
-      <table>
-      <tr>
-        <th>Date</th>
-        <th>Student</th>
-        <th>Status</th>
-        <th>Current Status</th>
-      </tr>
-      {% for attendance_object in attendance_objects %}
-      <tr>
-        <td>{{ attendance_object.date }}</td>
-        <td>{{ attendance_object.student.first_name }} {{ attendance_object.student.last_name }}</td>
-        <td>
-            <select name="{{ attendance_object.student.first_name }} {{ attendance_object.student.last_name }}">
-              <option value="{{ attendance_object.presence }}">-----------</option>
-              <option value="Present">Present</option>
-              <option value="Absent">Absent</option>
-              <option value="Late">Late</option>
-              <option value="Excused">Excused</option>
-            </select>
-        </td>
-        <td>
-          {{ attendance_object.presence }}
-        </td>
-      </tr>
+          </td>
+          <td>
+            <form action= "{% url 'notify_absent_students' %}" method="GET">
+            {% csrf_token %}
+            <input type="hidden" name="date" value="{{ date }}" />
+            <input type="hidden" name="course_id" value={{ course_id }} />
+            <input type="hidden" name="date_id" value={{ id }} />
+            <button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Send</button>
+            </form>
+          </td>
+        </tr>
       {% endfor %}
       </table>
-      <input type="hidden" name="attendance_taken" value="true" />
-      <input type="hidden" name="date" value="{{ attendance_objects.first.date }}" />
-      <input type="hidden" name="course_id" value="{{ course_id }}" />
-      <div style="padding-top: 20px">
-        <button class="buttonSub" type="submit"> Submit </button>
-      </div>
-    </form>
-    {% else %}
-    <h1 style="padding-bottom: 30px"> Attendance Home </h1>
-      <table>
-      <tr>
-        <th>Course</th>
-        <th>Teacher</th>
-        <th>Overall Attendance</th>
-        <th>View Attendance</th>
-      </tr>
-      {% for classroom in classrooms %}
-      <tr>
-        <td>{{ classroom.course }}</td>
-        <td>{{ classroom.teacher }}</td>
-        <td>{{ attendance_averages|get_item:classroom.course }}%</td>
-        <td>
-          <form method="GET">
-            <button class="button" type="submit" name="course_id" value="{{ classroom.id }}">View Class Attendance</button>
-          </form>
-        </td>
-      </tr>
-    {% endfor %}
-    </table>
-    {% endif %}
+      {% elif attendance_objects %}
+      <h1> {{ course_name }} {{ attendance_objects.first.date }} </h1>
+      <form action= "{% url 'attendance' %}" method="POST">
+      {% csrf_token %}
+        <table class="mui-table mui-table--bordered">
+        <tr>
+          <th>Date</th>
+          <th>Student</th>
+          <th>Status</th>
+          <th>Current Status</th>
+        </tr>
+        {% for attendance_object in attendance_objects %}
+        <tr>
+          <td>{{ attendance_object.date }}</td>
+          <td>{{ attendance_object.student.first_name }} {{ attendance_object.student.last_name }}</td>
+          <td>
+              <select name="{{ attendance_object.student.first_name }} {{ attendance_object.student.last_name }}">
+                <option value="{{ attendance_object.presence }}">-----------</option>
+                <option value="Present">Present</option>
+                <option value="Absent">Absent</option>
+                <option value="Late">Late</option>
+                <option value="Excused">Excused</option>
+              </select>
+          </td>
+          <td>
+            {{ attendance_object.presence }}
+          </td>
+        </tr>
+        {% endfor %}
+        </table>
+        <input type="hidden" name="attendance_taken" value="true" />
+        <input type="hidden" name="date" value="{{ attendance_objects.first.date }}" />
+        <input type="hidden" name="course_id" value="{{ course_id }}" />
+        <div style="padding-top: 20px">
+          <button class="mui-btn mui-btn--primary mui-btn--small" type="submit"> Submit </button>
+        </div>
+      </form>
+      {% else %}
+        <h1 style="padding-left: 10px"> Attendance Home </h1>
+        <table class="mui-table mui-table--bordered">
+        <tr>
+          <th>Course</th>
+          <th>Overall Attendance</th>
+          <th>View Attendance</th>
+        </tr>
+        {% for classroom in classrooms %}
+        <tr>
+          <td>{{ classroom.course }}</td>
+          <td>{{ attendance_averages|get_item:classroom.course }}%</td>
+          <td>
+            <form method="GET">
+              <button class="mui-btn mui-btn--primary mui-btn--small" type="submit" name="course_id" value="{{ classroom.id }}">View Class Attendance</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+      </table>
+      {% endif %}
+  </div>
 </div>
+
 
 {% endblock content %}
 

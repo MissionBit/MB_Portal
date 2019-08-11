@@ -3,17 +3,37 @@
 
 {% block content %}
 
-<div class="sidenav">
-  <a href={% url 'staff' %}>Staff Home</a>
-</div>
-
-    <div class="main-container">
-    <h1 style="padding-bottom: 20px"> Post a Form </h1>
-        <form enctype="multipart/form-data" method="post">
+        <form style="width: 40%; padding-left: 10%" class="mui-form" enctype="multipart/form-data" method="post">
+          <legend>Post Form</legend>
             {% csrf_token %}
-            {{ form|crispy }}
-        <br>
-        <button type="submit" class="btn btn-primary">Post Form</button>
+            <div class="mui-textfield mui-textfield--float-label">
+              {{ form.name }}
+              <label>Form Title</label>
+            </div>
+            <div class="mui-textfield mui-textfield--float-label">
+              {{ form.description }}
+              <label>Description</label>
+            </div>
+            <div class="mui-textfield file-upload">
+              <label>Form</label><br>
+              {{ form.form }}
+            </div>
+            <div class="mui-textfield select2-dropdown">
+              <label>E-Sign</label><br>
+              {{ form.esign }}
+            </div>
+            <div class="mui-checkbox">
+              <label>Recipient Groups</label>
+              {{ form.recipient_groups }}
+            </div><br>
+            <div class="mui-checkbox">
+              <label>Recipient Classrooms</label>
+              {{ form.recipient_classrooms }}
+            </div><br>
+            <div class="mui-radio">
+              <label>Email Recipients</label>
+              {{ form.email_recipients }}
+            </div><br>
+          <button type="submit" class="mui-btn mui-btn--raised mui-btn--primary">Post Form</button>
         </form>
-    </div>
 {% endblock content %}

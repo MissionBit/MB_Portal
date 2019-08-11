@@ -2,10 +2,9 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-
-    <div class="main-container">
-    <h1 style="padding-bottom: 20px"> Form Overview </h1>
-    <hr>
+    <div style="padding-left: 10%">
+      <div style="width: 95%" class="mui-panel">
+        <h1 style="padding-bottom: 20px"> Form Overview </h1>
         {% if outstanding_form_dict %}
           {% for form_name, distributions in outstanding_form_dict.items %}
           <table class="mui-table mui-table--bordered">
@@ -14,25 +13,24 @@
               <th>Form Name</th>
               <th>Distribution</th>
               <th>Submitted</th>
-              <th>Mark Submitted</th>
               <th></th>
             </tr>
             {% for distribution in distributions %}
               <tr>
-              <form method="POST">
                 <td>{{ form_name }}</td>
                 <td>{{ distribution.user.first_name }} {{ distribution.user.last_name }}</td>
                 <td>{{ distribution.submitted }}</td>
                 <td>
+                  <form method="POST">
                   <div>
                     {% csrf_token %}
-                    <small>{{ form|crispy }}</small>
+                    <small>Submitted: &ensp; {{ form.submitted }} &emsp;&emsp;</small>
+                    <button class="mui-btn mui-btn mui-btn--primary" type="submit">Submit</button>
                     <input type="hidden" name="form_name" value="{{ form_name }}" />
                     <input type="hidden" name="user_id" value="{{ distribution.user.id }}" />
                   </div>
+                  </form>
                 </td>
-                <td><button class="mui-btn mui-btn--flat mui-btn--primary" type="submit">Submit</button></td>
-                </form>
               </tr>
             {% endfor %}
           </table>
@@ -41,9 +39,10 @@
               <br><td><button class="mui-btn mui-btn--flat mui-btn--primary" type="submit">Notify Unsubmitted Users</button></td>
             </form>
           {% endfor %}
-      {% else %}
-          <h3>No outstanding Forms</h3>
-      {% endif %}
-
+          {% else %}
+              <h3>No outstanding Forms</h3>
+          {% endif %}
+      </div>
     </div>
+
 {% endblock content %}
