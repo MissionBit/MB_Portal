@@ -4,17 +4,17 @@
 
 
     <div class="main-container">
-    <h1 style="padding-bottom: 20px"> Communication Manager </h1><hr>
+    <h1 style="padding-bottom: 20px; text-align: center"> Communication Manager </h1><hr>
     {% if announcements %}
-      <div style="padding-left: 10%">
-        <div style="width: 70%" class="mui-panel">
+      <div style="text-align: center;">
+        <div style="width: 85%; display: inline-block" class="mui-panel">
           <h3>Announcements</h3><hr>
           <table class="mui-table mui-table--bordered">
             <tr>
-              <th>Title</th>
-              <th>Announcement</th>
-              <th>Created By - Date</th>
-              <th>Delete</th>
+              <th style="text-align: center;">Title</th>
+              <th style="text-align: center;">Announcement</th>
+              <th style="text-align: center;">Created By - Date</th>
+              <th style="text-align: center;">Delete</th>
             </tr>
             {% for announcement in announcements %}
             <tr>
@@ -36,15 +36,15 @@
       </div>
     {% endif %}
     {% if notifications %}
-     <div style="padding-left: 10%">
-      <div style="width: 70%" class="mui-panel">
+      <div style="text-align: center;">
+        <div style="width: 85%; display: inline-block" class="mui-panel">
         <h3>Notifications</h3><hr>
         <table class="mui-table mui-table--bordered">
           <tr>
-            <th>Subject</th>
-            <th>Notification</th>
-            <th>Notified User - Date</th>
-            <th>Delete</th>
+            <th style="text-align: center;">Subject</th>
+            <th style="text-align: center;">Notification</th>
+            <th style="text-align: center;">Notified User - Date</th>
+            <th style="text-align: center;">Delete</th>
           </tr>
             {% for notification in notifications %}
           <tr>
@@ -66,15 +66,15 @@
      </div>
       {% endif %}
       {% if forms %}
-     <div style="padding-left: 10%">
-      <div style="width: 70%" class="mui-panel">
+      <div style="text-align: center;">
+        <div style="width: 85%; display: inline-block" class="mui-panel">
         <h3>Forms</h3><hr>
         <table class="mui-table mui-table--bordered">
           <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Created By - Date</th>
-            <th>Delete</th>
+            <th style="text-align: center;">Name</th>
+            <th style="text-align: center;">Description</th>
+            <th style="text-align: center;">Created By - Date</th>
+            <th style="text-align: center;">Delete</th>
           </tr>
         {% for form in forms %}
           <tr>

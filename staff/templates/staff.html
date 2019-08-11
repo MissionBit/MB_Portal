@@ -3,36 +3,42 @@
 {% block content %}
 
 
-<div class="main-container">
+<div style="justify-content: center" class="main-container">
     {% if messages %}
     {% for message in messages %}
-        <div style="color: darkgreen; width: 500px" class = "alert alert-{{message.tags}}">
+        <div style="color: lightgreen; width: 500px" class = "alert alert-{{message.tags}}">
             {{ message }}
         </div>
         {% endfor %}
         {% endif %}
-    <h1> Staff User Home</h1><br>
+    <h1 style="text-align: center"> Staff User Home</h1><br>
     {% if announcements %}
-      <h2> Announcements </h2><hr>
-      {% for announcement in announcements reversed %}
-            <div class="announcement">
-            <h2>{{ announcement.announcement.title }}</h2><hr>
-            <p>{{ announcement.announcement.announcement }}</p><br>
-            <p>{{ announcement.announcement.created_by }} on {{ announcement.announcement.posted.date }}</p><hr/>
-            <br>
-            <form method="POST">
-              {% csrf_token %}
-                <p style="padding-bottom: 10px;">
-                    <button class="mui-btn">Dismiss</button>
-                </p>
-              <input type="hidden" name="dismiss_announcement" value="true" />
-              <input type="hidden" name="announcement" value="{{ announcement.announcement.id }}" />
-            </form>
-            </div><br>
-      {% endfor %}
+      <div style="text-align: center">
+        <div style="width: 50%; display: inline-block" class="mui-panel">
+                <h3> Announcements </h3><hr>
+        {% for announcement in announcements reversed %}
+              <div class="announcement">
+              <h2>{{ announcement.announcement.title }}</h2><hr>
+              <p>{{ announcement.announcement.announcement }}</p><br>
+              <p>{{ announcement.announcement.created_by }} on {{ announcement.announcement.posted.date }}</p><hr/>
+              <br>
+              <form method="POST">
+                {% csrf_token %}
+                  <p style="padding-bottom: 10px;">
+                      <button class="mui-btn">Dismiss</button>
+                  </p>
+                <input type="hidden" name="dismiss_announcement" value="true" />
+                <input type="hidden" name="announcement" value="{{ announcement.announcement.id }}" />
+              </form>
+              </div><br>
+        {% endfor %}
+        </div>
+      </div>
     {% endif %}
     {% if forms %}
-      <h2> Forms </h2><hr>
+    <div style="text-align: center">
+      <div style="width: 50%; display: inline-block" class="mui-panel">
+      <h3> Forms </h3><hr>
         {% for form in forms reversed %}
             <div class="form">
               <h2>{{ form.form.name }}</h2><hr>
@@ -46,10 +52,14 @@
               </p>
             </div><br>
         {% endfor %}
+      </div>
+    </div>
     {% endif %}
     {% if notifications %}
-      <h2> Notifications </h2><hr>
-        {% for notification in notifications %}
+    <div style="text-align: center">
+      <div style="width: 50%; display: inline-block" class="mui-panel">
+        <h3> Notifications </h3><hr>
+          {% for notification in notifications %}
             <div class="notification">
               <h2>{{ notification.subject }}</h2><hr>
               <div>
@@ -66,8 +76,10 @@
                 </form>
               </p>
               </div>
-            </div><br>
-        {% endfor %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
     {% endif %}
 </div>
 

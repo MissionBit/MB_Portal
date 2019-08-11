@@ -3,18 +3,31 @@
 
 {% block content %}
 
-<div class="sidenav">
-  <a href={% url 'staff' %}>Staff Home</a>
+<div style="text-align: center;">
+  <div style="width: 45%; display: inline-block" class="mui-panel">
+        <form class="mui-form" method="post">
+            <legend>Notify Users About "{{ notify_about }}"</legend><br>
+            {% csrf_token %}
+            <div class="mui-textfield mui-textfield--float-label">
+              {{ form.subject }}
+              <label>Subject</label>
+            </div>
+            <div class="mui-textfield mui-textfield--float-label">
+              {{ form.notification }}
+              <label>Notification</label>
+            </div>
+            <div style="text-align: center">
+                <div style="display: inline-block">
+                  <div style="text-align: left" class="mui-radio">
+                    <label>Email Recipients</label>
+                    {{ form.email_recipients }}
+                  </div><br>
+                </div>
+            </div>
+            <br>
+          <button type="submit" class="mui-btn mui-btn--raised mui-btn--primary">Create Esign</button>
+          </form>
+  </div>
 </div>
 
-    <div class="main-container">
-    <h2 style="padding-bottom: 20px"> Notify Users About {{ notify_about }}</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{ form|crispy }}
-        <br>
-        <input type="hidden" name="notify_about", value="{{ notify_about }}" />
-        <button type="submit" class="btn btn-primary">Notify Users</button>
-        </form>
-    </div>
 {% endblock content %}

@@ -1,0 +1,94 @@
+{% extends "teacher_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div style="text-align: center;">
+  <div style="width: 85%; display: inline-block" class="mui-panel">
+    <h1>{{ classroom.course }} - {{ session.date }}</h1><hr>
+      {% if session %}
+        <h1>{{ session.title }}</h1>
+        <form action="{% url 'take_attendance' %}" method="GET">
+        <input type="hidden" name="course_id" value="{{ session.classroom.id }}"/>
+        <input type="hidden" name="date" value="{{ session.date }}"/>
+        <button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Take Attendance</button>
+        </form>
+        <hr>
+          <h3>Description</h3><br>
+            <p>{{ session.description }}</p><hr>
+          <h3>Lesson Plan</h3><br>
+            {% if session.lesson_plan %}
+              <a href="{{ session.lesson_plan.url }}" class="mui-btn mui-btn--primary mui-btn--small" target="_blank">Download Lesson Plan</a>
+              <hr>
+            {% else %}
+              <p>No Lesson Plan Available</p><hr>
+            {% endif %}
+          <h3>Lecture</h3><br>
+            {% if session.lecture %}
+              <a href="{{ session.lecture.url }}" class="mui-btn mui-btn--primary mui-btn--small" target="_blank">Download Lecture</a>
+              <hr>
+            {% else %}
+              <p>No Lecture Available</p><hr>
+            {% endif %}
+          <h3>Activity</h3><br>
+            {% if session.activity %}
+              <a href="{{ session.activity.url }}" class="mui-btn mui-btn--primary mui-btn--small" target="_blank">Download Activity</a>
+              <hr>
+            {% else %}
+              <p>No Activity Available</p><hr>
+            {% endif %}
+          <h3>Video</h3><br>
+          {% if session.video %}
+            <a href="{{ session.video }}">View Session Video</a><hr>
+          {% else %}
+           <p>No Video Available</p><hr>
+          {% endif %}
+          <h3>Resources</h3><hr>
+          {% if resources %}
+            {% for resource in resources %}
+              <h5>{{ resource.title }}</h5>
+              {% if resource.file %}
+                <a href="{{ resource.file.url }}" class="mui-btn mui-btn--primary mui-btn--small" target="_blank">Download Resource</a>
+                <hr>
+              {% endif %}
+              {% if resource.link %}
+                <a href="{{ resource.link }}">Go To Resource</a><hr>
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            <p>No Resources</p><hr>
+          {% endif %}
+      {% endif %}
+    </div>
+</div>
+
+<div style="text-align: center;">
+  <div style="width: 45%; display: inline-block" class="mui-panel">
+    <h3>Add Resource for {{ session.date }}</h3>
+    <form class="mui-form" enctype="multipart/form-data" method="POST">
+      {% csrf_token %}
+      <div class="mui-textfield mui-textfield--float-label">
+        {{ form.title}}
+        <label>Title</label>
+      </div>
+      <div class="mui-textfield mui-textfield--float-label">
+          {{ form.description}}
+          <label>Description</label>
+      </div>
+      <div class="mui-textfield mui-textfield--float-label">
+          {{ form.link}}
+       <label>Link -- Starts with http or https</label>
+      </div>
+      <div class="mui-textfield">
+        {{ form.file }}
+        <label>File</label>
+      </div>
+      <input type="hidden" name="classroom" value="{{ session.classroom.id }}">
+      <input type="hidden" name="session" value="{{ session.id }}">
+      <button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Add Resource</button>
+    </form>
+  </div>
+</div>
+
+
+{% endblock content %}

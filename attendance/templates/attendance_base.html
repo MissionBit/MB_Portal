@@ -31,6 +31,7 @@
             '<h4 class="slot-description"></h4><h4 class="slot-description"><img src="https://github.com/Ernesto2004/MB_Portal_Design/blob/master/heart-icon.png?raw=true" width="30" height="30" style="opacity: 0.75">\{\{likes\}\} ' +
             '<img src="https://github.com/Ernesto2004/MB_Portal_Design/blob/master/comment-icon.png?raw=true" style="opacity: 0.75" width="30" height="30">\{\{model.comments.count\}\}' +
             '</h4><hr style="width: 90%; height:2px;border:none;color:gray;background-color:gray; opacity: 0.3" />'
+            // CHANGE TEMPLATE IF YOU WANT TO
       });
       galleryFeed.run();
     </script>
@@ -148,19 +149,60 @@
             <hr style="width: 90%;">
             <div class="sidenav-content">
              <section id="intro">
-               <a class="mainslide" href="{% url 'teacher' %}">Home</a>
+               <a class="mainslide" href="{% url 'home-home' %}">Home</a>
+             </section>
+             {% if user_group == "staff" %}
+             <section class="intro">
+               <a class="mainslide" style="cursor: pointer">Courses</a>
+               <div>
+                   <hr style="width: 80%;">
+                   <a href="{% url 'create_classroom' %}">Create Classroom</a>
+                   <a href="{% url 'create_class_offering' %}">Create Class Offering</a>
+                   <a href="{% url 'classroom_management' %}">Classroom Management</a>
+                   <hr style="width: 80%;">
+               </div>
              </section>
              <section class="intro">
-               <a class="mainslide" href="{% url 'my_class_teacher' %}">My Class</a>
+               <a class="mainslide" style="cursor: pointer">Users</a>
+               <div>
+                   <hr style="width: 80%;">
+                   <a href="{% url 'create_staff_user' %}">Create Staff User</a>
+                   <a href="{% url 'create_student_user' %}">Create Student User</a>
+                   <a href="{% url 'create_teacher_user' %}">Create Teacher User</a>
+                   <a href="{% url 'create_volunteer_user' %}">Create Volunteer User</a>
+                   <hr style="width: 80%;">
+               </div>
              </section>
-            <section class="intro">
-              <a class="mainslide" href="{% url 'attendance' %}">Attendance</a>
-             </section>
-             {% if  classroom.forum  %}
              <section class="intro">
-              <a class="mainslide" href="{{ classroom.forum }}" target="_blank">{{ classroom.forum_title }}</a>
+               <a class="mainslide" style="cursor: pointer">Forms</a>
+               <div>
+                   <hr style="width: 80%;">
+                   <a href="{% url 'form_overview' %}">Form Overview</a>
+                   <a href="{% url 'post_form' %}">Post New Form</a>
+                   <a href="{% url 'create_esign' %}">Create Esign</a>
+                   <hr style="width: 80%;">
+               </div>
              </section>
+             <section class="intro">
+                 <a class="mainslide" style="cursor: pointer">Communication</a>
+                 <div style="">
+                     <!-- Dropdown content here -->
+                   <hr style="width: 80%;">
+                   <a href="{% url 'make_announcement' %}">Create Announcement</a>
+                   <a href="{% url 'communication_manager' %}">Communication Manager</a>
+                   <hr style="width: 80%;">
+               </div>
+             </section>
+             {% elif user_group == "teacher" %}
+               <section id="intro">
+                 <a class="mainslide" href="{% url 'my_class_teacher' %}">My Class</a>
+               </section>
              {% endif %}
+             <section id="intro">
+               <a class="mainslide" href="{% url 'attendance' %}">Attendance</a>
+               <div>
+               </div>
+             </section>
           </div>
     </div>
   </body>

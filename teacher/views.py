@@ -22,21 +22,23 @@ def teacher(request):
     announcements = get_my_announcements(request, "staff")
     forms = get_my_forms(request, "staff")
     notifications = Notification.objects.filter(user_id=request.user.id)
+    classroom = get_classroom_by_django_user(request.user)
     return render(request, "teacher.html", {"announcements": announcements,
                                             "forms": forms,
-                                            "notifications": notifications})
+                                            "notifications": notifications,
+                                            "classroom": classroom})
 
 
 @group_required("teacher")
-def my_class(request):
+def my_class_teacher(request):
     classroom = get_classroom_by_django_user(request.user)
     sessions = Session.objects.filter(classroom_id=classroom.id).order_by("date")
-    return render(request, "my_class.html", {"sessions": sessions,
-                                             "classroom": classroom})
+    return render(request, "my_class_teacher.html", {"sessions": sessions,
+                                                     "classroom": classroom})
 
 
 @group_required("teacher")
-def session_view(request):
+def session_view_teacher(request):
     if request.method == "POST":
         form = AddResourceForm(request.POST, request.FILES)
         if form.is_valid():
@@ -56,7 +58,9 @@ def session_view(request):
     session = Session.objects.get(classroom_id=request.GET.get("classroom"),
                                   date=get_date_from_template_returned_string(request.GET.get("session_date")))
     resources = Resource.objects.filter(session_id=session.id)
+    classroom = get_classroom_by_django_user(request.user)
     form = AddResourceForm()
-    return render(request, "session_view.html", {"session": session,
-                                                 "resources": resources,
-                                                 "form": form})
+    return render(request, "session_view_teacher.html", {"session": session,
+                                                         "resources": resources,
+                                                         "form": form,
+                                                         "classroom": classroom})

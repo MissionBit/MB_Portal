@@ -2,17 +2,17 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <div style="padding-left: 10%">
-      <h1> Form Overview </h1><br>
+      <h1 style="text-align: center"> Form Overview </h1><br>
         {% if outstanding_form_dict %}
           {% for form_name, distributions in outstanding_form_dict.items %}
-          <div style="width: 95%" class="mui-panel">
+        <div style="text-align: center">
+          <div style="display: inline-block; width: 85%" class="mui-panel">
             <table class="mui-table mui-table--bordered">
               <h3 style="padding-left: 1%">{{ form_name }}</h3>
               <tr>
-                <th>Form Name</th>
-                <th>Distribution</th>
-                <th>Submitted</th>
+                <th style="text-align: center">Form Name</th>
+                <th style="text-align: center">Distribution</th>
+                <th style="text-align: center">Submitted</th>
                 <th></th>
               </tr>
               {% for distribution in distributions %}
@@ -36,13 +36,13 @@
               </table>
               <form action={% url 'notify_unsubmitted_users' %} method="GET">
                 <input type="hidden" name="notify_unsubmitted_users" value="{{ form_name }}" />
-                <br><td><button class="mui-btn mui-btn--flat mui-btn--primary" type="submit">Notify Unsubmitted Users</button></td>
+                <br><td><button class="mui-btn mui-btn mui-btn--primary" type="submit">Notify Unsubmitted Users</button></td>
               </form>
             </div>
-          {% endfor %}
-          {% else %}
-              <h3>No outstanding Forms</h3>
-          {% endif %}
-    </div>
+        </div>
+      {% endfor %}
+      {% else %}
+          <h3>No outstanding Forms</h3>
+      {% endif %}
 
 {% endblock content %}

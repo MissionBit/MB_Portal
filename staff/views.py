@@ -45,11 +45,6 @@ def staff(request):
 
 
 @group_required("staff")
-def user_management(request):
-    return render(request, "user_management.html")
-
-
-@group_required("staff")
 def classroom_management(request):
     class_dict = {}
     classroom_list = Classroom.objects.all()
@@ -421,11 +416,6 @@ def add_forum(request):
     form = AddForumForm()
     return render(request, "add_forum.html", {"form": form,
                                               "classroom": classroom})
-
-
-@group_required("staff")
-def my_account_staff(request):
-    return render(request, "my_account_staff.html")
 
 
 @group_required("staff")

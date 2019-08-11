@@ -2,81 +2,32 @@
 
 {% block content %}
 
-<style>
 
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 75%;
-}
-
-td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-
-tr:nth-child(even) {
-  background-color: #dddddd;
-}
-
-h2 {
-    color: steelblue;
-    padding-left: 10px;
-}
-strong {
-    font-size: 24px;
-    padding-left: 20px;
-    padding-bottom: 1px;
-}
-p {
-    font-size: 16px;
-    padding-left: 30px;
-    padding-top: 10px;
-}
-.button {
-   font-size: 12px;
-   font-family: "American Typewriter";
-   border-radius: 14px;
-   background-color: white;
-   color: #4CAF50;
-   border: 2px solid #4CAF50;
-
-}
-</style>
-
-
-<div class="sidenav">
-  <a href="{% url 'my_class_student' %}">My Class</a>
-  <a href="{{ classroom.forum }}" target="_blank">{{ classroom.forum_title }}</a>
-</div>
-
-<div class="main-container">
-  <h1>{{ classroom.course }}</h1><hr>
-  {% if sessions %}
-    <table>
-      <tr>
-        <th>Date</th>
-        <th>Title</th>
-        <th>Description</th>
-        <th>View Session</th>
-      </tr>
-  {% for session in sessions %}
-      <tr>
-        <th>{{ session.date }}</th>
-        <th>{{ session.title }}</th>
-        <th>{{ session.description }}</th>
-        <th>
-          <form action="{% url 'session_view_student' %}", method="GET">
-            <input type="hidden" name="session_date" value="{{ session.date }}"/>
-            <input type="hidden" name="classroom" value="{{ session.classroom.id }}"/>
-            <button class="button" type="submit">View</button>
-          </form>
-        </th>
-      </tr>
-  {% endfor %}
-    </table>
-  {% endif %}
-</div>
-
+  <div style="text-align: center;">
+    <div style="width: 85%; display: inline-block" class="mui-panel">
+      <h1 style="text-align: center;">{{ classroom.course }}</h1><hr>
+      {% if sessions %}
+        <table class="mui-table mui-table--bordered">
+          <tr>
+            <th style="text-align: center;">Date</th>
+            <th style="text-align: center;">Title</th>
+            <th style="text-align: center;">View Session</th>
+          </tr>
+      {% for session in sessions %}
+          <tr>
+            <td>{{ session.date }}</td>
+            <td>{{ session.title }}</td>
+            <td>
+              <form action="{% url 'session_view_student' %}", method="GET">
+                <input type="hidden" name="session_date" value="{{ session.date }}"/>
+                <input type="hidden" name="classroom" value="{{ session.classroom.id }}"/>
+                <button class="mui-btn mui-btn--primary mui-btn--small" type="submit">View</button>
+              </form>
+            </td>
+          </tr>
+      {% endfor %}
+        </table>
+      {% endif %}
+    </div>
+  </div>
 {% endblock content %}

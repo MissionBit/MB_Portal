@@ -17,6 +17,7 @@ import statistics
 
 @group_required_multiple(["staff", "teacher"])
 def attendance(request):
+    user_group = str(request.user.groups.all().first())
     if request.method == "POST":
         store_attendance_data(request)
         async_task(
@@ -28,13 +29,15 @@ def attendance(request):
         course_id = request.GET.get("course_id")
         context = get_classroom_attendance(course_id)
         context.update(
-            {"attendance_statistic": get_course_attendance_statistic(course_id)}
+            {"attendance_statistic": get_course_attendance_statistic(course_id),
+             "user_group": user_group}
         )
     else:
         attendance_averages = compile_attendance_averages_for_all_courses()
         context = {
             "classrooms": Classroom.objects.all(),
             "attendance_averages": attendance_averages,
+            "user_group": user_group
         }
     return render(request, "attendance.html", context)
 

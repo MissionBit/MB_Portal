@@ -3,7 +3,6 @@ from . import views
 
 urlpatterns = [
     path("", views.staff, name="staff"),
-    path("user_management/", views.user_management, name="user_management"),
     path(
         "classroom_management/", views.classroom_management, name="classroom_management"
     ),
@@ -15,7 +14,6 @@ urlpatterns = [
         views.create_volunteer_user,
         name="create_volunteer_user",
     ),
-    path("my_account_staff/", views.my_account_staff, name="my_account_staff"),
     path("create_classroom/", views.create_classroom, name="create_classroom"),
     path(
         "create_class_offering/",

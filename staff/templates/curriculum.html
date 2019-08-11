@@ -2,16 +2,16 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div style="padding-left: 10%">
-  <div style="width: 90%;" class="mui-panel">
+<div style="text-align: center;">
+  <div style="width: 85%; display: inline-block" class="mui-panel">
     <h1>{{ classroom.course }}'s Curriculum</h1><hr><br>
     {% if sessions %}
       <table class="mui-table mui-table--bordered">
         <tr>
-          <th>Date</th>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Modify</th>
+          <th style="text-align: center;">Date</th>
+          <th style="text-align: center;">Title</th>
+          <th style="text-align: center;">Description</th>
+          <th style="text-align: center;">Modify</th>
         </tr>
        {% for session in sessions %}
         <tr>

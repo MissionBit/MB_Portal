@@ -156,22 +156,6 @@ class StaffViewsTest(BaseTestCase):
         self.client.force_login(self.create_nonstaff_user())
         self.assertRaises(PermissionError)
 
-    def test_user_management(self):
-        self.client.force_login(self.create_staff_user())
-        response = self.client.get(reverse("user_management"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, "user_management.html")
-        self.client.force_login(self.create_nonstaff_user())
-        self.assertRaises(PermissionError)
-
-    def test_my_account_staff(self):
-        self.client.force_login(self.create_staff_user())
-        response = self.client.get(reverse("my_account_staff"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, "my_account_staff.html")
-        self.client.force_login(self.create_nonstaff_user())
-        self.assertRaises(PermissionError)
-
     def test_classroom_management(self):
         self.client.force_login(self.create_staff_user())
         response = self.client.get(reverse("classroom_management"))

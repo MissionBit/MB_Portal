@@ -3,8 +3,8 @@
 
 {% block content %}
 
-<div style="padding-left: 10%">
-  <div style="width: 90%;" class="mui-panel">
+<div style="text-align: center;">
+  <div style="width: 45%; display: inline-block" class="mui-panel">
     <h1 style="padding-bottom: 20px"> Add Forum to Classroom - {{ classroom.course }} </h1>
         <form class="mui-form" enctype="multipart/form-data" method="post">
             {% csrf_token %}
@@ -18,7 +18,7 @@
             </div>
         <br>
         <input type="hidden" name="classroom" value="{{ classroom.id }}" />
-        <button type="submit" class="btn btn-primary">Add Forum</button>
+        <button type="submit" class="mui-btn mui-btn--primary mui-btn--small">Add Forum</button>
         </form>
     </div>
 </div>

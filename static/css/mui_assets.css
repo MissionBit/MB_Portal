@@ -242,34 +242,31 @@ button {
 
 .announcement {
   padding: 10px 15px 0px;
-  background-image: linear-gradient(to right bottom, #db1bb2 , #5300ff);
+  background-color: #3498db;
   border-radius: 14px 14px 14px 14px;
   color: white;
   font-size: 20px;
   box-shadow: 3px 3px 12px 5px lightgray;
-  width: 95%;
 }
 
 .form {
   padding: 10px 15px 0px;
-  background-image: linear-gradient(to right bottom, #ff9b09 , #f65b11);
+  background-color: #8e44ad;
   border-radius: 14px 14px 14px 14px;
   font-size: 20px;
   color: white;
   box-shadow: 3px 3px 12px 5px lightgray;
-  width: 95%;
 }
 
 
 .notification {
   padding: 10px 15px 0px;
-  background-image: linear-gradient(to right bottom, #0925ff , #11bdf6);
+  background-color: #e67e22;
   border-radius: 14px 14px 14px 14px;
   color: white;
   transition: all 0.3s ease 0s;
   box-shadow: 3px 3px 12px 5px lightgray;
   font-size: 20px;
-  width: 95%;
 }
 
 .appbarnav {
