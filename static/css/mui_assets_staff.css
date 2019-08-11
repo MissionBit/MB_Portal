@@ -174,7 +174,6 @@ button {
   padding-top: 20px;
   padding-left: 5px;
   text-decoration: #333333;
-  font-size: 16px;
   color: steelblue;
   display: block;
   transition: all 0.3s ease 0s;
@@ -182,12 +181,13 @@ button {
 
 .mainslide{
     font-weight: bold;
+    font-size: 21px;
 }
 
 .mainslide:hover {
   color: #ffffff;
   padding-left: 10px;
-  padding-bottom: 16px;
+  padding-bottom: 18px;
   background: gray;
   overflow: hidden;
 }
@@ -252,14 +252,16 @@ button {
 }
 
 .sidenav-content section div a{
-    padding-bottom: 15px;
-    height: 20px;
-    font-size: 14px;
+    padding-bottom: 12px;
+    font-size: 15px;
+    height: 22px;
 }
 
 .sidenav-content section div a:hover{
     background-color: lightgray;
     height: 22px;
+    color: black;
+    padding-bottom: 20px;
 }
 
 .intro div{
@@ -268,3 +270,4 @@ button {
 .deintro div{
   display: block;
 }
+
