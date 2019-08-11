@@ -3,8 +3,8 @@
 
 {% block content %}
     <div class="main-container">
-        <form style="width: 40%; padding-left: 10%" enctype="multipart/form-data" method="post">
-          <legend style="font-size: 24px">Create E-Sign Link</legend><br>
+        <form class="mui-form" style="width: 40%; padding-left: 10%" enctype="multipart/form-data" method="post">
+          <legend>Create E-Sign Link</legend><br>
           {% csrf_token %}
           <div class="mui-textfield mui-textfield--float-label">
             {{ form.name }}

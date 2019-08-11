@@ -2,6 +2,7 @@
 
 {% block content %}
     <form style="width: 40%; padding-left: 10%" class="mui-form" method="post">
+      {% csrf_token %}
       <legend>Announcement</legend><br>
       <div class="mui-textfield">
         {{ form.title }}

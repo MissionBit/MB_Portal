@@ -5,43 +5,13 @@
 {% block content %}
 
 <style>
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 75%;
-}
-
-td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-
-tr:nth-child(even) {
-  background-color: cadetblue;
-}
-
-h2 {
-    color: steelblue;
-    padding-left: 10px;
-}
-strong {
-    font-size: 24px;
-    padding-left: 10px;
-    padding-bottom: 1px;
-}
-p {
-    font-size: 16px;
-    padding-left: 20px;
-    padding-top: 2px;
-}
-.button {
-   font-size: 10px;
-   font-family: "American Typewriter";
-   border-radius: 14px;
-   background-color: white;
-   color: #4CAF50;
-   border: 2px solid #4CAF50;
+.wrapper{
+    display: grid;
+    grid-template-columns: repeat(1, .95fr);
+    grid-gap: 20px;
+    padding-left: 10%;
+    padding-top: 5%;
+    padding-bottom: 2%;
 }
 </style>
 
@@ -70,46 +40,50 @@ function revertASF() {
 </script>
 
 
-<div class="sidenav">
-  <a href={% url 'staff' %}>Staff Home</a>
-</div>
-
-    <div class="main-container">
-      <h2>{{ classroom.course }} - {{ class_members|get_item:"teacher"}}</h2><hr>
-      <h4 style="padding-left: 20px">Current Attendance: {{ classroom.attendance_summary.attendance_statistic }}%</h4>
-      <form action="{% url 'attendance' %}" method="GET">
+    <div class="wrapper">
+      <div class="mui-panel">
+        <h2>{{ classroom.course }}</h2><hr>
+        <h4>{{ class_members|get_item:"teacher"}}</h4>
+        <h4>{{ class_members|get_item:"teacher_assistant"}}</h4><hr>
+        <form class="mui-form" action="{% url 'attendance' %}" method="GET">
           <input type="hidden" name="course_id" value="{{ classroom.id }}" />
-          <p style="padding-left: 20px"><button class="button" type="submit">View Class Attendance</button></p>
-      </form><hr>
-      <h4 style="padding-left: 20px;">Curriculum</h4>
-      <form action="{% url 'curriculum' %}" method="get">
-          <input type="hidden" name="classroom_id" value="{{ classroom.id }}" />
-          <p style="padding-left: 20px"><button class="button" type="submit">View Curriculum</button></p>
+          <p>Current Attendance: {{ classroom.attendance_summary.attendance_statistic }}%&ensp;&ensp;&ensp;
+          <button type="submit" class="mui-btn mui-btn--primary mui-btn--small">Go</button></p>
         </form><hr>
-      {% if classroom.forum_title  %}
-        <h4 style="padding-left: 20px">Current Forum: {{ classroom.forum_title }}</h4>
-      {% else %}
-        <h4 style="padding-left: 20px">No Forum</h4>
-      {% endif %}
-      <form action="{% url 'add_forum' %}" method="GET">
-        <input type="hidden" name="classroom" value="{{ classroom.id }}" />
-        <p style="padding-left: 20px"><button class="button" type="submit">Add/Change Class Forum</button></p><hr>
-      </form><hr>
+        <form class="mui-form" action="{% url 'curriculum' %}" method="get">
+          <p>Curriculum &ensp;&ensp;&ensp;
+          <input type="hidden" name="classroom_id" value="{{ classroom.id }}" />
+          <button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Go</button></p>
+        </form><hr>
+        <form class="mui-form" action="{% url 'add_forum' %}" method="GET">
+        {% if classroom.forum_title  %}
+        <p>Current Forum: {{ classroom.forum_title }}&ensp;&ensp;&ensp;<button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Change</button></p>
+        {% else %}
+          <p>No Forum&ensp;&ensp;&ensp;<button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Add</button></p>
+        {% endif %}
+          <input type="hidden" name="classroom" value="{{ classroom.id }}" />
+        </form>
+      </div>
+    </div>
 
-      <table>
-        <tr>
+      <div style="padding-left: 10%">
+      <div style="width: 90%;" class="mui-panel">
+       <table class="mui-table">
+        <thead>
+          <tr>
           <th>Role</th>
           <th>Class Member</th>
           <th>Alter</th>
           <th>Submit</th>
         </tr>
+        </thead>
         <tr>
           <form method="POST">
             {% csrf_token %}
             <td>Teacher</td>
             <td>{{ class_members|get_item:"teacher" }}</td>
             <td>{{ change_teacher_form|crispy }}</td>
-            <td><button class="button" type="submit">Submit</button> </td>
+            <td><button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Submit</button> </td>
             <input type="hidden" name="swap_teacher" value="True"/>
             <input type="hidden" name="fmr_teacher"  value="{{ class_members|get_item:"teacher_id" }}" />
             <input type="hidden" name="course_id" value={{ classroom.id }} />
@@ -121,7 +95,7 @@ function revertASF() {
             <td>Teacher Assistant</td>
             <td>{{ class_members|get_item:"teacher_assistant" }}</td>
             <td>{{ change_teacher_form|crispy }}</td>
-            <td><button class="button" type="submit">Submit</button> </td>
+            <td><button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Submit</button> </td>
             <input type="hidden" name="swap_teacher_assistant" value="True"/>
             <input type="hidden" name="fmr_teacher_assistant"  value="{{ class_members|get_item:"teacher_assistant_id" }}" />
             <input type="hidden" name="course_id" value={{ classroom.id }} />
@@ -134,7 +108,7 @@ function revertASF() {
             <td>Volunteer</td>
             <td>{{ volunteer }}</td>
             <td>Can't Swap Volunteer</td>
-            <td><button class="button" type="submit">Remove</button> </td>
+            <td><button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Remove</button> </td>
             <input type="hidden" name="remove_volunteer" value="True"/>
             <input type="hidden" name="fmr_volunteer" value="{{ volunteer.id }}">
             <input type="hidden" name="course_id" value={{ classroom.id }} />
@@ -148,7 +122,7 @@ function revertASF() {
             <td>Student</td>
             <td>{{ student }}</td>
             <td>Can't Swap Student</td>
-            <td><button class="button" type="submit">Remove</button> </td>
+            <td><button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Remove</button> </td>
             <input type="hidden" name="remove_student" value="True"/>
             <input type="hidden" name="fmr_student" value="{{ student.id }}">
             <input type="hidden" name="course_id" value={{ classroom.id }} />
@@ -156,30 +130,31 @@ function revertASF() {
         </tr>
         {% endfor %}
       </table>
-
-      <form method="post">
+        <form method="post">
         {% csrf_token %}
         <div id="add_vols_div"  style="display:none; width: 200px; padding-left: 25px" class="inline-group">
           {% csrf_token %} {{ add_volunteer_form | crispy }}
-        <p><button class="button" type="submit">Submit</button>&emsp;</p>
+        <p><button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Submit</button>&emsp;</p>
         </div>
         <input type="hidden" name="add_volunteer" value="True"/>
         <input type="hidden" name="course_id" value={{ classroom.id }} />
       </form>
-        <p style="padding-left: 46px"><button id="undo_addvols_button" class="button" style="display:none; color: firebrick" onclick="revertAddVols()">Cancel</button></p>
-        <p style="padding-left: 20px;"><button id="add_vols_button" class="button" onclick="addVolunteersForm()">Add Volunteer</button></p>
+        <p style="padding-left: 46px"><button id="undo_addvols_button" class="mui-btn mui-btn--primary mui-btn--small" style="display:none; color: firebrick" onclick="revertAddVols()">Cancel</button></p>
+        <p style="padding-left: 20px;"><button id="add_vols_button" class="mui-btn mui-btn--primary mui-btn--small" onclick="addVolunteersForm()">Add Volunteer</button></p>
       <form method="post">
         <div id="add_stus_div"  style="display:none; width: 200px; padding-left: 25px" class="inline-group">
           {% csrf_token %} {{ add_student_form | crispy }}
-        <p><button class="button" type="submit">Submit</button>&emsp;</p>
+        <p><button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Submit</button>&emsp;</p>
         </div>
         <input type="hidden" name="add_student" value="True"/>
         <input type="hidden" name="course_id" value={{ classroom.id }} />
       </form>
-        <p style="padding-left: 46px"><button id="undo_addstus_button" class="button" style="display:none; color: firebrick" onclick="revertASF()">Cancel</button></p>
-        <p style="padding-left: 20px;"><button id="add_stus_button" class="button" onclick="addStudentsForm()">Add Student</button></p><br><hr><br>
+        <p style="padding-left: 46px"><button id="undo_addstus_button" class="mui-btn mui-btn--primary mui-btn--small" style="display:none; color: firebrick" onclick="revertASF()">Cancel</button></p>
+        <p style="padding-left: 20px;"><button id="add_stus_button" class="mui-btn mui-btn--primary mui-btn--small" onclick="addStudentsForm()">Add Student</button></p>
+      </div>
+      </div>
 
-    </div>
+
 
 
 

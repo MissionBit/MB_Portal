@@ -3,18 +3,23 @@
 
 {% block content %}
 
-<div class="sidenav">
-  <a href={% url 'staff' %}>Staff Home</a>
-</div>
-
-    <div class="main-container">
+<div style="padding-left: 10%">
+  <div style="width: 90%;" class="mui-panel">
     <h1 style="padding-bottom: 20px"> Add Forum to Classroom - {{ classroom.course }} </h1>
-        <form enctype="multipart/form-data" method="post">
+        <form class="mui-form" enctype="multipart/form-data" method="post">
             {% csrf_token %}
-            {{ form|crispy }}
+            <div class="mui-textfield mui-textfield--float-label">
+              {{ form.forum_title }}
+              <label>Forum Title*</label>
+            </div>
+            <div class="mui-textfield mui-textfield--float-label">
+              {{ form.forum }}
+              <label>Forum* (starts with http or https)</label>
+            </div>
         <br>
         <input type="hidden" name="classroom" value="{{ classroom.id }}" />
         <button type="submit" class="btn btn-primary">Add Forum</button>
         </form>
     </div>
+</div>
 {% endblock content %}
