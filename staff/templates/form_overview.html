@@ -3,46 +3,46 @@
 
 {% block content %}
     <div style="padding-left: 10%">
-      <div style="width: 95%" class="mui-panel">
-        <h1 style="padding-bottom: 20px"> Form Overview </h1>
+      <h1> Form Overview </h1><br>
         {% if outstanding_form_dict %}
           {% for form_name, distributions in outstanding_form_dict.items %}
-          <table class="mui-table mui-table--bordered">
-            <h3 style="padding-left: 1%">{{ form_name }}</h3>
-            <tr>
-              <th>Form Name</th>
-              <th>Distribution</th>
-              <th>Submitted</th>
-              <th></th>
-            </tr>
-            {% for distribution in distributions %}
+          <div style="width: 95%" class="mui-panel">
+            <table class="mui-table mui-table--bordered">
+              <h3 style="padding-left: 1%">{{ form_name }}</h3>
               <tr>
-                <td>{{ form_name }}</td>
-                <td>{{ distribution.user.first_name }} {{ distribution.user.last_name }}</td>
-                <td>{{ distribution.submitted }}</td>
-                <td>
-                  <form method="POST">
-                  <div>
-                    {% csrf_token %}
-                    <small>Submitted: &ensp; {{ form.submitted }} &emsp;&emsp;</small>
-                    <button class="mui-btn mui-btn mui-btn--primary" type="submit">Submit</button>
-                    <input type="hidden" name="form_name" value="{{ form_name }}" />
-                    <input type="hidden" name="user_id" value="{{ distribution.user.id }}" />
-                  </div>
-                  </form>
-                </td>
+                <th>Form Name</th>
+                <th>Distribution</th>
+                <th>Submitted</th>
+                <th></th>
               </tr>
-            {% endfor %}
-          </table>
-            <form action={% url 'notify_unsubmitted_users' %} method="GET">
-              <input type="hidden" name="notify_unsubmitted_users" value="{{ form_name }}" />
-              <br><td><button class="mui-btn mui-btn--flat mui-btn--primary" type="submit">Notify Unsubmitted Users</button></td>
-            </form>
+              {% for distribution in distributions %}
+                <tr>
+                  <td>{{ form_name }}</td>
+                  <td>{{ distribution.user.first_name }} {{ distribution.user.last_name }}</td>
+                  <td>{{ distribution.submitted }}</td>
+                  <td>
+                    <form method="POST">
+                      <div>
+                        {% csrf_token %}
+                        <small>Submitted: &ensp; {{ form.submitted }} &emsp;&emsp;</small>
+                        <button class="mui-btn mui-btn mui-btn--primary" type="submit">Submit</button>
+                        <input type="hidden" name="form_name" value="{{ form_name }}" />
+                        <input type="hidden" name="user_id" value="{{ distribution.user.id }}" />
+                      </div>
+                      </form>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </table>
+              <form action={% url 'notify_unsubmitted_users' %} method="GET">
+                <input type="hidden" name="notify_unsubmitted_users" value="{{ form_name }}" />
+                <br><td><button class="mui-btn mui-btn--flat mui-btn--primary" type="submit">Notify Unsubmitted Users</button></td>
+              </form>
+            </div>
           {% endfor %}
           {% else %}
               <h3>No outstanding Forms</h3>
           {% endif %}
-      </div>
     </div>
 
 {% endblock content %}

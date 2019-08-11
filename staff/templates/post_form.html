@@ -2,8 +2,9 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-
-        <form style="width: 40%; padding-left: 10%" class="mui-form" enctype="multipart/form-data" method="post">
+   <div style="padding-left: 10%">
+    <div style="width: 70%" class="mui-panel">
+        <form class="mui-form" enctype="multipart/form-data" method="post">
           <legend>Post Form</legend>
             {% csrf_token %}
             <div class="mui-textfield mui-textfield--float-label">
@@ -36,4 +37,6 @@
             </div><br>
           <button type="submit" class="mui-btn mui-btn--raised mui-btn--primary">Post Form</button>
         </form>
+    </div>
+   </div>
 {% endblock content %}
