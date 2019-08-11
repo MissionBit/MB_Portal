@@ -3,26 +3,20 @@
 
 {% block content %}
 
-    <div class="main-container">
-    {% if messages %}
-    {% for message in messages %}
-        <div class = "alert alert-{{message.tags}}">
-            {{ message }}
-        </div>
-    {% endfor %}
-    {% endif %}
-
-    <form style="width: 25%; padding-left: 10%; padding-top: 3%" class="mui-form" method = "POST">
-      <h4>Please Log In</h4>
-      {% csrf_token %}
-      <div class="mui-textfield">
-        Username: {{ form.username }}
+    <div style="padding-left: 10%">
+      <div style="width: 50%" class="mui-panel">
+        <form class="mui-form" method = "POST">
+          <h4>Please Log In</h4>
+          {% csrf_token %}
+          <div class="mui-textfield">
+            Username: {{ form.username }}
+          </div>
+          <div class="mui-textfield">
+            Password: {{ form.password }}
+          </div>
+          <button class="mui-btn mui-btn--raised mui-btn--primary" type="submit">Login</button>
+        </form>
       </div>
-      <div class="mui-textfield">
-        Password: {{ form.password }}
-      </div>
-      <button class="mui-btn" type="submit">Login</button>
-    </form>
     </div>
 
 {% endblock content %}

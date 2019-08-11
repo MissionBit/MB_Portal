@@ -199,7 +199,7 @@ button {
   color: white;
   font-size: 20px;
   box-shadow: 3px 3px 12px 5px lightgray;
-  width: 35%;
+  width: 95%;
 }
 
 .form {
@@ -209,7 +209,7 @@ button {
   font-size: 20px;
   color: white;
   box-shadow: 3px 3px 12px 5px lightgray;
-  width: 35%;
+  width: 95%;
 }
 
 
@@ -221,7 +221,7 @@ button {
   transition: all 0.3s ease 0s;
   box-shadow: 3px 3px 12px 5px lightgray;
   font-size: 20px;
-    width: 35%;
+  width: 95%;
 }
 
 .appbarnav {
