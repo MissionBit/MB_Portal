@@ -55,28 +55,18 @@ class BaseTestCase(TestCase):
         volunteer.userprofile.salesforce_id = "voluse19010101"
         volunteer.save()
         Group.objects.get(name="teacher").user_set.add(volunteer)
-        classroom = Classroom.objects.create(
-            course="Test_Course"
+        classroom = Classroom.objects.create(course="Test_Course")
+        ClassroomMembership.objects.create(
+            member=teacher, classroom=classroom, membership_type="teacher"
         )
         ClassroomMembership.objects.create(
-            member=teacher,
-            classroom=classroom,
-            membership_type="teacher"
+            member=t_a, classroom=classroom, membership_type="teacher_assistant"
         )
         ClassroomMembership.objects.create(
-            member=t_a,
-            classroom=classroom,
-            membership_type="teacher_assistant"
+            member=volunteer, classroom=classroom, membership_type="volunteer"
         )
         ClassroomMembership.objects.create(
-            member=volunteer,
-            classroom=classroom,
-            membership_type="volunteer"
-        )
-        ClassroomMembership.objects.create(
-            member=student,
-            classroom=classroom,
-            membership_type="student"
+            member=student, classroom=classroom, membership_type="student"
         )
 
     def create_staff_user(self):

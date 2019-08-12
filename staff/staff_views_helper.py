@@ -2,7 +2,17 @@ from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.models import Group
 from django.shortcuts import redirect
 from home.models.salesforce import ClassEnrollment, Contact, ClassOffering
-from home.models.models import Announcement, UserProfile, Classroom, ClassroomMembership, Attendance, Session, FormDistribution, Form, AnnouncementDistribution
+from home.models.models import (
+    Announcement,
+    UserProfile,
+    Classroom,
+    ClassroomMembership,
+    Attendance,
+    Session,
+    FormDistribution,
+    Form,
+    AnnouncementDistribution,
+)
 from social_django.models import UserSocialAuth
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -14,7 +24,10 @@ from salesforce.dbapi.exceptions import *
 
 
 def create_user_with_profile(form, random_password):
-    username = validate_username("%s.%s" % (form.cleaned_data.get("first_name"), form.cleaned_data.get("last_name")))
+    username = validate_username(
+        "%s.%s"
+        % (form.cleaned_data.get("first_name"), form.cleaned_data.get("last_name"))
+    )
     new_user = DjangoUser.objects.create_user(
         username=username,
         email=form.cleaned_data.get("email"),
@@ -55,10 +68,7 @@ def save_user_to_salesforce(request, form):
     try:
         form.save()
     except SalesforceError:
-        messages.error(
-            request,
-            "Error Saving User To Salesforce Database.",
-        )
+        messages.error(request, "Error Saving User To Salesforce Database.")
         return redirect("staff")
 
 
@@ -74,16 +84,9 @@ def create_mission_bit_user(request, form, group):
         provider="google-oauth2",
     )
     first_name = form.cleaned_data.get("first_name")
-    messages.success(
-        request, f"Student Account Successfully Created For {first_name}"
-    )
+    messages.success(request, f"Student Account Successfully Created For {first_name}")
     email_new_user(
-        request,
-        email,
-        first_name,
-        group,
-        new_user.username,
-        random_password,
+        request, email, first_name, group, new_user.username, random_password
     )
 
 
@@ -100,7 +103,9 @@ def enroll_in_class(form, contact):
 def setup_classroom(request, form):
     email_list = []
     teacher = get_django_user_from_contact(form.cleaned_data.get("teacher"))
-    teacher_assistant = get_django_user_from_contact(form.cleaned_data.get("teacher_assistant"))
+    teacher_assistant = get_django_user_from_contact(
+        form.cleaned_data.get("teacher_assistant")
+    )
     email_list.append(teacher.email)
     email_list.append(teacher_assistant.email)
     classroom = Classroom.objects.create(course=form.cleaned_data.get("course").name)
@@ -123,20 +128,20 @@ def setup_classroom(request, form):
 
 
 def get_django_user_from_contact(contact):
-    return DjangoUser.objects.get(id=UserProfile.objects.get(salesforce_id=contact.client_id.lower()).user_id)
+    return DjangoUser.objects.get(
+        id=UserProfile.objects.get(salesforce_id=contact.client_id.lower()).user_id
+    )
 
 
 def retrieve_userprofile_from_form(form, name_string):
     return UserProfile.objects.get(
-            salesforce_id=form.cleaned_data.get(name_string).client_id.lower()
-        )
+        salesforce_id=form.cleaned_data.get(name_string).client_id.lower()
+    )
 
 
 def create_classroom_membership(django_user_member, classroom, membership_type):
     cm = ClassroomMembership(
-        member=django_user_member,
-        classroom=classroom,
-        membership_type=membership_type
+        member=django_user_member, classroom=classroom, membership_type=membership_type
     )
     cm.save()
 
@@ -148,18 +153,19 @@ def generate_classroom_sessions_and_attendance(classroom):
     classroom.save()
     class_offering = ClassOffering.objects.get(name=classroom.course)
     dates = class_offering_meeting_dates(class_offering)
-    sessions = [Session(
-        classroom_id=classroom.id,
-        date=day
-    ) for day in dates]
+    sessions = [Session(classroom_id=classroom.id, date=day) for day in dates]
     Session.objects.bulk_create(sessions)
     classroom_students = get_users_of_type_from_classroom(classroom, "student")
-    attendances = [Attendance(
+    attendances = [
+        Attendance(
             student_id=student.id,
             session_id=session.id,
             classroom_id=classroom.id,
             date=session.date,
-        ) for student in classroom_students for session in sessions]
+        )
+        for student in classroom_students
+        for session in sessions
+    ]
     Attendance.objects.bulk_create(attendances)
 
 
@@ -168,15 +174,21 @@ def get_classroom_sessions(classroom):
 
 
 def get_users_of_type_from_classroom(classroom, type):
-    return DjangoUser.objects.filter(classroom=classroom, classroom_member__membership_type=type)  # Handle Empty Set Case
+    return DjangoUser.objects.filter(
+        classroom=classroom, classroom_member__membership_type=type
+    )  # Handle Empty Set Case
 
 
 def get_teacher_from_classroom(classroom):
-    return DjangoUser.objects.get(classroom=classroom, classroom_member__membership_type="teacher")  # Handle a multiple values returned exception
+    return DjangoUser.objects.get(
+        classroom=classroom, classroom_member__membership_type="teacher"
+    )  # Handle a multiple values returned exception
 
 
 def get_teacher_assistant_from_classroom(classroom):
-    return DjangoUser.objects.get(classroom=classroom, classroom_member__membership_type="teacher_assistant")  # Handle a multiple values returned exception
+    return DjangoUser.objects.get(
+        classroom=classroom, classroom_member__membership_type="teacher_assistant"
+    )  # Handle a multiple values returned exception
 
 
 def get_classroom_by_django_user(django_user):
@@ -230,23 +242,29 @@ def email_classroom(request, email_list, classroom_name):
 
 
 def get_users_from_form(form):
-    group_users = DjangoUser.objects.filter(groups__name__in=[group.name for group in form.cleaned_data.get("recipient_groups")])
-    classroom_users = DjangoUser.objects.filter(classroom__in=[classroom for classroom in form.cleaned_data.get("recipient_classrooms")])
+    group_users = DjangoUser.objects.filter(
+        groups__name__in=[
+            group.name for group in form.cleaned_data.get("recipient_groups")
+        ]
+    )
+    classroom_users = DjangoUser.objects.filter(
+        classroom__in=[
+            classroom for classroom in form.cleaned_data.get("recipient_classrooms")
+        ]
+    )
     return (classroom_users | group_users).distinct()
 
 
 def get_emails_from_form_distributions(form_distributions):
-    return DjangoUser.objects.filter(email__in=[form_dist.user.email for form_dist in form_distributions])
+    return DjangoUser.objects.filter(
+        email__in=[form_dist.user.email for form_dist in form_distributions]
+    )
 
 
 def email_announcement(request, subject, message, email_list):
     msg_html = render_to_string(
         "email_templates/announcement_email.html",
-        {
-            "subject": subject,
-            "message": message,
-            "from": request.user,
-        },
+        {"subject": subject, "message": message, "from": request.user},
     )
     from_user = settings.EMAIL_HOST_USER
     recipient_list = [
@@ -264,11 +282,12 @@ def email_announcement(request, subject, message, email_list):
 
 
 def bulk_distribute_announcement(user_list, announcement):
-    announcement_distributions = [AnnouncementDistribution(
-        user_id=user.id,
-        announcement_id=announcement.id,
-        dismissed=False
-    ) for user in user_list]
+    announcement_distributions = [
+        AnnouncementDistribution(
+            user_id=user.id, announcement_id=announcement.id, dismissed=False
+        )
+        for user in user_list
+    ]
     AnnouncementDistribution.objects.bulk_create(announcement_distributions)
 
 
@@ -279,7 +298,7 @@ def email_posted_form(request, esign, subject, message, email_list):
             "subject": subject,
             "message": message,
             "from": DjangoUser.objects.get(id=request.user.id),
-            "esign_link": esign
+            "esign_link": esign,
         },
     )
     text_content = "Please view your new form (attached)"
@@ -298,12 +317,16 @@ def email_posted_form(request, esign, subject, message, email_list):
     messages.add_message(request, messages.SUCCESS, "Recipients Successfully Emailed")
 
 
-def change_classroom_lead(former_leader_user_id, new_leader_user_id, course_id, leader_type):
+def change_classroom_lead(
+    former_leader_user_id, new_leader_user_id, course_id, leader_type
+):
     class_offering = get_class_offering_by_id(course_id)
     new_lead_contact = get_contact_by_user_id(new_leader_user_id)
     classroom = Classroom.objects.get(id=course_id)
     remove_user_from_classroom(former_leader_user_id, course_id)
-    create_classroom_membership(DjangoUser.objects.get(id=new_leader_user_id), classroom, leader_type)
+    create_classroom_membership(
+        DjangoUser.objects.get(id=new_leader_user_id), classroom, leader_type
+    )
     ClassEnrollment.objects.get_or_create(
         created_by=class_offering.created_by,
         contact=new_lead_contact,
@@ -316,8 +339,12 @@ def change_classroom_lead(former_leader_user_id, new_leader_user_id, course_id, 
 
 
 def remove_user_from_classroom(user_id, course_id):
-    remove_enrollment(get_contact_by_user_id(user_id), get_class_offering_by_id(course_id))
-    ClassroomMembership.objects.get(classroom=Classroom.objects.get(id=course_id), member_id=user_id).delete()
+    remove_enrollment(
+        get_contact_by_user_id(user_id), get_class_offering_by_id(course_id)
+    )
+    ClassroomMembership.objects.get(
+        classroom=Classroom.objects.get(id=course_id), member_id=user_id
+    ).delete()
 
 
 def add_user_to_classroom(user_id, course_id, member_type):
@@ -325,13 +352,13 @@ def add_user_to_classroom(user_id, course_id, member_type):
     ClassroomMembership.objects.create(
         classroom=Classroom.objects.get(id=course_id),
         member=DjangoUser.objects.get(id=user_id),
-        membership_type=member_type
+        membership_type=member_type,
     )
     ClassEnrollment.objects.create(
         created_by=class_offering.created_by,
         contact=get_contact_by_user_id(user_id),
         status="Enrolled",
-        class_offering=class_offering
+        class_offering=class_offering,
     )
 
 
@@ -385,20 +412,14 @@ def distribute_forms(request, posted_form, user_list):
 
 
 def bulk_create_form_distributions(form, users):
-    form_dists = [FormDistribution(
-        form=form,
-        user=user,
-        submitted=False
-    )for user in users]
+    form_dists = [
+        FormDistribution(form=form, user=user, submitted=False) for user in users
+    ]
     FormDistribution.objects.bulk_create(form_dists)
 
 
 def create_form_distribution(posted_form, user):
-    dist = FormDistribution(
-        form=posted_form,
-        user=user,
-        submitted=False
-    )
+    dist = FormDistribution(form=posted_form, user=user, submitted=False)
     dist.save()
 
 
@@ -435,7 +456,9 @@ def email_form_notification(request, form, email_list):
 
 
 def mark_announcement_dismissed(announcement, user):
-    announcement = AnnouncementDistribution.objects.get(announcement_id=announcement.id, user_id=user.id)
+    announcement = AnnouncementDistribution.objects.get(
+        announcement_id=announcement.id, user_id=user.id
+    )
     announcement.dismissed = True
     announcement.save()
 
@@ -465,7 +488,9 @@ def update_session(request, form):
 def get_class_member_dict(classroom):
     teacher = get_users_of_type_from_classroom(classroom, "teacher").first()
     teacher_id = teacher.id
-    teacher_assistant = get_users_of_type_from_classroom(classroom, "teacher_assistant").first()
+    teacher_assistant = get_users_of_type_from_classroom(
+        classroom, "teacher_assistant"
+    ).first()
     teacher_assistant_id = teacher_assistant.id
     return {
         "teacher": teacher,
@@ -473,7 +498,7 @@ def get_class_member_dict(classroom):
         "teacher_assistant": teacher_assistant,
         "teacher_assistant_id": teacher_assistant_id,
         "volunteers": get_users_of_type_from_classroom(classroom, "volunteer"),
-        "students": get_users_of_type_from_classroom(classroom, "student")
+        "students": get_users_of_type_from_classroom(classroom, "student"),
     }
 
 
@@ -488,13 +513,23 @@ def get_course_attendance_statistic(course_id):
 
 def get_my_announcements(request, group):
     classroom = get_classroom_by_django_user(request.user)
-    announcements = (Announcement.objects.filter(recipient_groups=Group.objects.get(name=group)) | Announcement.objects.filter(recipient_classrooms=classroom)).distinct()
-    announcement_distributions = AnnouncementDistribution.objects.filter(announcement__in=announcements, user_id=request.user.id, dismissed=False)
+    announcements = (
+        Announcement.objects.filter(recipient_groups=Group.objects.get(name=group))
+        | Announcement.objects.filter(recipient_classrooms=classroom)
+    ).distinct()
+    announcement_distributions = AnnouncementDistribution.objects.filter(
+        announcement__in=announcements, user_id=request.user.id, dismissed=False
+    )
     return announcement_distributions
 
 
 def get_my_forms(request, group):
     classroom = get_classroom_by_django_user(request.user)
-    forms = (Form.objects.filter(recipient_groups=Group.objects.get(name=group)) | Form.objects.filter(recipient_classrooms=classroom)).distinct()
-    form_distributions = FormDistribution.objects.filter(form__in=forms, user_id=request.user.id, submitted=False)
+    forms = (
+        Form.objects.filter(recipient_groups=Group.objects.get(name=group))
+        | Form.objects.filter(recipient_classrooms=classroom)
+    ).distinct()
+    form_distributions = FormDistribution.objects.filter(
+        form__in=forms, user_id=request.user.id, submitted=False
+    )
     return form_distributions

@@ -24,10 +24,18 @@ urlpatterns = [
     path("post_form/", views.post_form, name="post_form"),
     path("create_esign", views.create_esign, name="create_esign"),
     path("form_overview", views.form_overview, name="form_overview"),
-    path("notify_unsubmitted_users", views.notify_unsubmitted_users, name="notify_unsubmitted_users"),
-    path("communication_manager/", views.communication_manager, name="communication_manager"),
+    path(
+        "notify_unsubmitted_users",
+        views.notify_unsubmitted_users,
+        name="notify_unsubmitted_users",
+    ),
+    path(
+        "communication_manager/",
+        views.communication_manager,
+        name="communication_manager",
+    ),
     path("curriculum/", views.curriculum, name="curriculum"),
     path("modify_session/", views.modify_session, name="modify_session"),
     path("add_forum/", views.add_forum, name="add_forum"),
-    path("classroom_detail/", views.classroom_detail, name="classroom_detail")
+    path("classroom_detail/", views.classroom_detail, name="classroom_detail"),
 ]

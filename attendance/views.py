@@ -29,15 +29,17 @@ def attendance(request):
         course_id = request.GET.get("course_id")
         context = get_classroom_attendance(course_id)
         context.update(
-            {"attendance_statistic": get_course_attendance_statistic(course_id),
-             "user_group": user_group}
+            {
+                "attendance_statistic": get_course_attendance_statistic(course_id),
+                "user_group": user_group,
+            }
         )
     else:
         attendance_averages = compile_attendance_averages_for_all_courses()
         context = {
             "classrooms": Classroom.objects.all(),
             "attendance_averages": attendance_averages,
-            "user_group": user_group
+            "user_group": user_group,
         }
     return render(request, "attendance.html", context)
 
@@ -56,10 +58,14 @@ def notify_absent_students(request):
     # This method is a candidate for an async_task
     date = get_date_from_template_returned_string(request.GET.get("date"))
     course = Classroom.objects.get(id=request.GET.get("course_id"))
-    absences = Attendance.objects.filter(date=date, classroom_id=course.id, presence="Absent").select_related('student')
+    absences = Attendance.objects.filter(
+        date=date, classroom_id=course.id, presence="Absent"
+    ).select_related("student")
     # student_list = list(DjangoUser.objects.filter(id__in=[absence.student_id for absence in absences]))
     create_absence_notifications(request, absences, date)
-    messages.add_message(request, messages.SUCCESS, "Absent Students Successfully Notified")
+    messages.add_message(
+        request, messages.SUCCESS, "Absent Students Successfully Notified"
+    )
     return redirect("attendance")
 
 
@@ -116,9 +122,10 @@ def compile_daily_attendance_for_course(course_id):
 
 
 def get_average_attendance_from_list(daily_attendance):
-    attendance_list = [attendance_object.presence == "Present"
-            or attendance_object.presence == "Late"
-            for attendance_object in daily_attendance]
+    attendance_list = [
+        attendance_object.presence == "Present" or attendance_object.presence == "Late"
+        for attendance_object in daily_attendance
+    ]
     return statistics.mean(attendance_list) if len(attendance_list) > 0 else 0
 
 
@@ -139,7 +146,9 @@ def get_date_from_template_returned_string(string_date):
             return datetime.strptime(string_date, date_format).date()
         except ValueError:
             pass
-    raise ValueError("time data {!r} does not match any expected date format".format(string_date))
+    raise ValueError(
+        "time data {!r} does not match any expected date format".format(string_date)
+    )
 
 
 def update_course_attendance_statistic(course_id):
@@ -160,14 +169,18 @@ def get_course_attendance_statistic(course_id):
 
 def create_absence_notifications(request, absences, date):
     django_user = DjangoUser.objects.get(id=request.user.id)
-    notifications = [Notification(
-        subject="%s %s absence on %s" % (absence.student.first_name, absence.student.last_name, date),
-        notification=get_generic_absence_notification(absence.student, date),
-        user_id=absence.student.id,
-        attendance_id=absence.id,
-        created_by=django_user,
-        email_recipients=True
-    ) for absence in absences]
+    notifications = [
+        Notification(
+            subject="%s %s absence on %s"
+            % (absence.student.first_name, absence.student.last_name, date),
+            notification=get_generic_absence_notification(absence.student, date),
+            user_id=absence.student.id,
+            attendance_id=absence.id,
+            created_by=django_user,
+            email_recipients=True,
+        )
+        for absence in absences
+    ]
     Notification.objects.bulk_create(notifications)
     email_absence_notifications(request, absences, date)
 
@@ -183,10 +196,7 @@ def email_absence_notifications(request, email_list, date):
         },
     )
     text_content = "You are being notified about something"
-    recipient_list = [
-        "tyler.iams@gmail.com",
-        "iams.sophia@gmail.com",
-    ]
+    recipient_list = ["tyler.iams@gmail.com", "iams.sophia@gmail.com"]
     # Will replace with [absence.student.email for user in email_list]
     email = EmailMultiAlternatives(
         subject, text_content, settings.EMAIL_HOST_USER, recipient_list

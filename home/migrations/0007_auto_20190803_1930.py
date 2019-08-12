@@ -5,39 +5,37 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0006_session_title'),
-    ]
+    dependencies = [("home", "0006_session_title")]
 
     operations = [
         migrations.AddField(
-            model_name='classroom',
-            name='forum',
+            model_name="classroom",
+            name="forum",
             field=models.URLField(default=None, null=True),
         ),
         migrations.AddField(
-            model_name='classroom',
-            name='forum_title',
+            model_name="classroom",
+            name="forum_title",
             field=models.CharField(default=None, max_length=240, null=True),
         ),
         migrations.AlterField(
-            model_name='resource',
-            name='file',
-            field=models.FileField(default=None, null=True, upload_to='documents/'),
+            model_name="resource",
+            name="file",
+            field=models.FileField(default=None, null=True, upload_to="documents/"),
         ),
         migrations.AlterField(
-            model_name='session',
-            name='activity',
-            field=models.FileField(default=None, upload_to='documents/'),
+            model_name="session",
+            name="activity",
+            field=models.FileField(default=None, upload_to="documents/"),
         ),
         migrations.AlterField(
-            model_name='session',
-            name='lecture',
-            field=models.FileField(default=None, upload_to='documents/'),
+            model_name="session",
+            name="lecture",
+            field=models.FileField(default=None, upload_to="documents/"),
         ),
         migrations.AlterField(
-            model_name='session',
-            name='lesson_plan',
-            field=models.FileField(default=None, upload_to='documents/'),
+            model_name="session",
+            name="lesson_plan",
+            field=models.FileField(default=None, upload_to="documents/"),
         ),
     ]

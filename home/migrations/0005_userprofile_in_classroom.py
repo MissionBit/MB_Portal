@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0004_auto_20190802_0126'),
-    ]
+    dependencies = [("home", "0004_auto_20190802_0126")]
 
     operations = [
         migrations.AddField(
-            model_name='userprofile',
-            name='in_classroom',
+            model_name="userprofile",
+            name="in_classroom",
             field=models.BooleanField(default=False),
-        ),
+        )
     ]
