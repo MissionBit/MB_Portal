@@ -195,11 +195,6 @@ EMAIL_PORT = os.getenv("EMAIL_PORT")
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
-
-STATIC_URL = "/static/"
-
 LOGIN_URL = "home-landing_page"
 
 LOGIN_REDIRECT_URL = "home-home"
@@ -216,4 +211,5 @@ AZURE_CUSTOM_DOMAIN = os.getenv('AZURE_CUSTOM_DOMAIN', f'{AZURE_ACCOUNT_NAME}.bl
 AZURE_PROTOCOL = 'http' if AZURE_EMULATED_MODE else 'https'
 MEDIA_URL = os.getenv('MEDIA_URL', f'{AZURE_PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/')
 
-
+INSTAUSERID = os.getenv('INSTAUSERID')
+INSTATOKEN = os.getenv('INSTATOKEN')

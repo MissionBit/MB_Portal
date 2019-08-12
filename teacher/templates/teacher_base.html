@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load settings_tags %}
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -20,8 +21,8 @@
      <script type="text/javascript">
         var galleryFeed = new Instafeed({
         get: "user",
-        userId: "2052224602",
-        accessToken: '2052224602.1677ed0.1292ba7a40024b4091eb308010d4ac7e',
+        userId: "{% settings_value "INSTAUSERID" %}",
+        accessToken: "{% settings_value "INSTATOKEN" %}",
         resolution: "standard_resolution",
         useHttp: "true",
         limit: 5,
