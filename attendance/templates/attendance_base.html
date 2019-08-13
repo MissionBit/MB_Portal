@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 {% load static %}
-{% load settings_tags %}
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -21,8 +20,8 @@
      <script type="text/javascript">
         var galleryFeed = new Instafeed({
         get: "user",
-        userId: "{% settings_value "INSTAUSERID" %}",
-        accessToken: "{% settings_value "INSTATOKEN" %}",
+        userId: "2052224602",
+        accessToken: '2052224602.1677ed0.1292ba7a40024b4091eb308010d4ac7e',
         resolution: "standard_resolution",
         useHttp: "true",
         limit: 5,
@@ -151,15 +150,11 @@
             <div class="sidenav-content">
              <section id="intro">
                <a class="mainslide" href="{% url 'home-home' %}">Home</a>
-               <div>
-                   <!-- Dropdown content here -->
-                   <!--a href="link to redirect">Name Of Item</a> -->
-               </div>
              </section>
+             {% if user_group == "staff" %}
              <section class="intro">
                <a class="mainslide" style="cursor: pointer">Courses</a>
                <div>
-                   <!-- Dropdown content here -->
                    <hr style="width: 80%;">
                    <a href="{% url 'create_classroom' %}">Create Classroom</a>
                    <a href="{% url 'create_class_offering' %}">Create Class Offering</a>
@@ -170,7 +165,6 @@
              <section class="intro">
                <a class="mainslide" style="cursor: pointer">Users</a>
                <div>
-                   <!-- Dropdown content here -->
                    <hr style="width: 80%;">
                    <a href="{% url 'create_staff_user' %}">Create Staff User</a>
                    <a href="{% url 'create_student_user' %}">Create Student User</a>
@@ -182,7 +176,6 @@
              <section class="intro">
                <a class="mainslide" style="cursor: pointer">Forms</a>
                <div>
-                   <!-- Dropdown content here -->
                    <hr style="width: 80%;">
                    <a href="{% url 'form_overview' %}">Form Overview</a>
                    <a href="{% url 'post_form' %}">Post New Form</a>
@@ -200,6 +193,11 @@
                    <hr style="width: 80%;">
                </div>
              </section>
+             {% elif user_group == "teacher" %}
+               <section id="intro">
+                 <a class="mainslide" href="{% url 'my_class_teacher' %}">My Class</a>
+               </section>
+             {% endif %}
              <section id="intro">
                <a class="mainslide" href="{% url 'attendance' %}">Attendance</a>
                <div>

@@ -1,69 +1,60 @@
-{% extends "home/home.html" %}
-{% load crispy_forms_tags %}
+{% load static %}
 
-{% block content %}
-{% if messages %}
-{% for message in messages %}
-    <div class = "alert alert-{{message.tags}}">
-        {{ message }}
-    </div>
-{% endfor %}
-{% endif %}
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mission Bit</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.muicss.com/mui-0.9.43/extra/mui-colors.min.css">
+    <link  rel="stylesheet" href="{% static 'css/landing_pg.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="//cdn.muicss.com/mui-0.9.43/extra/mui-combined.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+    <script>
+      new WOW().init();
+    </script>
+  </head>
+  <body>
 
-<style>
-.announcement {
-  padding: 10px 15px 0px;
-  border: 1px solid #e1e1e1;
-  background-color: #f9f9f9;
-  border-radius: 4px;
-  width: 75%;
-}
+    <header class="mui-appbar mui--z1">
+      <div class="mui-container">
 
-.button {
-   font-size: 10px;
-   font-family: "American Typewriter";
-   border-radius: 14px;
-   background-color: white;
-   color: #4CAF50;
-   border: 2px solid #000080;
-}
+      </div>
+    </header>
 
-.form {
-  padding: 10px 15px 0px;
-  border: 1px solid #e1e1e1;
-  background-color: plum;
-  border-radius: 4px;
-  width: 75%;
-}
-</style>
-
-    <div class="sidenav">
-
-    </div>
-
-    <div class="main-container">
-        <h4>Please Log In Or Register with Mission Bit</h4><br><br>
-        <div class='content-section'>
-          <div class="announcement">
-            <h5><a href="{% url 'login' %}">Log In with Username</a></h5>
-          </div><br>
-          <div class="announcement">
-            <h5><a href="{% url 'social:begin' 'google-oauth2' %}">Log In with Gmail</a></h5>
-          </div><br>
-          <div class="announcement">
-            <h5><a href="{% url 'home-register' %}">Register</a><br></h5>
-          </div>
+    <div id="content-wrapper" class="mui--text-center">
+      <div class="mui--appbar-height"></div>
+      <br>
+      <div class="mui--text-display3 row wow zoomInDown"><img class="logo" src="{% static 'missionbit-logo.png' %}"/> </div><br>
+    <div style="text-align: center;">
+      <div style="width: 50%; display: inline-block; background-color: whitesmoke" class="mui-panel">
+        <br>
+          <form action="{% url 'social:begin' 'google-oauth2' %}">
+            <button type="submit" class="loginBtn loginBtn--google mui-btn mui-btn--raised">LOGIN WITH GOOGLE</button>
+          </form>
+          <form action="{% url 'login' %}">
+            <button class="mui-btn mui-btn--raised">Login with Username</button>
+          </form>
+          <form action="{% url 'home-register_as_student' %}">
+            <button class="mui-btn mui-btn--raised">Register as Student</button>
+          </form>
+          <form action="{% url 'home-register_as_volunteer' %}">
+            <button class="mui-btn mui-btn--raised">Register as Volunteer</button>
+          </form>
+          <form action="{% url 'home-register_as_donor' %}">
+            <button class="mui-btn mui-btn--raised">Register as Donor</button>
+          </form>
         </div>
+      </div>
     </div>
+    <footer class="footer">
+        <div style="text-align: center; vertical-align: top">
+        <h4>© Copyright 2019</h4>
+        </div>
+    </footer>
 
-<h4>Please Log In Or Register</h4>
-<div class='content-section'>
-      <a href="{% url 'login' %}">Log In</a><br>
-      <br>
-      <p><strong>-- OR --</strong></p>
-      <a href="{% url 'social:begin' 'google-oauth2' %}">Login with Google</a><br>
-      <br>
-      <p><strong>-- OR --</strong></p>
-      <a href="{% url 'home-register' %}">Register</a><br>
-</div>
-{% endblock content %}
+  </body>
+
+</html>

@@ -2,8 +2,8 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-   <div style="padding-left: 10%">
-    <div style="width: 70%" class="mui-panel">
+  <div style="text-align: center;">
+    <div style="width: 45%; display: inline-block" class="mui-panel">
         <form class="mui-form" enctype="multipart/form-data" method="post">
           <legend>Post Form</legend>
             {% csrf_token %}
@@ -23,18 +23,22 @@
               <label>E-Sign</label><br>
               {{ form.esign }}
             </div>
-            <div class="mui-checkbox">
-              <label>Recipient Groups</label>
-              {{ form.recipient_groups }}
-            </div><br>
-            <div class="mui-checkbox">
-              <label>Recipient Classrooms</label>
-              {{ form.recipient_classrooms }}
-            </div><br>
-            <div class="mui-radio">
-              <label>Email Recipients</label>
-              {{ form.email_recipients }}
-            </div><br>
+            <div style="text-align: center">
+              <div style="display: inline-block">
+                <div style="text-align: left" class="mui-checkbox">
+                  <label>Recipient Groups</label>
+                  {{ form.recipient_groups }}
+                </div><br>
+                <div style="text-align: left" class="mui-checkbox">
+                  <label>Recipient Classrooms</label>
+                  {{ form.recipient_classrooms }}
+                </div><br>
+                <div style="text-align: left" class="mui-radio">
+                  <label>Email Recipients</label>
+                  {{ form.email_recipients }}
+                </div><br>
+              </div>
+            </div>
           <button type="submit" class="mui-btn mui-btn--raised mui-btn--primary">Post Form</button>
         </form>
     </div>

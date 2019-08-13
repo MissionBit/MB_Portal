@@ -55,28 +55,18 @@ class BaseTestCase(TestCase):
         volunteer.userprofile.salesforce_id = "voluse19010101"
         volunteer.save()
         Group.objects.get(name="teacher").user_set.add(volunteer)
-        classroom = Classroom.objects.create(
-            course="Test_Course"
+        classroom = Classroom.objects.create(course="Test_Course")
+        ClassroomMembership.objects.create(
+            member=teacher, classroom=classroom, membership_type="teacher"
         )
         ClassroomMembership.objects.create(
-            member=teacher,
-            classroom=classroom,
-            membership_type="teacher"
+            member=t_a, classroom=classroom, membership_type="teacher_assistant"
         )
         ClassroomMembership.objects.create(
-            member=t_a,
-            classroom=classroom,
-            membership_type="teacher_assistant"
+            member=volunteer, classroom=classroom, membership_type="volunteer"
         )
         ClassroomMembership.objects.create(
-            member=volunteer,
-            classroom=classroom,
-            membership_type="volunteer"
-        )
-        ClassroomMembership.objects.create(
-            member=student,
-            classroom=classroom,
-            membership_type="student"
+            member=student, classroom=classroom, membership_type="student"
         )
 
     def create_staff_user(self):
@@ -156,22 +146,6 @@ class StaffViewsTest(BaseTestCase):
         self.client.force_login(self.create_nonstaff_user())
         self.assertRaises(PermissionError)
 
-    def test_user_management(self):
-        self.client.force_login(self.create_staff_user())
-        response = self.client.get(reverse("user_management"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, "user_management.html")
-        self.client.force_login(self.create_nonstaff_user())
-        self.assertRaises(PermissionError)
-
-    def test_my_account_staff(self):
-        self.client.force_login(self.create_staff_user())
-        response = self.client.get(reverse("my_account_staff"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, "my_account_staff.html")
-        self.client.force_login(self.create_nonstaff_user())
-        self.assertRaises(PermissionError)
-
     def test_classroom_management(self):
         self.client.force_login(self.create_staff_user())
         response = self.client.get(reverse("classroom_management"))
@@ -246,7 +220,7 @@ class StaffViewsTest(BaseTestCase):
     def test_create_staff_user_invalid_form(self):
         self.client.force_login(self.create_staff_user())
         response = self.client.post(reverse("create_staff_user"), {})
-        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.url, reverse("create_staff_user"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
     def test_create_teacher_user(self):
@@ -266,7 +240,7 @@ class StaffViewsTest(BaseTestCase):
     def test_create_teacher_user_invalid_form(self):
         self.client.force_login(self.create_staff_user())
         response = self.client.post(reverse("create_teacher_user"), {})
-        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.url, reverse("create_teacher_user"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
     def test_create_student_user(self):
@@ -286,7 +260,7 @@ class StaffViewsTest(BaseTestCase):
     def test_create_student_user_invalid_form(self):
         self.client.force_login(self.create_staff_user())
         response = self.client.post(reverse("create_student_user"), {})
-        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.url, reverse("create_student_user"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
     def test_create_volunteer_user(self):
@@ -306,5 +280,5 @@ class StaffViewsTest(BaseTestCase):
     def test_create_volunteer_user_invalid_form(self):
         self.client.force_login(self.create_staff_user())
         response = self.client.post(reverse("create_volunteer_user"), {})
-        self.assertEqual(response.url, reverse("staff"))
+        self.assertEqual(response.url, reverse("create_volunteer_user"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)

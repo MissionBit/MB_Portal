@@ -7,9 +7,9 @@
 
 </div>
 
-  <div style="padding-left: 10%">
-    <div style="width: 60%" class="mui-panel">
-        <form style="width: 40%; padding-left: 10%" class="mui-form" method="post">
+      <div style="text-align: center">
+        <div style="width: 50%; display: inline-block" class="mui-panel">
+        <form style="display: inline-block" class="mui-form" method="post">
             {% csrf_token %}
             <legend>Create Class Offering</legend>
             <div class="mui-textfield mui-textfield--float-label">
@@ -20,23 +20,24 @@
               {{ form.description}}
               <label>Description*</label>
             </div>
-            <div class="mui-textfield">
+            <div class="mui-select">
               <label>Instructor*</label>
               {{ form.instructor }}
             </div>
-            <div class="mui-textfield">
+            <div style="text-align: center"></div>
+            <div style="display: inline-block;" class="mui-textfield">
               <label>Start Date*</label>
               {{ form.start_date }}
             </div>
-            <div class="mui-textfield">
+            <div style="display: inline-block" class="mui-textfield">
               <label>End Date*</label>
               {{ form.end_date }}
             </div>
-            <div class="mui-textfield">
+            <div class="mui-select">
               <label>Meeting Days*</label>
               {{ form.meeting_days }}
             </div>
-            <div class="mui-textfield">
+            <div class="mui-select">
               <label>Created By*</label>
               {{ form.created_by }}
             </div>

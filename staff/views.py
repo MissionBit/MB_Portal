@@ -18,11 +18,10 @@ from home.forms import (
     AddCurriculumForm,
     AddForumForm,
     AddVolunteerForm,
-    AddStudentForm
+    AddStudentForm,
 )
 from .staff_views_helper import *
 from attendance.views import get_date_from_template_returned_string
-from social_django.models import UserSocialAuth
 from home.models.models import Classroom, Form, Esign, Notification, Announcement
 import os
 
@@ -31,22 +30,30 @@ import os
 def staff(request):
     if request.method == "POST":
         if request.POST.get("dismiss_announcement") == "true":
-            mark_announcement_dismissed(Announcement.objects.get(id=request.POST.get("announcement")), request.user)
+            mark_announcement_dismissed(
+                Announcement.objects.get(id=request.POST.get("announcement")),
+                request.user,
+            )
             return redirect("staff")
         elif request.POST.get("acknowledge_notification") == "true":
-            mark_notification_acknowledged(Notification.objects.get(id=request.POST.get("notification")))
+            mark_notification_acknowledged(
+                Notification.objects.get(id=request.POST.get("notification"))
+            )
             return redirect("staff")
     announcements = get_my_announcements(request, "staff")
     forms = get_my_forms(request, "staff")
-    notifications = Notification.objects.filter(user_id=request.user.id, acknowledged=False)
-    return render(request, "staff.html", {"announcements": announcements,
-                                          "forms": forms,
-                                          "notifications": notifications})
-
-
-@group_required("staff")
-def user_management(request):
-    return render(request, "user_management.html")
+    notifications = Notification.objects.filter(
+        user_id=request.user.id, acknowledged=False
+    )
+    return render(
+        request,
+        "staff.html",
+        {
+            "announcements": announcements,
+            "forms": forms,
+            "notifications": notifications,
+        },
+    )
 
 
 @group_required("staff")
@@ -55,8 +62,11 @@ def classroom_management(request):
     classroom_list = Classroom.objects.all()
     for classroom in classroom_list:
         class_dict.update({classroom.course: get_class_member_dict(classroom)})
-    return render(request, "classroom_management.html", {"classrooms": classroom_list,
-                                                         "class_dicts": class_dict})
+    return render(
+        request,
+        "classroom_management.html",
+        {"classrooms": classroom_list, "class_dicts": class_dict},
+    )
 
 
 @group_required("staff")
@@ -64,31 +74,15 @@ def create_staff_user(request):
     if request.method == "POST":
         form = CreateStaffForm(request.POST)
         if form.is_valid():
-            form.save()
-            random_password = DjangoUser.objects.make_random_password()
-            new_user = create_user_with_profile(form, random_password)
-            email = form.cleaned_data.get("email")
-            staff_group = Group.objects.get(name="staff")
-            staff_group.user_set.add(new_user)
-            UserSocialAuth.objects.create(
-                uid=form.cleaned_data.get("email"),
-                user_id=new_user.userprofile.user_id,
-                provider="google-oauth2",
-            )
-            first_name = form.cleaned_data.get("first_name")
-            messages.success(
-                request, f"Staff Account Successfully Created For {first_name}"
-            )
-            email_new_user(
-                request, email, first_name, "staff", new_user.username, random_password
-            )
+            save_user_to_salesforce(request, form)
+            create_mission_bit_user(request, form, "staff")
             return redirect("staff")
         else:
             messages.error(
                 request,
                 "Staff User NOT created, your form was not valid, please try again.",
             )
-            return redirect("staff")
+            return redirect("create_staff_user")
     form = CreateStaffForm()
     return render(request, "create_staff_user.html", {"form": form})
 
@@ -98,36 +92,15 @@ def create_teacher_user(request):
     if request.method == "POST":
         form = CreateTeacherForm(request.POST)
         if form.is_valid():
-            form.save()
-            random_password = DjangoUser.objects.make_random_password()
-            new_user = create_user_with_profile(form, random_password)
-            email = form.cleaned_data.get("email")
-            teacher_group = Group.objects.get(name="teacher")
-            teacher_group.user_set.add(new_user)
-            UserSocialAuth.objects.create(
-                uid=form.cleaned_data.get("email"),
-                user_id=new_user.userprofile.user_id,
-                provider="google-oauth2",
-            )
-            first_name = form.cleaned_data.get("first_name")
-            messages.success(
-                request, f"Teacher Account Successfully Created For {first_name}"
-            )
-            email_new_user(
-                request,
-                email,
-                first_name,
-                "teacher",
-                new_user.username,
-                random_password,
-            )
+            save_user_to_salesforce(request, form)
+            create_mission_bit_user(request, form, "teacher")
             return redirect("staff")
         else:
             messages.error(
                 request,
                 "Teacher User NOT created, your form was not valid, please try again.",
             )
-            return redirect("staff")
+            return redirect("create_teacher_user")
     form = CreateTeacherForm()
     return render(request, "create_teacher_user.html", {"form": form})
 
@@ -138,35 +111,14 @@ def create_student_user(request):
         form = CreateStudentForm(request.POST)
         if form.is_valid():
             form.save()
-            random_password = DjangoUser.objects.make_random_password()
-            new_user = create_user_with_profile(form, random_password)
-            email = form.cleaned_data.get("email")
-            student_group = Group.objects.get(name="student")
-            student_group.user_set.add(new_user)
-            UserSocialAuth.objects.create(
-                uid=form.cleaned_data.get("email"),
-                user_id=new_user.userprofile.user_id,
-                provider="google-oauth2",
-            )
-            first_name = form.cleaned_data.get("first_name")
-            messages.success(
-                request, f"Student Account Successfully Created For {first_name}"
-            )
-            email_new_user(
-                request,
-                email,
-                first_name,
-                "student",
-                new_user.username,
-                random_password,
-            )
+            create_mission_bit_user(request, form, "student")
             return redirect("staff")
         else:
             messages.error(
                 request,
                 "Student User NOT created, your form was not valid, please try again.",
             )
-            return redirect("staff")
+            return redirect("create_student_user")
     form = CreateStudentForm()
     return render(request, "create_student_user.html", {"form": form})
 
@@ -176,36 +128,15 @@ def create_volunteer_user(request):
     if request.method == "POST":
         form = CreateVolunteerForm(request.POST)
         if form.is_valid():
-            form.save()
-            random_password = DjangoUser.objects.make_random_password()
-            new_user = create_user_with_profile(form, random_password)
-            email = form.cleaned_data.get("email")
-            volunteer_group = Group.objects.get(name="volunteer")
-            volunteer_group.user_set.add(new_user)
-            UserSocialAuth.objects.create(
-                uid=form.cleaned_data.get("email"),
-                user_id=new_user.userprofile.user_id,
-                provider="google-oauth2",
-            )
-            first_name = form.cleaned_data.get("first_name")
-            messages.success(
-                request, f"Volunteer Account Successfully Created For {first_name}"
-            )
-            email_new_user(
-                request,
-                email,
-                first_name,
-                "volunteer",
-                new_user.username,
-                random_password,
-            )
+            save_user_to_salesforce(request, form)
+            create_mission_bit_user(request, form, "volunteer")
             return redirect("staff")
         else:
             messages.error(
                 request,
                 "Volunteer User NOT created, your form was not valid, please try again.",
             )
-            return redirect("staff")
+            return redirect("create_volunteer_user")
     form = CreateVolunteerForm()
     return render(request, "create_volunteer_user.html", {"form": form})
 
@@ -305,7 +236,13 @@ def post_form(request):
             if form.cleaned_data.get("email_recipients"):
                 subject = form.cleaned_data.get("name")
                 message = form.cleaned_data.get("description")
-                email_posted_form(request, form.cleaned_data.get("esign", None), subject, message, email_list)
+                email_posted_form(
+                    request,
+                    form.cleaned_data.get("esign", None),
+                    subject,
+                    message,
+                    email_list,
+                )
             distribute_forms(request, posted_form, user_list)
             return redirect("staff")
         else:
@@ -326,14 +263,19 @@ def form_overview(request):
         form = CollectForms(request.POST)
         if form.is_valid():
             form_id = Form.objects.get(name=request.POST.get("form_name"))
-            form_distribution = FormDistribution.objects.get(user_id=request.POST.get("user_id"), form_id=form_id)
+            form_distribution = FormDistribution.objects.get(
+                user_id=request.POST.get("user_id"), form_id=form_id
+            )
             form_distribution.submitted = form.cleaned_data.get("submitted")
             form_distribution.save()
         return redirect("form_overview")
     outstanding_form_dict = get_outstanding_forms()
     form = CollectForms()
-    return render(request, "form_overview.html", {"outstanding_form_dict": outstanding_form_dict,
-                                                  "form": form})
+    return render(
+        request,
+        "form_overview.html",
+        {"outstanding_form_dict": outstanding_form_dict, "form": form},
+    )
 
 
 @group_required("staff")
@@ -342,18 +284,25 @@ def notify_unsubmitted_users(request):
         form = NotifyUnsubmittedUsersForm(request.POST)
         if form.is_valid():
             form_id = Form.objects.get(name=request.POST.get("notify_about")).id
-            form_distributions = FormDistribution.objects.filter(form_id=form_id, submitted=False)
+            form_distributions = FormDistribution.objects.filter(
+                form_id=form_id, submitted=False
+            )
             for form_dist in form_distributions:
                 create_form_notification(request, form, form_dist.user_id)
             if form.cleaned_data.get("email_recipients"):
                 email_list = get_emails_from_form_distributions(form_distributions)
                 email_form_notification(request, form, email_list)
-            messages.add_message(request, messages.SUCCESS, "Successfully Notified Users")
+            messages.add_message(
+                request, messages.SUCCESS, "Successfully Notified Users"
+            )
             return redirect("staff")
     form = NotifyUnsubmittedUsersForm()
     notify_about = request.GET.get("notify_unsubmitted_users")
-    return render(request, "notify_unsubmitted_users.html", {"form": form,
-                                                             "notify_about": notify_about})
+    return render(
+        request,
+        "notify_unsubmitted_users.html",
+        {"form": form, "notify_about": notify_about},
+    )
 
 
 @group_required("staff")
@@ -364,7 +313,7 @@ def create_form_notification(request, form, user_id):
         email_recipients=form.cleaned_data.get("email_recipients"),
         created_by=DjangoUser.objects.get(id=request.user.id),
         form_id=Form.objects.get(name=request.POST.get("notify_about")).id,
-        user_id=user_id
+        user_id=user_id,
     )
     notification.save()
 
@@ -383,9 +332,15 @@ def communication_manager(request):
     announcements = Announcement.objects.all()
     notifications = Notification.objects.all()
     forms = Form.objects.all()
-    return render(request, "communication_manager.html", {"announcements": announcements,
-                                                          "notifications": notifications,
-                                                          "forms": forms})
+    return render(
+        request,
+        "communication_manager.html",
+        {
+            "announcements": announcements,
+            "notifications": notifications,
+            "forms": forms,
+        },
+    )
 
 
 @group_required("staff")
@@ -396,7 +351,7 @@ def create_esign(request):
             esign = Esign(
                 name=form.cleaned_data.get("name"),
                 template=form.cleaned_data.get("link"),
-                created_by=DjangoUser.objects.get(id=request.user.id)
+                created_by=DjangoUser.objects.get(id=request.user.id),
             )
             esign.save()
         messages.add_message(request, messages.SUCCESS, "Esign Created Successfully")
@@ -419,21 +374,16 @@ def add_forum(request):
             return redirect("staff")
     classroom = Classroom.objects.get(id=request.GET.get("classroom"))
     form = AddForumForm()
-    return render(request, "add_forum.html", {"form": form,
-                                              "classroom": classroom})
-
-
-@group_required("staff")
-def my_account_staff(request):
-    return render(request, "my_account_staff.html")
+    return render(request, "add_forum.html", {"form": form, "classroom": classroom})
 
 
 @group_required("staff")
 def curriculum(request):
     classroom = Classroom.objects.get(id=request.GET.get("classroom_id"))
     sessions = Session.objects.filter(classroom_id=classroom.id).order_by("date")
-    return render(request, "curriculum.html", {"sessions": sessions,
-                                               "classroom": classroom})
+    return render(
+        request, "curriculum.html", {"sessions": sessions, "classroom": classroom}
+    )
 
 
 @group_required("staff")
@@ -445,12 +395,15 @@ def modify_session(request):
     form = AddCurriculumForm()
     date = request.GET.get("date")
     classroom = Classroom.objects.get(id=request.GET.get("classroom"))
-    session = Session.objects.get(classroom_id=request.GET.get("classroom"),
-                                  date=get_date_from_template_returned_string(request.GET.get("date")))
-    return render(request, "modify_session.html", {"form": form,
-                                                   "date": date,
-                                                   "classroom": classroom,
-                                                   "session": session})
+    session = Session.objects.get(
+        classroom_id=request.GET.get("classroom"),
+        date=get_date_from_template_returned_string(request.GET.get("date")),
+    )
+    return render(
+        request,
+        "modify_session.html",
+        {"form": form, "date": date, "classroom": classroom, "session": session},
+    )
 
 
 @group_required("staff")
@@ -459,60 +412,102 @@ def classroom_detail(request):
         if request.POST.get("swap_teacher"):
             form = ChangeTeacherForm(request.POST)
             if form.is_valid():
-                change_classroom_lead(request.POST.get("fmr_teacher", None),
-                                      form.cleaned_data.get("teacher").id,
-                                      request.POST.get("course_id", None),
-                                      "teacher")
-                messages.add_message(request, messages.SUCCESS, "Teacher Successfully Changed")
+                change_classroom_lead(
+                    request.POST.get("fmr_teacher", None),
+                    form.cleaned_data.get("teacher").id,
+                    request.POST.get("course_id", None),
+                    "teacher",
+                )
+                messages.add_message(
+                    request, messages.SUCCESS, "Teacher Successfully Changed"
+                )
                 return redirect("staff")
             else:
-                messages.add_message(request, messages.ERROR, "Invalid Form")  # Need to have fall through here
+                messages.add_message(
+                    request, messages.ERROR, "Invalid Form"
+                )  # Need to have fall through here
                 return redirect("staff")
         if request.POST.get("swap_teacher_assistant"):
             form = ChangeTeacherForm(request.POST)
             if form.is_valid():
-                change_classroom_lead(request.POST.get("fmr_teacher_assistant", None),
-                                      form.cleaned_data.get("teacher").id,
-                                      request.POST.get("course_id", None),
-                                      "teacher_assistant")
-                messages.add_message(request, messages.SUCCESS, "Teacher Assistant Successfully Changed")
+                change_classroom_lead(
+                    request.POST.get("fmr_teacher_assistant", None),
+                    form.cleaned_data.get("teacher").id,
+                    request.POST.get("course_id", None),
+                    "teacher_assistant",
+                )
+                messages.add_message(
+                    request, messages.SUCCESS, "Teacher Assistant Successfully Changed"
+                )
                 return redirect("staff")
             else:
-                messages.add_message(request, messages.ERROR, "Invalid Form")  # Need to have fall through here
+                messages.add_message(
+                    request, messages.ERROR, "Invalid Form"
+                )  # Need to have fall through here
                 return redirect("staff")
         if request.POST.get("remove_student"):  # Input Validation Needed
-            remove_user_from_classroom(request.POST["fmr_student"], request.POST["course_id"])
-            messages.add_message(request, messages.SUCCESS, "Student Successfully Removed From Class")
+            remove_user_from_classroom(
+                request.POST["fmr_student"], request.POST["course_id"]
+            )
+            messages.add_message(
+                request, messages.SUCCESS, "Student Successfully Removed From Class"
+            )
             return redirect("staff")
         if request.POST.get("remove_volunteer"):  # Input Validation Needed
-            remove_user_from_classroom(request.POST["fmr_volunteer"], request.POST["course_id"])
-            messages.add_message(request, messages.SUCCESS, "Volunteer Successfully Removed From Class")
+            remove_user_from_classroom(
+                request.POST["fmr_volunteer"], request.POST["course_id"]
+            )
+            messages.add_message(
+                request, messages.SUCCESS, "Volunteer Successfully Removed From Class"
+            )
             return redirect("staff")
         if request.POST.get("add_volunteer"):
             form = AddVolunteerForm(request.POST)
             if form.is_valid():
-                add_user_to_classroom(form.cleaned_data.get("volunteer").id, request.POST["course_id"], "volunteer")
-                messages.add_message(request, messages.SUCCESS, "Volunteer Added To Class")
+                add_user_to_classroom(
+                    form.cleaned_data.get("volunteer").id,
+                    request.POST["course_id"],
+                    "volunteer",
+                )
+                messages.add_message(
+                    request, messages.SUCCESS, "Volunteer Added To Class"
+                )
                 return redirect("staff")
             else:
-                messages.add_message(request, messages.ERROR, "Invalid Form")  # Need to have fall through here
+                messages.add_message(
+                    request, messages.ERROR, "Invalid Form"
+                )  # Need to have fall through here
                 return redirect("staff")
         if request.POST.get("add_student"):
             form = AddStudentForm(request.POST)
             if form.is_valid():
-                add_user_to_classroom(form.cleaned_data.get("student").id, request.POST["course_id"], "student")
-                messages.add_message(request, messages.SUCCESS, "Student Added To Class")
+                add_user_to_classroom(
+                    form.cleaned_data.get("student").id,
+                    request.POST["course_id"],
+                    "student",
+                )
+                messages.add_message(
+                    request, messages.SUCCESS, "Student Added To Class"
+                )
                 return redirect("staff")
             else:
-                messages.add_message(request, messages.ERROR, "Invalid Form")  # Need to have fall through here
+                messages.add_message(
+                    request, messages.ERROR, "Invalid Form"
+                )  # Need to have fall through here
                 return redirect("staff")
     classroom = Classroom.objects.get(id=request.GET.get("course_id"))
     class_members = get_class_member_dict(classroom)
-    return render(request, "classroom_detail.html", {"change_teacher_form": ChangeTeacherForm(),
-                                                     "add_volunteer_form": AddVolunteerForm(),
-                                                     "add_student_form": AddStudentForm(),
-                                                     "classroom": classroom,
-                                                     "class_members": class_members})
+    return render(
+        request,
+        "classroom_detail.html",
+        {
+            "change_teacher_form": ChangeTeacherForm(),
+            "add_volunteer_form": AddVolunteerForm(),
+            "add_student_form": AddStudentForm(),
+            "classroom": classroom,
+            "class_members": class_members,
+        },
+    )
 
 
 @register.filter
@@ -525,8 +520,10 @@ def download_form_staff(request):
     path = request.GET.get("path")
     file_path = os.path.join(path)
     if os.path.exists(file_path):
-        with open(file_path, 'rb') as fh:
+        with open(file_path, "rb") as fh:
             response = HttpResponse(fh.read(), content_type="pdf/text")
-            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            response["Content-Disposition"] = "inline; filename=" + os.path.basename(
+                file_path
+            )
             return response
     raise Http404

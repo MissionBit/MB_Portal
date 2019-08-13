@@ -9,38 +9,61 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('home', '0008_remove_userprofile_in_classroom'),
+        ("home", "0008_remove_userprofile_in_classroom"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='classroom',
-            name='students',
-        ),
-        migrations.RemoveField(
-            model_name='classroom',
-            name='teacher',
-        ),
-        migrations.RemoveField(
-            model_name='classroom',
-            name='teacher_assistant',
-        ),
-        migrations.RemoveField(
-            model_name='classroom',
-            name='volunteers',
-        ),
+        migrations.RemoveField(model_name="classroom", name="students"),
+        migrations.RemoveField(model_name="classroom", name="teacher"),
+        migrations.RemoveField(model_name="classroom", name="teacher_assistant"),
+        migrations.RemoveField(model_name="classroom", name="volunteers"),
         migrations.CreateModel(
-            name='ClassroomMembership',
+            name="ClassroomMembership",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('membership_type', models.CharField(choices=[('teacher', 'teacher'), ('teacher_assistant', 'teacher_assistant'), ('student', 'student'), ('volunteer', 'volunteer')], max_length=240)),
-                ('classroom', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='membership_classroom', to='home.Classroom')),
-                ('member', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='classroom_member', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "membership_type",
+                    models.CharField(
+                        choices=[
+                            ("teacher", "teacher"),
+                            ("teacher_assistant", "teacher_assistant"),
+                            ("student", "student"),
+                            ("volunteer", "volunteer"),
+                        ],
+                        max_length=240,
+                    ),
+                ),
+                (
+                    "classroom",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="membership_classroom",
+                        to="home.Classroom",
+                    ),
+                ),
+                (
+                    "member",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="classroom_member",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='classroom',
-            name='members',
-            field=models.ManyToManyField(through='home.ClassroomMembership', to=settings.AUTH_USER_MODEL),
+            model_name="classroom",
+            name="members",
+            field=models.ManyToManyField(
+                through="home.ClassroomMembership", to=settings.AUTH_USER_MODEL
+            ),
         ),
     ]

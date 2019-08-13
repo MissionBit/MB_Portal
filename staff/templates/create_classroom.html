@@ -3,36 +3,39 @@
 
 {% block content %}
 
-  <div style="padding-left: 10%">
-    <div style="width: 60%" class="mui-panel">
+<div style="text-align: center;">
+  <div style="width: 45%; display: inline-block" class="mui-panel">
       <form class="mui-form" method="post">
           {% csrf_token %}
           <legend>Create Classroom</legend>
           {% csrf_token %}
-          <div class="mui-textfield">
+          <div class="mui-select">
             <label>Course*</label>
             {{ form.course }}
           </div>
-          <div class="mui-textfield">
+          <div class="mui-select">
             <label>Teacher*</label>
             {{ form.teacher }}
           </div>
-          <div class="mui-textfield">
+          <div class="mui-select">
             <label>Teacher Assistant*</label>
             {{ form.teacher_assistant }}
-          </div>
-          <div class="mui-textfield">
-            <label>Volunteer(s)*</label>
-            {{ form.volunteers }}
-          </div>
-          <div class="mui-textfield">
-            <label>Students*</label>
-            {{ form.students }}
+          </div><br>
+          <div style="text-align: center">
+            <div style="display: inline-block">
+              <div style="text-align: left" class="mui-checkbox">
+                <strong style="padding-left: 20px"><label>Volunteer(s)*</label></strong>
+                {{ form.volunteers }}
+              </div><br>
+              <div style="text-align: left" class="mui-checkbox">
+                <strong style="padding-left: 20px"><label>Students*</label></strong>
+                {{ form.students }}
+              </div><br>
+            </div>
           </div>
           <button type="submit" class="mui-btn mui-btn--primary">Create Classroom</button>
       </form><br>
     </div>
   </div>
-
 
 {% endblock content %}

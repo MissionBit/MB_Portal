@@ -2,7 +2,7 @@ html,
 body {
   height: 100%;
   background-color: #eee;
-  font-family: 'Montserrat', 'sans-serif';
+  font-family: 'Montserrat', sans-serif;
 }
 
 html,
@@ -107,7 +107,7 @@ button {
 .sidedrawer-toggle {
   color: #fff;
   cursor: pointer;
-  font-size: 32px;
+  font-size: 30px;
   line-height: 20px;
   margin-right: 20px;
 }
@@ -132,7 +132,7 @@ button {
 }
 
 @font-face {
-  font-family: 'Material Icons';
+  font-family: 'Material Icons', sans-serif;
   font-style: normal;
   font-weight: 400;
   src: url(https://example.com/MaterialIcons-Regular.eot); /* For IE6-8 */
@@ -144,10 +144,10 @@ button {
 }
 
 .material-icons {
-  font-family: 'Material Icons', 'sans-serif';
+  font-family: 'Material Icons', sans-serif;
   font-weight: normal;
   font-style: normal;
-  font-size: 24px;  /* Preferred icon size */
+  font-size: 18px;  /* Preferred icon size */
   display: inline-block;
   line-height: 1;
   text-transform: none;
@@ -175,7 +175,7 @@ button {
   padding-top: 20px;
   padding-left: 5px;
   text-decoration: #333333;
-  font-size: 22px;
+  font-size: 14px;
   color: steelblue;
   display: block;
   transition: all 0.3s ease 0s;
@@ -222,7 +222,7 @@ button {
 
 .appbarnav {
     color: white;
-    font-size: 100%;
+    font-size: 200%;
     padding-left: 15px;
     transition: all 0.2s ease 0s;
 }

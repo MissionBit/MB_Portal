@@ -68,13 +68,13 @@ function revertASF() {
 
       <div style="padding-left: 10%">
       <div style="width: 90%;" class="mui-panel">
-       <table class="mui-table">
+       <table class="mui-table mui-table--bordered">
         <thead>
           <tr>
           <th>Role</th>
           <th>Class Member</th>
           <th>Alter</th>
-          <th>Submit</th>
+          <th></th>
         </tr>
         </thead>
         <tr>
@@ -82,7 +82,11 @@ function revertASF() {
             {% csrf_token %}
             <td>Teacher</td>
             <td>{{ class_members|get_item:"teacher" }}</td>
-            <td>{{ change_teacher_form|crispy }}</td>
+            <td>
+              <div class="mui-select">
+                {{ change_teacher_form.teacher }}
+              </div>
+            </td>
             <td><button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Submit</button> </td>
             <input type="hidden" name="swap_teacher" value="True"/>
             <input type="hidden" name="fmr_teacher"  value="{{ class_members|get_item:"teacher_id" }}" />
@@ -94,7 +98,11 @@ function revertASF() {
             {% csrf_token %}
             <td>Teacher Assistant</td>
             <td>{{ class_members|get_item:"teacher_assistant" }}</td>
-            <td>{{ change_teacher_form|crispy }}</td>
+            <td>
+              <div class="mui-select">
+                {{ change_teacher_form.teacher }}
+              </div>
+            </td>
             <td><button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Submit</button> </td>
             <input type="hidden" name="swap_teacher_assistant" value="True"/>
             <input type="hidden" name="fmr_teacher_assistant"  value="{{ class_members|get_item:"teacher_assistant_id" }}" />
@@ -133,24 +141,30 @@ function revertASF() {
         <form method="post">
         {% csrf_token %}
         <div id="add_vols_div"  style="display:none; width: 200px; padding-left: 25px" class="inline-group">
-          {% csrf_token %} {{ add_volunteer_form | crispy }}
+          {% csrf_token %}
+          <div class="mui-select">
+            {{ add_volunteer_form }}
+          </div>
         <p><button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Submit</button>&emsp;</p>
         </div>
         <input type="hidden" name="add_volunteer" value="True"/>
         <input type="hidden" name="course_id" value={{ classroom.id }} />
       </form>
-        <p style="padding-left: 46px"><button id="undo_addvols_button" class="mui-btn mui-btn--primary mui-btn--small" style="display:none; color: firebrick" onclick="revertAddVols()">Cancel</button></p>
-        <p style="padding-left: 20px;"><button id="add_vols_button" class="mui-btn mui-btn--primary mui-btn--small" onclick="addVolunteersForm()">Add Volunteer</button></p>
+        <p style="padding-left: 25px"><button id="undo_addvols_button" class="mui-btn mui-btn--primary mui-btn--small" style="display:none; color: firebrick" onclick="revertAddVols()">Cancel</button></p>
+        <p><button id="add_vols_button" class="mui-btn mui-btn--primary mui-btn--small" onclick="addVolunteersForm()">Add Volunteer</button></p>
       <form method="post">
         <div id="add_stus_div"  style="display:none; width: 200px; padding-left: 25px" class="inline-group">
-          {% csrf_token %} {{ add_student_form | crispy }}
+          {% csrf_token %}
+          <div class="mui-select">
+            {{ add_student_form }}
+          </div>
         <p><button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Submit</button>&emsp;</p>
         </div>
         <input type="hidden" name="add_student" value="True"/>
         <input type="hidden" name="course_id" value={{ classroom.id }} />
       </form>
-        <p style="padding-left: 46px"><button id="undo_addstus_button" class="mui-btn mui-btn--primary mui-btn--small" style="display:none; color: firebrick" onclick="revertASF()">Cancel</button></p>
-        <p style="padding-left: 20px;"><button id="add_stus_button" class="mui-btn mui-btn--primary mui-btn--small" onclick="addStudentsForm()">Add Student</button></p>
+        <p style="padding-left: 25px"><button id="undo_addstus_button" class="mui-btn mui-btn--primary mui-btn--small" style="display:none; color: firebrick" onclick="revertASF()">Cancel</button></p>
+        <p><button id="add_stus_button" class="mui-btn mui-btn--primary mui-btn--small" onclick="addStudentsForm()">Add Student</button></p>
       </div>
       </div>
 

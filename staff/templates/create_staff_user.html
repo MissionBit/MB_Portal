@@ -3,8 +3,8 @@
 
 {% block content %}
 
-  <div style="padding-left: 10%">
-    <div style="width: 70%" class="mui-panel">
+  <div style="text-align: center">
+    <div style="width: 45%; display: inline-block" class="mui-panel">
         <form class="mui-form" method="post">
           <legend>Create Staff User</legend>
             {% csrf_token %}
@@ -21,18 +21,18 @@
             {{ form.email }}
             </div>
             <div class="mui-textfield">
-            <label>Birth date</label>
+            <label>Birthdate</label>
             {{ form.birthdate }}
             </div>
             <div class="mui-textfield">
             <label>Title</label>
             {{ form.title }}
             </div>
-            <div class="mui-textfield">
+            <div class="mui-select">
             <label>Account</label>
             {{ form.account }}
             </div>
-            <div class="mui-textfield">
+            <div class="mui-select">
             <label>Owner</label>
             {{ form.owner }}
             </div>

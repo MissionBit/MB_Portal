@@ -2,7 +2,17 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.models import Group
-from home.models.models import Announcement, Classroom, Form, Esign, FormDistribution, Notification, Session, Resource, ClassroomMembership
+from home.models.models import (
+    Announcement,
+    Classroom,
+    Form,
+    Esign,
+    FormDistribution,
+    Notification,
+    Session,
+    Resource,
+    ClassroomMembership,
+)
 from home.models.salesforce import (
     Contact,
     User,
@@ -33,6 +43,7 @@ class UserRegisterForm(UserCreationForm):
 
 class DateInput(forms.DateInput):
     input_type = "date"
+    is_required = True
 
 
 class MissionBitUserCreationForm(forms.ModelForm):
@@ -44,11 +55,7 @@ class MissionBitUserCreationForm(forms.ModelForm):
 
     class Meta:
         model = Contact
-        fields = ["account",
-                  "first_name",
-                  "last_name",
-                  "email",
-                  "owner"]
+        fields = ["account", "first_name", "last_name", "email", "owner"]
 
 
 class RaceGenderEthnicityForm(forms.ModelForm):
@@ -81,9 +88,7 @@ class CreateStaffForm(MissionBitUserCreationForm):
             "owner",
             "title",
         ]
-        widgets = {
-            "birthdate": DateInput()
-        }
+        widgets = {"birthdate": DateInput()}
 
 
 class CreateStudentForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
@@ -107,9 +112,7 @@ class CreateStudentForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
             "race",
             "gender",
         ]
-        widgets = {
-            "birthdate": DateInput()
-        }
+        widgets = {"birthdate": DateInput()}
 
 
 class CreateTeacherForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
@@ -129,9 +132,7 @@ class CreateTeacherForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
             "race",
             "gender",
         ]
-        widgets = {
-            "birthdate": DateInput()
-        }
+        widgets = {"birthdate": DateInput()}
 
 
 class CreateVolunteerForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
@@ -151,9 +152,7 @@ class CreateVolunteerForm(RaceGenderEthnicityForm, MissionBitUserCreationForm):
             "race",
             "gender",
         ]
-        widgets = {
-            "birthdate": DateInput()
-        }
+        widgets = {"birthdate": DateInput()}
 
 
 class CreateClassroomForm(forms.ModelForm):
@@ -203,10 +202,7 @@ class CreateClassOfferingForm(forms.ModelForm):
             "instructor",
             "meeting_days",
         ]
-        widgets = {
-            "start_date": DateInput(),
-            "end_date": DateInput()
-        }
+        widgets = {"start_date": DateInput(), "end_date": DateInput()}
 
     def __str__(self):
         return "%s" % self.name
@@ -316,10 +312,7 @@ class CreateEsignForm(forms.Form):
 
     class Meta:
         model = Esign
-        fields = [
-            "name",
-            "link"
-        ]
+        fields = ["name", "link"]
 
 
 class CollectForms(forms.ModelForm):
@@ -327,9 +320,7 @@ class CollectForms(forms.ModelForm):
 
     class Meta:
         model = FormDistribution
-        fields = [
-            "submitted"
-        ]
+        fields = ["submitted"]
 
 
 class NotifyUnsubmittedUsersForm(forms.ModelForm):
@@ -339,16 +330,14 @@ class NotifyUnsubmittedUsersForm(forms.ModelForm):
 
     class Meta:
         model = Notification
-        fields = [
-            "subject",
-            "notification",
-            "email_recipients",
-        ]
+        fields = ["subject", "notification", "email_recipients"]
 
 
 class AddCurriculumForm(forms.ModelForm):
     title = forms.CharField(max_length=240, required=False)
-    description = forms.CharField(max_length=2000, required=False, widget=forms.Textarea)
+    description = forms.CharField(
+        max_length=2000, required=False, widget=forms.Textarea
+    )
     lesson_plan = forms.FileField(required=False)
     lecture = forms.FileField(required=False)
     video = forms.URLField(required=False)
@@ -356,14 +345,7 @@ class AddCurriculumForm(forms.ModelForm):
 
     class Meta:
         model = Session
-        fields = [
-            "title",
-            "description",
-            "lesson_plan",
-            "lecture",
-            "video",
-            "activity"
-        ]
+        fields = ["title", "description", "lesson_plan", "lecture", "video", "activity"]
 
 
 class AddResourceForm(forms.ModelForm):
@@ -374,12 +356,7 @@ class AddResourceForm(forms.ModelForm):
 
     class Meta:
         model = Resource
-        fields = [
-            "title",
-            "description",
-            "link",
-            "file"
-        ]
+        fields = ["title", "description", "link", "file"]
 
 
 class AddForumForm(forms.ModelForm):
@@ -388,7 +365,4 @@ class AddForumForm(forms.ModelForm):
 
     class Meta:
         model = Classroom
-        fields = [
-            "forum_title",
-            "forum",
-        ]
+        fields = ["forum_title", "forum"]

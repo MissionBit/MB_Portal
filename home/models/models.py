@@ -9,20 +9,24 @@ from django.dispatch import receiver
 from home.choices import *
 from werkzeug import secure_filename
 
+
 def get_name(self):
     return "%s %s" % (self.first_name, self.last_name)
+
 
 DjangoUser.add_to_class("__str__", get_name)
 
 
 def upload_to(instance, filename):
-    return '/'.join([
-        secure_filename(type(instance).__name__),
-        strftime('%Y/%m/%d'),
-        instance.id or '0',
-        token_urlsafe(8),
-        secure_filename(filename)
-    ])
+    return "/".join(
+        [
+            secure_filename(type(instance).__name__),
+            strftime("%Y/%m/%d"),
+            instance.id or "0",
+            token_urlsafe(8),
+            secure_filename(filename),
+        ]
+    )
 
 
 class UserProfile(mdls.Model):
@@ -49,15 +53,19 @@ class Classroom(mdls.Model):
     forum = mdls.URLField(default=None, null=True)
 
     def __str__(self):
-        return "%s" % (
-            self.course
-        )
+        return "%s" % (self.course)
 
 
 class ClassroomMembership(mdls.Model):
-    member = mdls.ForeignKey(DjangoUser, related_name="classroom_member", on_delete=mdls.CASCADE)
-    classroom = mdls.ForeignKey(Classroom, related_name="membership_classroom", on_delete=mdls.CASCADE)
-    membership_type = mdls.CharField(max_length=240, choices=CLASSROOM_MEMBERSHIP_CHOICES)
+    member = mdls.ForeignKey(
+        DjangoUser, related_name="classroom_member", on_delete=mdls.CASCADE
+    )
+    classroom = mdls.ForeignKey(
+        Classroom, related_name="membership_classroom", on_delete=mdls.CASCADE
+    )
+    membership_type = mdls.CharField(
+        max_length=240, choices=CLASSROOM_MEMBERSHIP_CHOICES
+    )
 
 
 class Session(mdls.Model):
@@ -67,7 +75,12 @@ class Session(mdls.Model):
     lecture = mdls.FileField(default=None, upload_to=upload_to)
     video = mdls.URLField(default=None, null=True)
     activity = mdls.FileField(default=None, upload_to=upload_to)
-    classroom = mdls.ForeignKey(Classroom, related_name="classroom_session", on_delete=mdls.CASCADE, default=None)
+    classroom = mdls.ForeignKey(
+        Classroom,
+        related_name="classroom_session",
+        on_delete=mdls.CASCADE,
+        default=None,
+    )
     date = mdls.DateField(default="1901-01-01")
 
     def __str__(self):
@@ -79,8 +92,12 @@ class Resource(mdls.Model):
     description = mdls.TextField(max_length=2000)
     link = mdls.URLField(default=None, null=True)
     file = mdls.FileField(default=None, null=True, upload_to=upload_to)
-    classroom = mdls.ForeignKey(Classroom, related_name="classroom_resource", on_delete=mdls.CASCADE)
-    session = mdls.ForeignKey(Session, related_name="session_resource", on_delete=mdls.CASCADE)
+    classroom = mdls.ForeignKey(
+        Classroom, related_name="classroom_resource", on_delete=mdls.CASCADE
+    )
+    session = mdls.ForeignKey(
+        Session, related_name="session_resource", on_delete=mdls.CASCADE
+    )
 
     def __str__(self):
         return "%s - %s" % (self.title, self.session)
@@ -122,19 +139,30 @@ class Announcement(mdls.Model):
 
 
 class AnnouncementDistribution(mdls.Model):
-    announcement = mdls.ForeignKey(Announcement, related_name="announcement_distributed", on_delete=mdls.CASCADE)
-    user = mdls.ForeignKey(DjangoUser, related_name="announcement_user", on_delete=mdls.CASCADE)
+    announcement = mdls.ForeignKey(
+        Announcement, related_name="announcement_distributed", on_delete=mdls.CASCADE
+    )
+    user = mdls.ForeignKey(
+        DjangoUser, related_name="announcement_user", on_delete=mdls.CASCADE
+    )
     dismissed = mdls.BooleanField(null=False, default=False)
 
     def __str__(self):
-        return "%s - %s - dismissed: %s" % (self.announcement, self.user, self.dismissed)
+        return "%s - %s - dismissed: %s" % (
+            self.announcement,
+            self.user,
+            self.dismissed,
+        )
 
 
 class Esign(mdls.Model):
     name = mdls.CharField(max_length=240, unique=True)
     template = mdls.URLField()
     created_by = mdls.ForeignKey(
-        DjangoUser, related_name="esign_creator_user", on_delete=mdls.CASCADE, default=False
+        DjangoUser,
+        related_name="esign_creator_user",
+        on_delete=mdls.CASCADE,
+        default=False,
     )
 
     def __str__(self):
@@ -145,7 +173,9 @@ class Form(mdls.Model):
     name = mdls.CharField(max_length=240, unique=True)
     description = mdls.TextField(max_length=2500)
     form = mdls.FileField(upload_to=upload_to)
-    esign = mdls.ForeignKey(Esign, related_name="esign_form", on_delete=mdls.CASCADE, null=True)
+    esign = mdls.ForeignKey(
+        Esign, related_name="esign_form", on_delete=mdls.CASCADE, null=True
+    )
     posted = mdls.DateTimeField(db_index=True, auto_now=True)
     recipient_groups = mdls.ManyToManyField(Group, related_name="form_user_groups")
     recipient_classrooms = mdls.ManyToManyField(
@@ -160,8 +190,12 @@ class Form(mdls.Model):
 
 
 class FormDistribution(mdls.Model):
-    user = mdls.ForeignKey(DjangoUser, related_name="form_signer", on_delete=mdls.CASCADE)
-    form = mdls.ForeignKey(Form, related_name="form_to_be_signed", on_delete=mdls.CASCADE)
+    user = mdls.ForeignKey(
+        DjangoUser, related_name="form_signer", on_delete=mdls.CASCADE
+    )
+    form = mdls.ForeignKey(
+        Form, related_name="form_to_be_signed", on_delete=mdls.CASCADE
+    )
     submitted = mdls.BooleanField(null=False, default=False)
 
     def __str__(self):
@@ -169,12 +203,21 @@ class FormDistribution(mdls.Model):
 
 
 class Notification(mdls.Model):
-    user = mdls.ForeignKey(DjangoUser, related_name="notified_user", on_delete=mdls.CASCADE)
+    user = mdls.ForeignKey(
+        DjangoUser, related_name="notified_user", on_delete=mdls.CASCADE
+    )
     subject = mdls.CharField(max_length=240)
     notification = mdls.TextField(max_length=2500)
     email_recipients = mdls.BooleanField(null=False, default=False)
-    form = mdls.ForeignKey(Form, related_name="notified_about_form", on_delete=mdls.CASCADE, null=True)
-    attendance = mdls.ForeignKey(Attendance, related_name="notified_about_attendance", on_delete=mdls.CASCADE, null=True)
+    form = mdls.ForeignKey(
+        Form, related_name="notified_about_form", on_delete=mdls.CASCADE, null=True
+    )
+    attendance = mdls.ForeignKey(
+        Attendance,
+        related_name="notified_about_attendance",
+        on_delete=mdls.CASCADE,
+        null=True,
+    )
     notified = mdls.DateTimeField(db_index=True, auto_now=True)
     created_by = mdls.ForeignKey(
         DjangoUser, related_name="notification_user", on_delete=mdls.CASCADE

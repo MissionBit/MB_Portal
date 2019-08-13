@@ -1,17 +1,17 @@
-{% extends "staff_base.html" %}
+{% extends "attendance_base.html" %}
 
 {% block content %}
 
-<div style="padding-left: 10%">
-  <div style="width: 90%" class="mui-panel">
+  <div style="text-align: center;">
+    <div style="width: 85%; display: inline-block" class="mui-panel">
       {% if course %}
       <h1 style="padding-bottom: 30px"> Attendance for {{ course }} </h1>
         <table class="mui-table mui-table--bordered">
         <tr>
-          <th>Date</th>
-          <th>Daily Attendance</th>
-          <th>Take Attendance</th>
-          <th>Send Absent Notifications</th>
+          <th style="text-align: center;">Date</th>
+          <th style="text-align: center;">Daily Attendance</th>
+          <th style="text-align: center;">Take Attendance</th>
+          <th style="text-align: center;">Send Absent Notifications</th>
         </tr>
         {% for date in dates %}
         <tr>
@@ -44,16 +44,17 @@
       {% csrf_token %}
         <table class="mui-table mui-table--bordered">
         <tr>
-          <th>Date</th>
-          <th>Student</th>
-          <th>Status</th>
-          <th>Current Status</th>
+          <th style="text-align: center;">Date</th>
+          <th style="text-align: center;">Student</th>
+          <th style="text-align: center;">Status</th>
+          <th style="text-align: center;">Current Status</th>
         </tr>
         {% for attendance_object in attendance_objects %}
         <tr>
           <td>{{ attendance_object.date }}</td>
           <td>{{ attendance_object.student.first_name }} {{ attendance_object.student.last_name }}</td>
           <td>
+            <div class="mui-select">
               <select name="{{ attendance_object.student.first_name }} {{ attendance_object.student.last_name }}">
                 <option value="{{ attendance_object.presence }}">-----------</option>
                 <option value="Present">Present</option>
@@ -61,6 +62,7 @@
                 <option value="Late">Late</option>
                 <option value="Excused">Excused</option>
               </select>
+            </div>
           </td>
           <td>
             {{ attendance_object.presence }}
@@ -79,9 +81,9 @@
         <h1 style="padding-left: 10px"> Attendance Home </h1>
         <table class="mui-table mui-table--bordered">
         <tr>
-          <th>Course</th>
-          <th>Overall Attendance</th>
-          <th>View Attendance</th>
+          <th style="text-align: center;">Course</th>
+          <th style="text-align: center;">Overall Attendance</th>
+          <th style="text-align: center;">View Attendance</th>
         </tr>
         {% for classroom in classrooms %}
         <tr>
@@ -89,7 +91,7 @@
           <td>{{ attendance_averages|get_item:classroom.course }}%</td>
           <td>
             <form method="GET">
-              <button class="mui-btn mui-btn--primary mui-btn--small" type="submit" name="course_id" value="{{ classroom.id }}">View Class Attendance</button>
+              <button class="mui-btn mui-btn--primary mui-btn--small" type="submit" name="course_id" value="{{ classroom.id }}">View</button>
             </form>
           </td>
         </tr>
@@ -101,5 +103,7 @@
 
 
 {% endblock content %}
+
+
 
 

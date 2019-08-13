@@ -2,8 +2,8 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-  <div style="padding-left: 10%">
-    <div style="width: 70%" class="mui-panel">
+  <div style="text-align: center;">
+    <div style="width: 45%; display: inline-block" class="mui-panel">
       <div class="main-container">
           <form class="mui-form" enctype="multipart/form-data" method="post">
             <legend>Create E-Sign Link</legend><br>
@@ -14,7 +14,7 @@
             </div>
             <div class="mui-textfield mui-textfield--float-label">
               {{ form.link }}
-              <label>Link -- starts with http:// or https://</label>
+              <label>Link - starts with http or https</label>
             </div>
             <br>
           <button type="submit" class="mui-btn mui-btn--raised mui-btn--primary">Create Esign</button>

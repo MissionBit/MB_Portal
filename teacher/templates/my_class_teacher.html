@@ -1,0 +1,35 @@
+{% extends "teacher_base.html" %}
+
+
+{% block content %}
+
+<div style="text-align: center;">
+  <div style="width: 85%; display: inline-block" class="mui-panel">
+    <h1>{{ classroom.course }}</h1><hr>
+    {% if sessions %}
+      <table class="mui-table mui-table--bordered">
+        <tr>
+          <th style="text-align: center;">Date</th>
+          <th style="text-align: center;">Title</th>
+          <th style="text-align: center;">Description</th>
+          <th style="text-align: center;">View Session</th>
+        </tr>
+    {% for session in sessions %}
+        <tr>
+          <td>{{ session.date }}</td>
+          <td>{{ session.title }}</td>
+          <td>{{ session.description }}</td>
+          <td>
+            <form action="{% url 'session_view_teacher' %}", method="GET">
+              <input type="hidden" name="session_date" value="{{ session.date }}"/>
+              <input type="hidden" name="classroom" value="{{ session.classroom.id }}"/>
+              <button class="mui-btn mui-btn--primary mui-btn--small" type="submit">View</button>
+            </form>
+          </td>
+        </tr>
+    {% endfor %}
+      </table>
+    {% endif %}
+  </div>
+</div>
+{% endblock content %}

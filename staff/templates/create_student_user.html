@@ -3,8 +3,8 @@
 
 {% block content %}
 
-  <div style="padding-left: 10%">
-    <div style="width: 70%" class="mui-panel">
+  <div style="text-align: center">
+    <div style="width: 45%; display: inline-block" class="mui-panel">
         <form class="mui-form" method="post">
           <legend>Create Student User</legend>
             {% csrf_token %}
@@ -24,19 +24,19 @@
             <label>Birth date</label>
             {{ form.birthdate }}
             </div>
-            <div class="mui-textfield">
+            <div class="mui-select">
             <label>Expected Graduation</label>
             {{ form.expected_graduation_year }}
             </div>
-            <div class="mui-textfield">
+            <div class="mui-select">
             <label>Race</label>
             {{ form.race }}
             </div>
-            <div class="mui-textfield">
+            <div class="mui-select">
             <label>Ethnicity</label>
             {{ form.which_best_describes_your_ethnicity }}
             </div>
-            <div class="mui-textfield">
+            <div class="mui-select">
             <label>Gender</label>
             {{ form.gender }}
             </div>
@@ -44,11 +44,11 @@
             <label>Title</label>
             {{ form.title }}
             </div>
-            <div class="mui-textfield">
+            <div class="mui-select">
             <label>Account</label>
             {{ form.account }}
             </div>
-            <div class="mui-textfield">
+            <div class="mui-select">
             <label>Owner</label>
             {{ form.owner }}
             </div>
