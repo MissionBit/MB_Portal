@@ -472,16 +472,24 @@ def update_session(request, form):
     session = Session.objects.get(id=request.POST.get("session_id"))
     if request.POST.get("change_title"):
         session.title = form.cleaned_data.get("title")
-    if request.POST.get("change_description"):
+        messages.add_message(request, messages.SUCCESS, "Session Title Updated")
+    elif request.POST.get("change_description"):
         session.description = form.cleaned_data.get("description")
-    if request.POST.get("change_lesson_plan"):
+        messages.add_message(request, messages.SUCCESS, "Session Description Updated")
+    elif request.POST.get("change_lesson_plan"):
         session.lesson_plan = form.cleaned_data.get("lesson_plan")
-    if request.POST.get("change_activity"):
+        messages.add_message(request, messages.SUCCESS, "Session Lesson Plan Updated")
+    elif request.POST.get("change_activity"):
         session.activity = form.cleaned_data.get("activity")
-    if request.POST.get("change_lecture"):
+        messages.add_message(request, messages.SUCCESS, "Session Activity Updated")
+    elif request.POST.get("change_lecture"):
         session.lecture = form.cleaned_data.get("lecture")
-    if request.POST.get("change_video"):
+        messages.add_message(request, messages.SUCCESS, "Session Lecture Updated")
+    elif request.POST.get("change_video"):
         session.video = form.cleaned_data.get("video")
+        messages.add_message(request, messages.SUCCESS, "Session Video Updated")
+    else:
+        messages.add_message(request, messages.WARNING, "Session Not Updated (Checkboxes?)")
     session.save()
 
 

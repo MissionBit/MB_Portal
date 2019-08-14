@@ -76,13 +76,10 @@ def create_staff_user(request):
         if form.is_valid():
             save_user_to_salesforce(request, form)
             create_mission_bit_user(request, form, "staff")
+            messages.add_message(request, messages.SUCCESS, "Staff User Created")
             return redirect("staff")
         else:
-            messages.error(
-                request,
-                "Staff User NOT created, your form was not valid, please try again.",
-            )
-            return redirect("create_staff_user")
+            return render(request, "create_staff_user.html", {"form": form})
     form = CreateStaffForm()
     return render(request, "create_staff_user.html", {"form": form})
 
@@ -94,13 +91,10 @@ def create_teacher_user(request):
         if form.is_valid():
             save_user_to_salesforce(request, form)
             create_mission_bit_user(request, form, "teacher")
+            messages.add_message(request, messages.SUCCESS, "Teacher User Created")
             return redirect("staff")
         else:
-            messages.error(
-                request,
-                "Teacher User NOT created, your form was not valid, please try again.",
-            )
-            return redirect("create_teacher_user")
+            return render(request, "create_teacher_user.html", {"form": form})
     form = CreateTeacherForm()
     return render(request, "create_teacher_user.html", {"form": form})
 
@@ -112,13 +106,10 @@ def create_student_user(request):
         if form.is_valid():
             form.save()
             create_mission_bit_user(request, form, "student")
+            messages.add_message(request, messages.SUCCESS, "Student User Created")
             return redirect("staff")
         else:
-            messages.error(
-                request,
-                "Student User NOT created, your form was not valid, please try again.",
-            )
-            return redirect("create_student_user")
+            return render(request, "create_student_user.html", {"form": form})
     form = CreateStudentForm()
     return render(request, "create_student_user.html", {"form": form})
 
@@ -130,13 +121,10 @@ def create_volunteer_user(request):
         if form.is_valid():
             save_user_to_salesforce(request, form)
             create_mission_bit_user(request, form, "volunteer")
+            messages.add_message(request, messages.SUCCESS, "Volunteer User Created")
             return redirect("staff")
         else:
-            messages.error(
-                request,
-                "Volunteer User NOT created, your form was not valid, please try again.",
-            )
-            return redirect("create_volunteer_user")
+            return render(request, "create_volunteer_user.html", {"form": form})
     form = CreateVolunteerForm()
     return render(request, "create_volunteer_user.html", {"form": form})
 
@@ -149,15 +137,11 @@ def create_classroom(request):
             setup_classroom(request, form)
             messages.success(
                 request,
-                f'Classroom {form.cleaned_data.get("course")} Successfully Created',
+                f'{form.cleaned_data.get("course")} Successfully Created',
             )
             return redirect("staff")
         else:
-            messages.error(
-                request,
-                "Classroom NOT created, your form was not valid, please try again.",
-            )
-            return redirect("staff")
+            return render(request, "create_classroom.html", {"form": form})
     form = CreateClassroomForm()
     return render(request, "create_classroom.html", {"form": form})
 
@@ -173,11 +157,7 @@ def create_class_offering(request):
             )
             return redirect("staff")
         else:
-            messages.error(
-                request,
-                "Class offering NOT created, your form was not valid, please try again.",
-            )
-            return redirect("staff")
+            return render(request, "create_class_offering.html", {"form": form})
     form = CreateClassOfferingForm()
     return render(request, "create_class_offering.html", {"form": form})
 
@@ -201,11 +181,7 @@ def make_announcement(request):
             )
             return redirect("staff")
         else:
-            messages.error(
-                request,
-                "Announcement NOT made, your announcement form was not valid, please try again.",
-            )
-            return redirect("staff")
+            return render(request, "make_announcement.html", {"form": form})
     form = MakeAnnouncementForm(
         initial={"created_by": DjangoUser.objects.get(id=request.user.id)}
     )
@@ -230,7 +206,6 @@ def post_form(request):
             posted_form.recipient_classrooms.set(
                 form.cleaned_data.get("recipient_classrooms")
             )
-            messages.add_message(request, messages.SUCCESS, "Successfully Posted Form")
             user_list = get_users_from_form(form)
             email_list = [user.email for user in user_list]
             if form.cleaned_data.get("email_recipients"):
@@ -244,13 +219,10 @@ def post_form(request):
                     email_list,
                 )
             distribute_forms(request, posted_form, user_list)
+            messages.add_message(request, messages.SUCCESS, "Successfully Posted Form")
             return redirect("staff")
         else:
-            messages.error(
-                request,
-                "Form NOT made, your form form was not valid, please try again.",
-            )
-            return redirect("staff")
+            return render(request, "post_form.html", {"form": form})
     form = PostFormForm(
         initial={"created_by": DjangoUser.objects.get(id=request.user.id)}
     )
@@ -268,7 +240,10 @@ def form_overview(request):
             )
             form_distribution.submitted = form.cleaned_data.get("submitted")
             form_distribution.save()
-        return redirect("form_overview")
+            messages.add_message(request, messages.SUCCESS, "Collected Form")
+            return redirect("form_overview")
+        else:
+            return render(request, "form_overview.html", {"form": form})
     outstanding_form_dict = get_outstanding_forms()
     form = CollectForms()
     return render(
@@ -296,6 +271,8 @@ def notify_unsubmitted_users(request):
                 request, messages.SUCCESS, "Successfully Notified Users"
             )
             return redirect("staff")
+        else:
+            return render(request, "notify_unsubmitted_users.html", {"form": form})
     form = NotifyUnsubmittedUsersForm()
     notify_about = request.GET.get("notify_unsubmitted_users")
     return render(
@@ -354,8 +331,10 @@ def create_esign(request):
                 created_by=DjangoUser.objects.get(id=request.user.id),
             )
             esign.save()
-        messages.add_message(request, messages.SUCCESS, "Esign Created Successfully")
-        return redirect("staff")
+            messages.add_message(request, messages.SUCCESS, "Esign Created Successfully")
+            return redirect("staff")
+        else:
+            return render(request, "create_esign.html", {"form": form})
     form = CreateEsignForm(
         initial={"created_by": DjangoUser.objects.get(id=request.user.id)}
     )
@@ -371,7 +350,11 @@ def add_forum(request):
             classroom.forum_title = form.cleaned_data.get("forum_title")
             classroom.forum = form.cleaned_data.get("forum")
             classroom.save()
+            messages.add_message(request, messages.SUCCESS, "Forum Added Successfully")
             return redirect("staff")
+        else:
+            classroom = Classroom.objects.get(id=request.GET.get("classroom"))
+            return render(request, "add_forum.html", {"form": form, "classroom": classroom})
     classroom = Classroom.objects.get(id=request.GET.get("classroom"))
     form = AddForumForm()
     return render(request, "add_forum.html", {"form": form, "classroom": classroom})
@@ -392,6 +375,15 @@ def modify_session(request):
         form = AddCurriculumForm(request.POST, request.FILES)
         if form.is_valid():
             update_session(request, form)
+            return redirect("classroom_management")
+        else:
+            date = request.GET.get("date")
+            classroom = Classroom.objects.get(id=request.GET.get("classroom"))
+            session = Session.objects.get(
+                classroom_id=request.GET.get("classroom"),
+                date=get_date_from_template_returned_string(request.GET.get("date")),
+            )
+            return render(request, "modify_session.html", {"form": form, "date": date, "classroom": classroom, "session": session})
     form = AddCurriculumForm()
     date = request.GET.get("date")
     classroom = Classroom.objects.get(id=request.GET.get("classroom"))
@@ -423,10 +415,7 @@ def classroom_detail(request):
                 )
                 return redirect("staff")
             else:
-                messages.add_message(
-                    request, messages.ERROR, "Invalid Form"
-                )  # Need to have fall through here
-                return redirect("staff")
+                return render(request, "classroom_detail.html", {"form": form})
         if request.POST.get("swap_teacher_assistant"):
             form = ChangeTeacherForm(request.POST)
             if form.is_valid():
@@ -441,10 +430,7 @@ def classroom_detail(request):
                 )
                 return redirect("staff")
             else:
-                messages.add_message(
-                    request, messages.ERROR, "Invalid Form"
-                )  # Need to have fall through here
-                return redirect("staff")
+                return render(request, "classroom_detail.html", {"form": form})
         if request.POST.get("remove_student"):  # Input Validation Needed
             remove_user_from_classroom(
                 request.POST["fmr_student"], request.POST["course_id"]
@@ -474,10 +460,7 @@ def classroom_detail(request):
                 )
                 return redirect("staff")
             else:
-                messages.add_message(
-                    request, messages.ERROR, "Invalid Form"
-                )  # Need to have fall through here
-                return redirect("staff")
+                return render(request, "classroom_detail.html", {"form": form})
         if request.POST.get("add_student"):
             form = AddStudentForm(request.POST)
             if form.is_valid():

@@ -79,6 +79,8 @@ def session_view_teacher(request):
             resource.save()
             messages.add_message(request, messages.SUCCESS, "Resource Added To Session")
             return redirect("teacher")
+        else:
+            return render(request, "session_view_teacher.html", {"form": form})
     session = Session.objects.get(
         classroom_id=request.GET.get("classroom"),
         date=get_date_from_template_returned_string(request.GET.get("session_date")),

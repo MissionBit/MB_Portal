@@ -1,41 +1,75 @@
 {% extends "home/home.html" %}
-{% load crispy_forms_tags %}
+{% load static %}
 
 {% block content %}
 
-  <div class="main-container">
-  {% if messages %}
-    {% for message in messages %}
-        <div class = "alert alert-{{message.tags}}">
-            {{ message }}
-        </div>
-    {% endfor %}
-    {% endif %}
+<div style="text-align: center;">
+  <div style="width: 45%; display: inline-block" class="mui-panel">
 
+      <div>
+        {% if user_form.errors or contact_form.errors %}
+          {% for field in user_form %}
+            {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <p style="padding-top: 10px">{{ error|escape }}
+                <span id="close" class="close"><img class="delete-icon" src="{% static "close.svg" %}"/></span>
+                </p>
+            </div>
+            {% endfor %}
+          {% endfor %}
+          {% for field in contact_form %}
+            {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <p style="padding-top: 10px">{{ error|escape }}
+                <span id="close" class="close"><img class="delete-icon" src="{% static "close.svg" %}"/></span>
+                </p>
+            </div><br><br>
+            {% endfor %}
+          {% endfor %}
+        {% endif %}
+      </div>
 
-    <form style="width: 40%; padding-left: 12%; padding-top: 3%" class="mui-form" method="post">
-      <h3>Register As Mission Bit Donor</h3>
+        <form class="mui-form" method="post">
+      <legend>Register As Mission Bit Donor</legend>
       {% csrf_token %}
       <div class="mui-textfield">
-        Choose Username: {{ form.username }}
+        First Name: {{ user_form.first_name }}
       </div>
       <div class="mui-textfield">
-        First Name: {{ form.first_name }}
+        Last Name: {{ user_form.last_name }}
       </div>
       <div class="mui-textfield">
-        Last Name: {{ form.last_name }}
+        Birthdate: {{ contact_form.birthdate }}
       </div>
       <div class="mui-textfield">
-        Password: {{ form.password1 }}
+        Email: {{ user_form.email }}
       </div>
       <div class="mui-textfield">
-        Enter Same Password: {{ form.password1 }}
+        Choose Username: {{ user_form.username }}
       </div>
-      <button class="mui-btn" type="submit">Submit</button>
+      <div class="mui-textfield">
+        Password: {{ user_form.password1 }}
+      </div>
+      <div class="mui-textfield">
+        Enter Same Password: {{ user_form.password2 }}
+      </div>
+      <div class="mui-select">
+        <label>Race</label>
+        {{ contact_form.race }}
+        </div>
+      <div class="mui-select">
+        <label>Ethnicity</label>
+        {{ contact_form.which_best_describes_your_ethnicity }}
+      </div>
+      <div class="mui-select">
+        <label>Gender</label>
+        {{ contact_form.gender }}
+      </div>
+      <button class="mui-btn mui-btn--primary" type="submit">Submit</button>
       <br>
       <br>
     </form>
-
   </div>
+</div>
 
 {% endblock content %}

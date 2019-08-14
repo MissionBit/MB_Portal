@@ -120,12 +120,54 @@ class BaseTestCase(TestCase):
     def valid_create_classroom_form(self):
         return {
             "course": ClassOffering.objects.get(name="Test_Class").id,
-            "teacher": Contact.objects.get(client_id="clatea19010101").id,
-            "teacher_assistant": Contact.objects.get(client_id="clatea19010101").id,
-            "volunteers": Contact.objects.get(client_id="voluse19010101").id,
-            "students": Contact.objects.get(client_id="stuuse19010101").id,
+            "teacher": self.get_or_create_test_teacher().id,
+            "teacher_assistant": self.get_or_create_test_teacher().id,
+            "volunteers": self.get_or_create_test_volunteer().id,
+            "students": self.get_or_create_test_student().id,
             "created_by": User.objects.filter(is_active=True).first().id,
         }
+
+    def get_or_create_test_teacher(self):
+        contact = Contact.objects.get_or_create(
+            first_name="classroom",
+            last_name="teacher",
+            email="clatea@gmail.com",
+            birthdate="1901-01-01",
+            title="Teacher",
+            owner=User.objects.filter(is_active=True).first(),
+            race="White",
+            which_best_describes_your_ethnicity="Hispanic/Latinx",
+            gender="Female"
+        )
+        return contact[0]
+
+    def get_or_create_test_student(self):
+        contact = Contact.objects.get_or_create(
+            first_name="student",
+            last_name="user",
+            email="clastu@gmail.com",
+            birthdate="1901-01-01",
+            title="Student",
+            owner=User.objects.filter(is_active=True).first(),
+            race="White",
+            which_best_describes_your_ethnicity="Hispanic/Latinx",
+            gender="Female"
+        )
+        return contact[0]
+
+    def get_or_create_test_volunteer(self):
+        contact = Contact.objects.get_or_create(
+            first_name="volunteer",
+            last_name="user",
+            email="clavol@gmail.com",
+            birthdate="1901-01-01",
+            title="Volunteer",
+            owner=User.objects.filter(is_active=True).first(),
+            race="White",
+            which_best_describes_your_ethnicity="Hispanic/Latinx",
+            gender="Female"
+        )
+        return contact[0]
 
     def valid_make_announcement_form(self):
         return {
@@ -166,8 +208,7 @@ class StaffViewsTest(BaseTestCase):
     def test_create_classroom_invalid_form(self):
         self.client.force_login(self.create_staff_user())
         response = self.client.post(reverse("create_classroom"), {})
-        self.assertEqual(response.url, reverse("staff"))
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_class_offering(self):
         self.client.force_login(self.create_staff_user())
@@ -183,8 +224,7 @@ class StaffViewsTest(BaseTestCase):
     def test_create_class_offering_invalid_form(self):
         self.client.force_login(self.create_staff_user())
         response = self.client.post(reverse("create_class_offering"), {})
-        self.assertEqual(response.url, reverse("staff"))
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_make_announcement(self):
         self.client.force_login(self.create_staff_user())
@@ -200,8 +240,7 @@ class StaffViewsTest(BaseTestCase):
     def test_make_announcement_invalid_form(self):
         self.client.force_login(self.create_staff_user())
         response = self.client.post(reverse("make_announcement"), {})
-        self.assertEqual(response.url, reverse("staff"))
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_staff_user(self):
         self.client.force_login(self.create_staff_user())
@@ -220,8 +259,7 @@ class StaffViewsTest(BaseTestCase):
     def test_create_staff_user_invalid_form(self):
         self.client.force_login(self.create_staff_user())
         response = self.client.post(reverse("create_staff_user"), {})
-        self.assertEqual(response.url, reverse("create_staff_user"))
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_teacher_user(self):
         self.client.force_login(self.create_staff_user())
@@ -240,8 +278,7 @@ class StaffViewsTest(BaseTestCase):
     def test_create_teacher_user_invalid_form(self):
         self.client.force_login(self.create_staff_user())
         response = self.client.post(reverse("create_teacher_user"), {})
-        self.assertEqual(response.url, reverse("create_teacher_user"))
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_student_user(self):
         self.client.force_login(self.create_staff_user())
@@ -260,8 +297,7 @@ class StaffViewsTest(BaseTestCase):
     def test_create_student_user_invalid_form(self):
         self.client.force_login(self.create_staff_user())
         response = self.client.post(reverse("create_student_user"), {})
-        self.assertEqual(response.url, reverse("create_student_user"))
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_volunteer_user(self):
         self.client.force_login(self.create_staff_user())
@@ -280,5 +316,4 @@ class StaffViewsTest(BaseTestCase):
     def test_create_volunteer_user_invalid_form(self):
         self.client.force_login(self.create_staff_user())
         response = self.client.post(reverse("create_volunteer_user"), {})
-        self.assertEqual(response.url, reverse("create_volunteer_user"))
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)       

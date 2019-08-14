@@ -2,14 +2,10 @@
 
 {% block content %}
 
-<div style="justify-content: center" class="main-container">
-    {% if messages %}
-    {% for message in messages %}
-        <div style="color: lightgreen; width: 500px" class = "alert alert-{{message.tags}}">
-            {{ message }}
-        </div>
-        {% endfor %}
-        {% endif %}
+<div class="main-container">
+
+  {% include "message.html" %}
+
     <h1 style="text-align: center"> Staff User Home</h1><br>
     {% if announcements %}
       <div style="text-align: center">
@@ -47,7 +43,8 @@
                 <p><a href="{{ form.form.esign.template }}">Esign Here</a></p><br>
               {% endif %}
               <p style="padding-bottom: 10px;">
-                  <input type="button" class="mui-btn" value="Download Form" onclick="window.location.href='{{ form.form.url }}'"/>
+                  <p>URL: {{ form.form.form }}</p>
+                  <input type="button" class="mui-btn" value="Download Form" onclick="window.location.href='{{ form.form.form }}'"/>
               </p>
             </div><br>
         {% endfor %}

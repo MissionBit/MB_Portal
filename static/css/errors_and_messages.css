@@ -1,0 +1,26 @@
+.alert-danger{
+    display: inline-block;
+    height: 40px;
+    font-size: 16px;
+    background-color: #e74c3c;
+}
+.close {
+    float:right;
+    display:inline-block;
+    background: none;
+    padding-right: 10px;
+}
+.close:hover {
+    float:right;
+    display:inline-block;
+    background: none;
+    cursor: pointer;
+}
+.delete-icon{
+    height: 20px;
+    width: 20px;
+}
+.delete-icon:hover{
+    height: 21px;
+    width: 21px;
+}

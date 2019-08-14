@@ -42,6 +42,7 @@ function revertASF() {
 
     <div class="wrapper">
       <div class="mui-panel">
+        {% include "error.html" %}
         <h2>{{ classroom.course }}</h2><hr>
         <h4>{{ class_members|get_item:"teacher"}}</h4>
         <h4>{{ class_members|get_item:"teacher_assistant"}}</h4><hr>

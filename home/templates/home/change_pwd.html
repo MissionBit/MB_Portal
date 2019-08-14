@@ -1,32 +1,43 @@
 {% extends "home/home.html" %}
-{% load crispy_forms_tags %}
+{% load static %}
 
 {% block content %}
 
-  <div class="sidenav">
+<div style="text-align: center;">
+  <div style="width: 45%; display: inline-block" class="mui-panel">
 
+    <div>
+      {% if form.errors %}
+        {% for field in form %}
+          {% for error in field.errors %}
+          <div class="alert alert-danger">
+              <p style="padding-top: 10px">{{ error|escape }}
+              <span id="close" class="close"><img class="delete-icon" src="{% static "close.svg" %}"/></span>
+              </p>
+          </div><br><br>
+          {% endfor %}
+        {% endfor %}
+      {% endif %}
     </div>
 
-    <h3>Change your Password</h3>
-    <h5>Please refer to the email you received to find your temporary password</h5>
+    <form class="mui-form" method="post">
+      <legend>Please change your password</legend>
+      {% csrf_token %}
+      <div class="mui-textfield">
+        Old Password: {{ form.old_password }}
+      </div>
+      <div class="mui-textfield">
+        New Password: {{ form.new_password1 }}
+      </div>
+      <div class="mui-textfield">
+        Retype Password: {{ form.new_password2 }}
+      </div>
+      <button class="mui-btn mui-btn--primary" type="submit">Submit</button>
+      <br>
+      <br>
+    </form>
 
-  <div class="main-container">
-    {% if messages %}
-    {% for message in messages %}
-        <div class = "alert alert-{{message.tags}}">
-            {{ message }}
-        </div>
-    {% endfor %}
-    {% endif %}
-
-    <form method="post">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <br>
-    <button type="submit" class="btn btn-primary">Change Password</button>
-      </form>
-
-  </form>
   </div>
+</div>
 
 {% endblock content %}

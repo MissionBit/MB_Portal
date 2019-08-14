@@ -64,6 +64,7 @@
 
 <div style="text-align: center;">
   <div style="width: 45%; display: inline-block" class="mui-panel">
+    {% include "error.html" %}
     <h3>Add Resource for {{ session.date }}</h3>
     <form class="mui-form" enctype="multipart/form-data" method="POST">
       {% csrf_token %}

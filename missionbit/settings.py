@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     "salesforce",  # <- salesforce database
     "django_q",  # <- For queueing tasks
     "storages",  # <- Storing uploaded files in Azure Storage
+    "static",  # <- Accessing Static HTML templates
 ]
 
 MIDDLEWARE = [
@@ -80,7 +81,7 @@ ROOT_URLCONF = "missionbit.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, 'static/html')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

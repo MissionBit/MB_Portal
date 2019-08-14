@@ -1,29 +1,41 @@
 {% extends "home/home.html" %}
+{% load static %}
 
-    {% block content %}
+{% block content %}
 
-      <div class="sidenav">
+<div style="text-align: center;">
+  <div style="width: 45%; display: inline-block" class="mui-panel">
 
-    </div>
+      <div>
+        {% if form.errors %}
+          {% for field in form %}
+            {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <p style="padding-top: 10px">{{ error|escape }}
+                <span id="close" class="close"><img class="delete-icon" src="{% static "close.svg" %}"/></span>
+                </p>
+            </div><br><br>
+            {% endfor %}
+          {% endfor %}
+        {% endif %}
+      </div>
 
-    <div class = "main-container">
-    {% if messages %}
-    {% for message in messages %}
-        <div class = "alert alert-{{message.tags}}">
-            {{ message }}
-        </div>
-    {% endfor %}
-    {% endif %}
-
-    <h4>Please Complete Registration</h4>
-    <form method = "POST">
-        {% csrf_token %}
-        Choose Your Role:<br><br>
-        <input type="radio" name="role" value="student" checked>Student<br>
-          <input type="radio" name="role" value="volunteer">Volunteer<br><br>
-        <button class = "btn btn-outline-info" type="submit">Finish Registration</button>
+    <form class="mui-form" method="post">
+      <legend>Register As Student or Volunteer</legend>
+      {% csrf_token %}
+      <div class="mui-radio">
+        <label>
+          <input type="radio" name="role" value="student" checked>Student</label>
+      </div>
+      <div class="mui-radio">
+        <label><input type="radio" name="role" value="volunteer">Volunteer</label>
+      </div>
+      <button class="mui-btn mui-btn--primary" type="submit">Submit</button>
+      <br>
+      <br>
     </form>
-    </div>
+  </div>
+</div>
 
 
 {% endblock content %}

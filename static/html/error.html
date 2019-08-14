@@ -1,0 +1,15 @@
+{% load static %}
+
+<div>
+  {% if form.errors %}
+    {% for field in form %}
+      {% for error in field.errors %}
+      <div class="alert alert-danger">
+          <p style="padding-top: 10px">{{ error|escape }}
+          <span id="close" class="close"><img class="delete-icon" src="{% static "close.svg" %}"/></span>
+          </p>
+      </div>
+      {% endfor %}
+    {% endfor %}
+  {% endif %}
+</div>

@@ -1,10 +1,12 @@
 {% extends "staff_base.html" %}
-{% load crispy_forms_tags %}
 
 {% block content %}
 
 <div style="text-align: center">
   <div style="width: 75%; display: inline-block" class="mui-panel">
+
+    {% include "error.html" %}
+
     <h1>{{ classroom.course }} - {{ date }}</h1><hr>
     <form class="mui-form" enctype="multipart/form-data" method="POST">
       {% csrf_token %}
