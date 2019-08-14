@@ -102,6 +102,7 @@ button {
   opacity: 1;
   filter: alpha(opacity=100);
   box-shadow: 0px 0px 10px 8px lightgray;
+  border-radius: 10px 10px 10px 10px;
 }
 
 .slot-description{
