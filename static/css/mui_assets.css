@@ -15,6 +15,67 @@ button {
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
 }
 
+.rightpanelbody-hidden{
+    background-color: whitesmoke;
+    height: 100%;
+    position: fixed;
+    width: 35%;
+    transform: translate(100%);
+    transition: transform .2s ease-out;
+    top: 64px;
+    right: 0;
+    z-index: 1;
+}
+
+.rightpanelbody-visible{
+    background-color: whitesmoke;
+    width: 35%;
+    transform: translate(0);
+    transition: transform .3s ease-out;
+    position: fixed;
+    top: 64px;
+    right: 0;
+    height:calc(100% - 65px);
+    overflow-x: auto;
+    overflow-y: auto;
+    box-shadow: 0px 3px 10px gray;
+    z-index: 1;
+}
+
+.mui-container-fluid{
+    z-index: 3;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* The expanding image container */
+.img-display-container {
+  position: relative;
+  display: none;
+}
+
+/* Expanding image text */
+#imgtext {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  color: white;
+  font-size: 20px;
+}
+
+/* Closable button inside the expanded image */
+.closebtn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  color: white;
+  font-size: 35px;
+  cursor: pointer;
+}
 
 /**
  * Layout CSS
@@ -28,50 +89,26 @@ button {
   transition: left 0.2s;
 }
 
-.righdpanelbody{
-    transition: all 0.3s ease 0s;
-}
-
-.rightpanelbody-hidden{
-    background-color: whitesmoke;
-    height: 100%;
-    position: relative;
-    width: 0%;
-    transform: translateX(4em);
-    float: right;
-    overflow: visible
-}
-
-.rightpanelbody-visible{
-    top: 64px;
-    background-color: whitesmoke;
-    width: 25%;
-    transform: translateX(0em);
-    position: relative;
-    float: right;
-    overflow: visible
-}
-
 .instafeedimg img{
-  padding: 5px;
-  width: 100%;
+  width: 90%;
   border-radius: 35px 35px 35px 35px;
   opacity: 0.6;
   transition: all 0.3s ease 0s;
   filter: alpha(opacity=80);
+    display: inline-block;
 }
 
 .instafeedimg img:hover{
   opacity: 1;
   filter: alpha(opacity=100);
+  box-shadow: 0px 0px 10px 8px lightgray;
 }
 
 .slot-description{
   color: gray;
   text-align: center;
-  font-size: 14pt;
   vertical-align: top;
-  font-size: 20px;
+  font-size: 24px;
 }
 
 #sidedrawer {
@@ -83,7 +120,7 @@ button {
   overflow: auto;
   z-index: 2;
   background-color: #fff;
-  transition: transform 0.2s;
+  transition: all 0.3s ease 0s;
 }
 
 #content-wrapper {
@@ -104,13 +141,36 @@ button {
   z-index: 200;
 }
 
+@media (max-width: 767px) {
+    #expandedImg{
+      width:78%
+  }
+
+  .mui-panel{
+      width: 80%;
+  }
+}
+
 @media (min-width: 768px) {
+
+  .mui-panel{
+      width: 50%;
+  }
+  #expandedImg{
+      width:35%
+  }
+
   #header {
     left: 200px;
   }
 
   #sidedrawer {
-    transform: translate(200px);
+      transform: translate(200px);
+  }
+
+
+  #expandedImg{
+      width:35%
   }
 
   #content-wrapper {
@@ -129,12 +189,13 @@ button {
     transform: translate(0px);
   }
 
+
   body.hide-sidedrawer #content-wrapper {
     margin-left: 0;
   }
 
   body.hide-sidedrawer #footer {
-    margin-left: 0;
+      margin-left: 0;
   }
 }
 
@@ -158,11 +219,11 @@ button {
   margin-right: 20px;
 }
 
+
 .sidedrawer-toggle:hover {
   color: #fff;
   text-decoration: none;
 }
-
 
 /**
  * Footer CSS
@@ -255,6 +316,7 @@ button {
   font-size: 20px;
   color: white;
   box-shadow: 3px 3px 12px 5px lightgray;
+  overflow: hidden;
 }
 
 
@@ -266,6 +328,7 @@ button {
   transition: all 0.3s ease 0s;
   box-shadow: 3px 3px 12px 5px lightgray;
   font-size: 20px;
+
 }
 
 .appbarnav {
@@ -314,4 +377,3 @@ button {
 .deintro div{
   display: block;
 }
-

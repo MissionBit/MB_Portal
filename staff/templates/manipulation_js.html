@@ -1,25 +1,7 @@
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/instafeed.js/1.4.1/instafeed.min.js"></script>
+{% load settings_tags %}
 <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
-        var galleryFeed = new Instafeed({
-        get: "user",
-        userId: "{% settings_value "INSTAUSERID" %}",
-        accessToken: "{% settings_value "INSTATOKEN" %}",
-        resolution: "standard_resolution",
-        useHttp: "true",
-        limit: 5,
-        target: "instafeed",
-        template: '<h4 class="slot-description">\{\{location\}\}</h4>' +
-            '<a class="instafeedimg" href="\{\{image\}\}" target="_blank"><img src="\{\{image\}\}"></a>' +
-            '<h4 class="slot-description"></h4><h4 class="slot-description"><img src="https://github.com/Ernesto2004/MB_Portal_Design/blob/master/heart-icon.png?raw=true" width="30" height="30" style="opacity: 0.75">\{\{likes\}\} ' +
-            '<img src="https://github.com/Ernesto2004/MB_Portal_Design/blob/master/comment-icon.png?raw=true" style="opacity: 0.75" width="30" height="30">\{\{model.comments.count\}\}' +
-            '</h4><hr style="width: 90%; height:2px;border:none;color:gray;background-color:gray; opacity: 0.3" />'
-            // CHANGE THE TEMPLATE IF YOU WANT TO
-      });
-      galleryFeed.run();
-    </script>
-<script type="text/javascript">
-        jQuery(function($) {
+        $(document).ready(function($) {
           var $bodyEl = $('body'),
               $sidedrawerEl = $('#sidedrawer');
 
@@ -51,23 +33,42 @@
 
           $('.js-show-sidedrawer').on('click', showSidedrawer);
           $('.js-hide-sidedrawer').on('click', hideSidedrawer);
+
+          $(".intro").click(function(){
+            if ($(this).hasClass("intro")){
+                $(this).removeClass("intro").addClass("deintro");
+            }else if($(this).hasClass("deintro")){
+                $(this).removeClass("deintro").addClass("intro");
+            }
+          });
+          var $rightpanel = $('#mui-panel');
+          var $img_show = $('.img-display-container');
+           $(".instafeedtrigger").click(function() {
+             if ($rightpanel.hasClass('rightpanelbody-hidden')) {
+                 $rightpanel.removeClass('rightpanelbody-hidden').addClass('rightpanelbody-visible');
+             } else if ($rightpanel.hasClass('rightpanelbody-visible')){
+                $rightpanel.removeClass('rightpanelbody-visible').addClass('rightpanelbody-hidden');
+                $img_show.style.display = 'none';
+             };
+          });
         });
 </script>
-<script>
-      $(".intro").click(function(){
-        if ($(this).hasClass("intro")){
-            $(this).removeClass("intro").addClass("deintro");
-        }else if($(this).hasClass("deintro")){
-            $(this).removeClass("deintro").addClass("intro");
-        }
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/instafeed.js/1.4.1/instafeed.min.js"></script>
+    <script type="text/javascript">
+        var galleryFeed = new Instafeed({
+        get: "user",
+        userId: "{% settings_value "INSTAUSERID" %}",
+        accessToken: "{% settings_value "INSTATOKEN" %}",
+        resolution: "standard_resolution",
+        useHttp: "true",
+        limit: 8,
+        target: "instafeed",
+        template: '<div id="instaphoto_section" style="text-align: center;"><h4 class="slot-description">\{\{location\}\}</h4>' +
+            '<a class="instafeedimg" style="cursor: pointer;"><img src="\{\{image\}\}" alt="\{\{caption\}\}" onclick="importImage(this);"></a>' +
+            '<h4 class="slot-description"></h4><h4 class="slot-description"><img src="/static/insta-heart.png" width="25" height="23" style="opacity: 0.75"> \{\{likes\}\} ' +
+            '<img src="/static/insta-comment.png" style="opacity: 0.75" width="33" height="33"> \{\{model.comments.count\}\}' +
+            '</h4><hr style="width: 90%; height:2px;border:none;color:gray;background-color:gray; opacity: 0.3" /></div>'
+            // CHANGE THE TEMPLATE IF YOU WANT TO
       });
-
-      var $rightpanel = $('#mui-panel');
-      $(".instafeedtrigger").click(function() {
-        if ($rightpanel.hasClass('rightpanelbody-hidden')) {
-            $rightpanel.removeClass('rightpanelbody-hidden').addClass('rightpanelbody-visible');
-        } else if ($rightpanel.hasClass('rightpanelbody-visible')){
-            $rightpanel.removeClass('rightpanelbody-visible').addClass('rightpanelbody-hidden');
-        };
-      });
+      galleryFeed.run();
 </script>

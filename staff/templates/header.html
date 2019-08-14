@@ -1,10 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<header id="header" style="box-shadow: 0px 3px 35px 0px gray">
+      <div class="mui-appbar mui--appbar-line-height">
+        <div class="mui-container-fluid">
+          <a class="sidedrawer-toggle mui--visible-xs-inline-block mui--visible-sm-inline-block js-show-sidedrawer">☰</a>
+          <a class="sidedrawer-toggle mui--hidden-xs mui--hidden-sm js-hide-sidedrawer">☰</a>
+           <div style="float: right; cursor: pointer;" class="mui-dropdown mui-dropdown--left">
+              <a class="mui--text-left" data-mui-toggle="dropdown">
+                <i class="material-icons" style="color: white">more_vert</i>
+                <span class="mui-caret--left"></span>
+              </a>
+              <ul class="mui-dropdown__menu">
+                <li><a href="{% url 'home-logout' %}">Log out</a></li>
+              </ul>
+          </div>
+          <div style="float: right; cursor: pointer; padding-top: 3px;" class="mui-dropdown mui-dropdown--left">
+            <img src="/static/insta-icon.jpg" style="width: 30px;filter: brightness(0) invert(1)" class="instafeedtrigger">
+
+          </div>
+        </div>
+        </div>
+    </div>
+</header>
