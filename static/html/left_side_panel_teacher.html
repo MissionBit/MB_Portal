@@ -1,0 +1,26 @@
+{% load static %}
+
+<div id="sidedrawer" class="mui--no-user-select">
+  <div id="sidedrawer-brand" class="mui--appbar-line-height">
+  </div>
+  <div class="mui-divider"></div>
+    <br>
+    <img src="{% static 'missionbit-logo.png' %}" style="width: 80%; padding-left: 10%">
+    <hr style="width: 90%;">
+    <div class="sidenav-content">
+     <section id="intro">
+       <a class="mainslide" href="{% url 'teacher' %}">Home</a>
+     </section>
+     <section class="intro">
+       <a class="mainslide" href="{% url 'my_class_teacher' %}">My Class</a>
+     </section>
+    <section class="intro">
+      <a class="mainslide" href="{% url 'attendance' %}">Attendance</a>
+     </section>
+     {% if  classroom.forum  %}
+     <section class="intro">
+      <a class="mainslide" href="{{ classroom.forum }}" target="_blank">{{ classroom.forum_title }}</a>
+     </section>
+     {% endif %}
+  </div>
+</div>
