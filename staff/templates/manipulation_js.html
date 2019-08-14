@@ -1,0 +1,73 @@
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/instafeed.js/1.4.1/instafeed.min.js"></script>
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+        var galleryFeed = new Instafeed({
+        get: "user",
+        userId: "{% settings_value "INSTAUSERID" %}",
+        accessToken: "{% settings_value "INSTATOKEN" %}",
+        resolution: "standard_resolution",
+        useHttp: "true",
+        limit: 5,
+        target: "instafeed",
+        template: '<h4 class="slot-description">\{\{location\}\}</h4>' +
+            '<a class="instafeedimg" href="\{\{image\}\}" target="_blank"><img src="\{\{image\}\}"></a>' +
+            '<h4 class="slot-description"></h4><h4 class="slot-description"><img src="https://github.com/Ernesto2004/MB_Portal_Design/blob/master/heart-icon.png?raw=true" width="30" height="30" style="opacity: 0.75">\{\{likes\}\} ' +
+            '<img src="https://github.com/Ernesto2004/MB_Portal_Design/blob/master/comment-icon.png?raw=true" style="opacity: 0.75" width="30" height="30">\{\{model.comments.count\}\}' +
+            '</h4><hr style="width: 90%; height:2px;border:none;color:gray;background-color:gray; opacity: 0.3" />'
+            // CHANGE THE TEMPLATE IF YOU WANT TO
+      });
+      galleryFeed.run();
+    </script>
+<script type="text/javascript">
+        jQuery(function($) {
+          var $bodyEl = $('body'),
+              $sidedrawerEl = $('#sidedrawer');
+
+
+          function showSidedrawer() {
+            // show overlay
+            var options = {
+              onclose: function() {
+                $sidedrawerEl
+                  .removeClass('active')
+                  .appendTo(document.body);
+              }
+            };
+
+            var $overlayEl = $(mui.overlay('on', options));
+
+
+            $sidedrawerEl.appendTo($overlayEl);
+            setTimeout(function() {
+              $sidedrawerEl.addClass('active');
+            }, 20);
+          }
+
+
+          function hideSidedrawer() {
+            $bodyEl.toggleClass('hide-sidedrawer');
+          }
+
+
+          $('.js-show-sidedrawer').on('click', showSidedrawer);
+          $('.js-hide-sidedrawer').on('click', hideSidedrawer);
+        });
+</script>
+<script>
+      $(".intro").click(function(){
+        if ($(this).hasClass("intro")){
+            $(this).removeClass("intro").addClass("deintro");
+        }else if($(this).hasClass("deintro")){
+            $(this).removeClass("deintro").addClass("intro");
+        }
+      });
+
+      var $rightpanel = $('#mui-panel');
+      $(".instafeedtrigger").click(function() {
+        if ($rightpanel.hasClass('rightpanelbody-hidden')) {
+            $rightpanel.removeClass('rightpanelbody-hidden').addClass('rightpanelbody-visible');
+        } else if ($rightpanel.hasClass('rightpanelbody-visible')){
+            $rightpanel.removeClass('rightpanelbody-visible').addClass('rightpanelbody-hidden');
+        };
+      });
+</script>
