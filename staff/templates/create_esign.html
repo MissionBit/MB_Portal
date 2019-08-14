@@ -1,9 +1,12 @@
 {% extends "staff_base.html" %}
-{% load crispy_forms_tags %}
+{% load static %}
 
 {% block content %}
   <div style="text-align: center;">
     <div style="width: 45%; display: inline-block" class="mui-panel">
+
+      {% include "error.html" %}
+
       <div class="main-container">
           <form class="mui-form" enctype="multipart/form-data" method="post">
             <legend>Create E-Sign Link</legend><br>

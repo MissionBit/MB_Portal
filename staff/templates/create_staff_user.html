@@ -1,10 +1,10 @@
 {% extends "staff_base.html" %}
-{% load crispy_forms_tags %}
 
 {% block content %}
 
   <div style="text-align: center">
     <div style="width: 45%; display: inline-block" class="mui-panel">
+        {% include "error.html" %}
         <form class="mui-form" method="post">
           <legend>Create Staff User</legend>
             {% csrf_token %}

@@ -11,7 +11,6 @@ from home.models.models import (
     Notification,
     Session,
     Resource,
-    ClassroomMembership,
 )
 from home.models.salesforce import (
     Contact,
@@ -21,24 +20,6 @@ from home.models.salesforce import (
     ClassEnrollment,
 )
 from home.choices import *
-
-
-class UserRegisterForm(UserCreationForm):
-    username = forms.CharField(label="Choose Username", max_length=100)
-    email = forms.EmailField(label="email", max_length=100)
-    first_name = forms.CharField(label="First name", max_length=100)
-    last_name = forms.CharField(label="Last name", max_length=100)
-
-    class Meta:
-        model = DjangoUser
-        fields = [
-            "username",
-            "email",
-            "first_name",
-            "last_name",
-            "password1",
-            "password2",
-        ]
 
 
 class DateInput(forms.DateInput):
@@ -72,6 +53,49 @@ class RaceGenderEthnicityForm(forms.ModelForm):
     class Meta:
         model = Contact
         fields = []
+
+
+class ContactRegisterForm(forms.Form):
+    birthdate = forms.DateField(widget=DateInput)
+    expected_graduation_year = forms.ChoiceField(
+        label="Expected graduation year", choices=GRAD_YEAR_CHOICES, required=False
+    )
+    which_best_describes_your_ethnicity = forms.ChoiceField(
+        label="Ethnicity - Optional", choices=ETHNICITY_CHOICES, required=False
+    )
+    race = forms.ChoiceField(
+        label="Race - Optional", choices=RACE_CHOICES, required=False
+    )
+    gender = forms.ChoiceField(
+        label="Gender - Optional", choices=GENDER_CHOICES, required=False
+    )
+
+    class Meta:
+        fields = [
+            "birthdate",
+            "which_best_describes_your_ethnicity",
+            "race",
+            "gender",
+            "expected_graduation_year"
+        ]
+
+
+class UserRegisterForm(UserCreationForm):
+    username = forms.CharField(label="Choose Username", max_length=100)
+    email = forms.EmailField(label="email", max_length=100)
+    first_name = forms.CharField(label="First name", max_length=100)
+    last_name = forms.CharField(label="Last name", max_length=100)
+
+    class Meta:
+        model = DjangoUser
+        fields = [
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "password1",
+            "password2"
+        ]
 
 
 class CreateStaffForm(MissionBitUserCreationForm):

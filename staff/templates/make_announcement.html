@@ -3,6 +3,7 @@
 {% block content %}
     <div style="text-align: center;">
     <div style="width: 45%; display: inline-block" class="mui-panel">
+        {% include "error.html" %}
         <form class="mui-form" method="post">
           {% csrf_token %}
           <legend>Announcement</legend><br>

@@ -1,11 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, render_to_response
 from django.contrib.auth import logout
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.decorators import login_required
-from .forms import UserRegisterForm, ChangePwdForm
+from .forms import UserRegisterForm, ContactRegisterForm, ChangePwdForm
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
+from home.models.salesforce import Contact, User
 
 
 @login_required
@@ -46,7 +47,7 @@ def change_pwd(request):
             request.user.userprofile.save()
             return redirect("home-home")
         else:
-            messages.error(request, "Please correct the error below.")
+            return render_to_response("home/change_pwd.html", {"form": form})
     form = ChangePwdForm(request.user)
     return render(request, "home/change_pwd.html", {"form": form})
 
@@ -58,10 +59,6 @@ def logout_view(request):
 
 def login(request):
     return redirect("login")
-
-
-def register(request):
-    return render(request, "home/register.html")
 
 
 def landing_page(request):
@@ -101,74 +98,91 @@ def register_after_oauth(request):
 
 def register_as_student(request):
     if request.method == "POST":
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            new_user = DjangoUser.objects.create_user(
-                username=form.cleaned_data.get("username"),
-                email=form.cleaned_data.get("email"),
-                first_name=form.cleaned_data.get("first_name"),
-                last_name=form.cleaned_data.get("last_name"),
-                password=form.cleaned_data.get("password1"),
-            )
-            student_group = Group.objects.get(name="student")
-            student_group.user_set.add(new_user)
-            first_name = form.cleaned_data.get("first_name")
+        user_form = UserRegisterForm(request.POST)
+        contact_form = ContactRegisterForm(request.POST)
+        if user_form.is_valid() and contact_form.is_valid():
+            create_django_user(request, user_form, "student")
+            create_contact(request, user_form, contact_form, "Student")
             messages.success(
                 request,
-                f"Student Account Successfully Created For {first_name}, please log in",
+                f"Student Account Successfully Created For {user_form.cleaned_data.get('first_name')}, please log in",
             )
             return redirect("login")
-        return render(request, "home/register_as_student.html", {"form": form})
+        else:
+            return render(request, "home/register_as_student.html", {"user_form": user_form,
+                                                                     "contact_form": contact_form})
     else:
-        form = UserRegisterForm()
-        return render(request, "home/register_as_student.html", {"form": form})
+        user_form = UserRegisterForm()
+        contact_form = ContactRegisterForm()
+        return render(request, "home/register_as_student.html", {"user_form": user_form,
+                                                                 "contact_form": contact_form})
 
 
 def register_as_volunteer(request):
     if request.method == "POST":
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            new_user = DjangoUser.objects.create_user(
-                username=form.cleaned_data.get("username"),
-                email=form.cleaned_data.get("email"),
-                first_name=form.cleaned_data.get("first_name"),
-                last_name=form.cleaned_data.get("last_name"),
-                password=form.cleaned_data.get("password1"),
-            )
-            volunteer_group = Group.objects.get(name="volunteer")
-            volunteer_group.user_set.add(new_user)
-            first_name = form.cleaned_data.get("first_name")
+        user_form = UserRegisterForm(request.POST)
+        contact_form = ContactRegisterForm(request.POST)
+        if user_form.is_valid() and contact_form.is_valid():
+            create_django_user(request, user_form, "volunteer")
+            create_contact(request, user_form, contact_form, "Volunteer")
             messages.success(
                 request,
-                f"Volunteer Account Successfully Created For {first_name}, please log in",
+                f"Volunteer Account Successfully Created For {user_form.cleaned_data.get('first_name')}, please log in",
             )
             return redirect("login")
-        return render(request, "home/register_as_volunteer.html", {"form": form})
+        else:
+            return render(request, "home/register_as_volunteer.html", {"user_form": user_form,
+                                                                       "contact_form": contact_form})
     else:
-        form = UserRegisterForm()
-        return render(request, "home/register_as_volunteer.html", {"form": form})
+        user_form = UserRegisterForm()
+        contact_form = ContactRegisterForm()
+        return render(request, "home/register_as_volunteer.html", {"user_form": user_form,
+                                                                   "contact_form": contact_form})
 
 
 def register_as_donor(request):
     if request.method == "POST":
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            new_user = DjangoUser.objects.create_user(
-                username=form.cleaned_data.get("username"),
-                email=form.cleaned_data.get("email"),
-                first_name=form.cleaned_data.get("first_name"),
-                last_name=form.cleaned_data.get("last_name"),
-                password=form.cleaned_data.get("password1"),
-            )
-            donor_group = Group.objects.get(name="donor")
-            donor_group.user_set.add(new_user)
-            first_name = form.cleaned_data.get("first_name")
+        user_form = UserRegisterForm(request.POST)
+        contact_form = ContactRegisterForm(request.POST)
+        if user_form.is_valid() and contact_form.is_valid():
+            create_django_user(request, user_form, "donor")
+            create_contact(request, user_form, contact_form, "Donor")
             messages.success(
                 request,
-                f"Donor Account Successfully Created For {first_name}, please log in",
+                f"Donor Account Successfully Created For {user_form.cleaned_data.get('first_name')}, please log in",
             )
             return redirect("login")
-        return render(request, "home/register_as_donor.html", {"form": form})
+        else:
+            return render(request, "home/register_as_donor.html", {"user_form": user_form,
+                                                                   "contact_form": contact_form})
     else:
-        form = UserRegisterForm()
-        return render(request, "home/register_as_donor.html", {"form": form})
+        user_form = UserRegisterForm()
+        contact_form = ContactRegisterForm()
+        return render(request, "home/register_as_donor.html", {"user_form": user_form,
+                                                               "contact_form": contact_form})
+
+
+def create_django_user(request, form, group):
+    new_user = DjangoUser.objects.create_user(
+        username=form.cleaned_data.get("username"),
+        email=form.cleaned_data.get("email"),
+        first_name=form.cleaned_data.get("first_name"),
+        last_name=form.cleaned_data.get("last_name"),
+        password=form.cleaned_data.get("password1"),
+    )
+    student_group = Group.objects.get(name=group)
+    student_group.user_set.add(new_user)
+
+
+def create_contact(request, user_form, contact_form, title):
+    Contact.objects.create(
+        first_name=user_form.cleaned_data.get("first_name"),
+        last_name=user_form.cleaned_data.get("last_name"),
+        email=user_form.cleaned_data.get("email"),
+        birthdate=contact_form.cleaned_data.get("birthdate"),
+        title=title,
+        owner=User.objects.filter(is_active=True).first(),
+        race=contact_form.cleaned_data.get("race"),
+        which_best_describes_your_ethnicity=contact_form.cleaned_data.get("which_best_describes_your_ethnicity"),
+        gender=contact_form.cleaned_data.get("gender")
+    )
