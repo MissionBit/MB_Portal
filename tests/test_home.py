@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate
 from django.urls import reverse
 from rest_framework import status
 from django.contrib.messages.storage.fallback import FallbackStorage
-
+from home.forms import ContactRegisterForm, UserRegisterForm
 from home.views import *
 
 
@@ -39,7 +39,7 @@ class BaseTestCase(TestCase):
         add_to_group = Group.objects.get(name=group)
         add_to_group.user_set.add(user)
 
-    def create_valid_form(
+    def create_valid_user_and_contact_form(
         self,
         username="testuser2",
         email="test@email.com",
@@ -53,6 +53,19 @@ class BaseTestCase(TestCase):
             "last_name": lastname,
             "password1": "top_secret_123",
             "password2": "top_secret_123",
+            "birthdate": "01/01/1901",
+            "owner": User.objects.filter(is_active=True).first().id,
+            "title": "Staff",
+            "race": "White",
+            "which_best_describes_your_ethnicity": "Hispanic/Latinx",
+            "gender": "Female"
+        }
+
+    def create_valid_contact_form(self):
+        return {
+            "first_name": "test_user",
+            "last_name": "test_user",
+            "email": "test@email.com",
         }
 
     def create_change_pwd_form(self):
@@ -64,6 +77,8 @@ class BaseTestCase(TestCase):
 
 
 class HomeViewsTest(BaseTestCase):
+    databases = "__all__"
+
     def test_home_unauthenticated(self):
         request = RequestFactory().get(reverse("home-home"))
         request.user = AnonymousUser()
@@ -160,10 +175,6 @@ class HomeViewsTest(BaseTestCase):
         response = login(RequestFactory())
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
-    def test_register(self):
-        response = self.client.get(reverse("home-register"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
     def test_landing_page(self):
         response = self.client.get(reverse("home-landing_page"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -196,12 +207,9 @@ class HomeViewsTest(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
     def test_register_as_student_post(self):
-        request = RequestFactory().post(reverse("home-home"), self.create_valid_form())
-        request.user = self.create_user()
-        setattr(request, "session", "session")
-        messages = FallbackStorage(request)
-        setattr(request, "_messages", messages)
-        response = register_as_student(request)
+        self.client.force_login(self.create_user())
+        response = self.client.post(reverse("home-register_as_student"), self.create_valid_user_and_contact_form())
+        Contact.objects.get(client_id="tesuse19010101").delete()
         self.assertEqual(
             DjangoUser.objects.filter(first_name="test").first().first_name, "test"
         )
@@ -209,12 +217,8 @@ class HomeViewsTest(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
     def test_register_as_student_invalid_form(self):
-        request = RequestFactory().post(reverse("home-home"), {})
-        request.user = self.create_user()
-        setattr(request, "session", "session")
-        messages = FallbackStorage(request)
-        setattr(request, "_messages", messages)
-        response = register_as_student(request)
+        self.client.force_login(self.create_user())
+        response = self.client.post(reverse("home-register_as_student"), {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_register_as_volunteer(self):
@@ -222,13 +226,9 @@ class HomeViewsTest(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_register_as_volunteer_post(self):
-        request = RequestFactory().post(reverse("home-home"), self.create_valid_form())
-        request.user = self.create_user()
-        setattr(request, "session", "session")
-        messages = FallbackStorage(request)
-        setattr(request, "_messages", messages)
-        Group.objects.get_or_create(name="volunteer")
-        response = register_as_volunteer(request)
+        self.client.force_login(self.create_user())
+        response = self.client.post(reverse("home-register_as_volunteer"), self.create_valid_user_and_contact_form())
+        Contact.objects.get(client_id="tesuse19010101").delete()
         self.assertEqual(
             DjangoUser.objects.filter(first_name="test").first().first_name, "test"
         )
@@ -236,12 +236,8 @@ class HomeViewsTest(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
     def test_register_as_volunteer_invalid_form(self):
-        request = RequestFactory().post(reverse("home-home"), {})
-        request.user = self.create_user()
-        setattr(request, "session", "session")
-        messages = FallbackStorage(request)
-        setattr(request, "_messages", messages)
-        response = register_as_volunteer(request)
+        self.client.force_login(self.create_user())
+        response = self.client.post(reverse("home-register_as_volunteer"), {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_register_as_donor(self):
@@ -249,13 +245,9 @@ class HomeViewsTest(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_register_as_donor_post(self):
-        request = RequestFactory().post(reverse("home-home"), self.create_valid_form())
-        request.user = self.create_user()
-        setattr(request, "session", "session")
-        messages = FallbackStorage(request)
-        setattr(request, "_messages", messages)
-        Group.objects.get_or_create(name="donor")
-        response = register_as_donor(request)
+        self.client.force_login(self.create_user())
+        response = self.client.post(reverse("home-register_as_donor"), self.create_valid_user_and_contact_form())
+        Contact.objects.get(client_id="tesuse19010101").delete()
         self.assertEqual(
             DjangoUser.objects.filter(first_name="test").first().first_name, "test"
         )
@@ -263,10 +255,6 @@ class HomeViewsTest(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
     def test_register_as_donor_invalid_form(self):
-        request = RequestFactory().post(reverse("home-home"), {})
-        request.user = self.create_user()
-        setattr(request, "session", "session")
-        messages = FallbackStorage(request)
-        setattr(request, "_messages", messages)
-        response = register_as_donor(request)
+        self.client.force_login(self.create_user())
+        response = self.client.post(reverse("home-register_as_donor"), {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
