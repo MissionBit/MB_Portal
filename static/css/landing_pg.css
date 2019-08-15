@@ -48,6 +48,7 @@
 
   .loginBtn--google {
   font-family: "Roboto", Roboto, arial, sans-serif;
+  text-transform: uppercase;
   background: #DD4B39;
   }
 
