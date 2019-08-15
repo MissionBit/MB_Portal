@@ -248,11 +248,6 @@ def get_users_from_form(form):
     classroom_users = DjangoUser.objects.filter(
         classroom__in=list(form.cleaned_data.get("recipient_classrooms"))
     )
-    print("--------------------------")
-    print("group users | classroom users: ", (group_users | classroom_users).__len__())
-    print("--------------------------")
-    print("group users | classroom users distinct: ", (group_users | classroom_users).distinct().__len__())
-    print("--------------------------")
     return (classroom_users | group_users).distinct()
 
 
