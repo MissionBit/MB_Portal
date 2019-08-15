@@ -52,7 +52,7 @@ def validate_username(username):
 def parse_new_user(new_user, form):
     birthdate = form.cleaned_data.get("birthdate")
     if birthdate is None:
-        birthdate = datetime.strptime("January 1, 1901", "%B %d, %Y")
+        birthdate = datetime(1901, 1, 1)
     new_user.userprofile.change_pwd = True
     new_user.userprofile.salesforce_id = "%s%s%s%s%s" % (
         form.cleaned_data.get("first_name")[:3].lower(),
@@ -423,7 +423,7 @@ def create_form_distribution(posted_form, user):
 def get_outstanding_forms():
     outstanding_form_dict = {}
     for form in Form.objects.all():
-        distributions = FormDistribution.objects.filter(form=form)
+        distributions = form.form_to_be_signed.all()
         outstanding_form_dict.update({form.name: distributions})
     return outstanding_form_dict
 
