@@ -73,11 +73,13 @@
       galleryFeed.run();
 </script>
 <script type="text/javascript">
- function onCloseAlert(event) {
-  event.currentTarget.closest('.alert').classList.add('alert-close');
-  event.preventDefault();
-}
-Array.prototype.forEach.call(document.querySelectorAll('.alert .close'), function (el) {
-  el.addEventListener('click', onCloseAlert);
-});
+    $(document).ready(function () {
+       $(".close").click(function () {
+           // Method down below is working
+           var errormsg = this.closest('.alert');
+           errormsg.className='';
+           errormsg.classList.add('alert-close');
+           // Bob's method closes only the error on the top(not the other ones).
+       })
+    });
 </script>
