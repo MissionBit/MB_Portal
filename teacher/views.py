@@ -36,8 +36,8 @@ def teacher(request):
                 Notification.objects.get(id=request.POST.get("notification"))
             )
             return redirect("teacher")
-    announcements = get_my_announcements(request, "staff")
-    forms = get_my_forms(request, "staff")
+    announcements = get_my_announcements(request, "teacher")
+    forms = get_my_forms(request, "teacher")
     notifications = Notification.objects.filter(user_id=request.user.id)
     classroom = get_classroom_by_django_user(request.user)
     return render(
