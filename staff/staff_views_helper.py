@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.models import Group
-from django.shortcuts import redirect
+from django.shortcuts import render
 from home.models.salesforce import ClassEnrollment, Contact, ClassOffering
 from home.models.models import (
     Announcement,
@@ -69,7 +69,7 @@ def save_user_to_salesforce(request, form):
         form.save()
     except SalesforceError:
         messages.error(request, "Error Saving User To Salesforce Database.")
-        return redirect("staff")
+        return render(request, "create_staff_user.html", {"form": form})
 
 
 def create_mission_bit_user(request, form, group):
@@ -243,15 +243,16 @@ def email_classroom(request, email_list, classroom_name):
 
 def get_users_from_form(form):
     group_users = DjangoUser.objects.filter(
-        groups__name__in=[
-            group.name for group in form.cleaned_data.get("recipient_groups")
-        ]
+        groups__name__in=list(form.cleaned_data.get("recipient_groups"))
     )
     classroom_users = DjangoUser.objects.filter(
-        classroom__in=[
-            classroom for classroom in form.cleaned_data.get("recipient_classrooms")
-        ]
+        classroom__in=list(form.cleaned_data.get("recipient_classrooms"))
     )
+    print("--------------------------")
+    print("group users | classroom users: ", (group_users | classroom_users).__len__())
+    print("--------------------------")
+    print("group users | classroom users distinct: ", (group_users | classroom_users).distinct().__len__())
+    print("--------------------------")
     return (classroom_users | group_users).distinct()
 
 
