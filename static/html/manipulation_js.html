@@ -73,11 +73,11 @@
       galleryFeed.run();
 </script>
 <script type="text/javascript">
-  window.onload = function(){
-      document.getElementById('close').onclick = function(){
-          this.parentNode.parentNode.parentNode
-          .removeChild(this.parentNode.parentNode);
-          return false;
-      };
-  };
+ function onCloseAlert(event) {
+  event.currentTarget.closest('.alert').classList.add('alert-close');
+  event.preventDefault();
+}
+Array.prototype.forEach.call(document.querySelectorAll('.alert .close'), function (el) {
+  el.addEventListener('click', onCloseAlert);
+});
 </script>

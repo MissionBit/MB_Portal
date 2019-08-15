@@ -6,7 +6,7 @@
       {% for message in messages %}
         <div style="width: 100%" class = "alert alert-{{message.tags}}">
             <p style="padding-top: 10px; font-size: 14px">{{ message }}
-              <span id="close" class="close"><img class="delete-icon" src="{% static "close.svg" %}"/></span>
+              <span id="close" onclick="closeAlert(this.parentElement.parentElement)" class="close"><img class="delete-icon" src="{% static "close.svg" %}"/></span>
             </p>
         </div>
       {% endfor %}
