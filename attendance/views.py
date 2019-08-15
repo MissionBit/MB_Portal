@@ -17,7 +17,7 @@ import statistics
 
 @group_required_multiple(["staff", "teacher"])
 def attendance(request):
-    user_group = str(request.user.groups.all().first())
+    user_group = request.user.groups.first()
     if request.method == "POST":
         store_attendance_data(request)
         async_task(
