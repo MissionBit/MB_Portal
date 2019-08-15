@@ -21,6 +21,7 @@ from django.conf import settings
 from django.contrib import messages
 from datetime import timedelta, datetime
 from salesforce.dbapi.exceptions import *
+import random
 
 
 def create_user_with_profile(form, random_password):
@@ -41,11 +42,11 @@ def create_user_with_profile(form, random_password):
 
 
 def validate_username(username):
-    i = 1
-    while DjangoUser.objects.filter(username=username).count() > 0:
-        username = username + str(i)
-        i += 1
-    return username
+    res_username = username
+    while DjangoUser.objects.filter(username=res_username).exists():
+        random_number = random.randint(1, 10000)
+        res_username = username + str(random_number)
+    return res_username
 
 
 def parse_new_user(new_user, form):
