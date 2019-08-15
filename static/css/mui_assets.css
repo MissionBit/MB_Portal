@@ -67,7 +67,6 @@ button {
   font-size: 20px;
 }
 
-
 /**
  * Layout CSS
  */
@@ -191,14 +190,12 @@ button {
   }
 }
 
-
 /**
  * Toggle Side drawer
  */
 #sidedrawer.active {
   transform: translate(200px);
 }
-
 
 /**
  * Header CSS
@@ -311,7 +308,6 @@ button {
   overflow: hidden;
 }
 
-
 .notification {
   padding: 10px 15px 0px;
   background-color: #e67e22;
@@ -334,7 +330,6 @@ button {
     color: lightskyblue;
     text-decoration: none;
 }
-
 
 .alert{
     padding-left: 5px;

@@ -40,7 +40,6 @@ button {
   transition: transform 0.2s;
 }
 
-
 #content-wrapper {
   min-height: 100%;
   overflow-x: hidden;
@@ -209,7 +208,6 @@ button {
   width: 35%;
 }
 
-
 .notification {
   padding: 10px 15px 0px;
   background-image: linear-gradient(to right bottom, #0925ff , #11bdf6);
@@ -245,5 +243,3 @@ button {
 .alert-close{
     display: none;
 }
-
-
