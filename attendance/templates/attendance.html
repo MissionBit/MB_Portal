@@ -18,13 +18,8 @@
           <td>{{ date }}</td>
           <td>{{ daily_attendance|get_item:date }}%</td>
           <td>
-          <form action= "{% url 'take_attendance' %}" method="GET">
-            {% csrf_token %}
-            <input type="hidden" name="date" value="{{ date }}" />
-            <input type="hidden" name="course_id" value={{ course_id }} />
-            <input type="hidden" name="date_id" value={{ id }} />
-            <button class="mui-btn mui-btn--primary mui-btn--small" type="submit">View/Take</button>
-          </form>
+          <a href="{% url 'take_attendance' course_id=course_id date=date %}"
+             class="mui-btn mui-btn--primary mui-btn--small">View/Take</a>
           </td>
           <td>
             <form action= "{% url 'notify_absent_students' %}" method="GET">

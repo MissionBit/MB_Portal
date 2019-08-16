@@ -44,7 +44,7 @@
               <h2>{{ form.form.name }}</h2><hr>
               <p>{{ form.form.description }}</p><br>
               <p>{{ form.form.created_by }} on {{ form.form.posted.date }}</p><br><hr>
-              {% if form.form.esign != NULL %}
+              {% if form.form.esign %}
                 <p><a href="{{ form.form.esign.template }}">Esign Here</a></p><br>
               {% endif %}
               <p style="padding-bottom: 10px;">

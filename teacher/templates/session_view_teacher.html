@@ -8,11 +8,8 @@
     <h1>{{ classroom.course }} - {{ session.date }}</h1><hr>
       {% if session %}
         <h1>{{ session.title }}</h1>
-        <form action="{% url 'take_attendance' %}" method="GET">
-        <input type="hidden" name="course_id" value="{{ session.classroom.id }}"/>
-        <input type="hidden" name="date" value="{{ session.date }}"/>
-        <button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Take Attendance</button>
-        </form>
+        <a href="{% url 'take_attendance' course_id=session.classroom.id date=session.date %}"
+        class="mui-btn mui-btn--primary mui-btn--small">Take Attendance</a>
         <hr>
           <h3>Description</h3><br>
             <p>{{ session.description }}</p><hr>

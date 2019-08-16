@@ -45,10 +45,10 @@ def attendance(request):
 
 
 @group_required_multiple(["staff", "teacher"])
-def take_attendance(request):
+def take_attendance(request, course_id, date):
     context = take_attendance_context(
-        request.GET.get("course_id"),
-        get_date_from_template_returned_string(request.GET.get("date")),
+        course_id,
+        date,
     )
     return render(request, "attendance.html", context)
 

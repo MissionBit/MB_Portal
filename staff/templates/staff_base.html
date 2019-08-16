@@ -15,26 +15,27 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <title>Mission Bit</title>
     {% include 'manipulation_js.html' %}
-    <!-- -->
 </head>
-<body class="hide-sidedrawer">
-<!--HTML Header -->
-{% include 'header.html' %}
-<!--Instagram Feed -->
-{% include 'instafeed.html' %}
-<div id="content-wrapper">
-  <div class="mui--appbar-height"></div>
-    <div class="mui-container-fluid">
-      <br>
-      <!-- Main Content Here-->
-      {% block content %}
 
-      {% endblock %}
-  </div>
-</div>
-    <!-- Footer -->
-    {% include 'footer.html' %}
-    <!-- Right side navigation bar -->
+<body class="hide-sidedrawer">
+
+    {% include 'header.html' %}
+
+    {% include 'instafeed.html' %}
+
     {% include 'left_side_panel_staff.html' %}
+
+    <div id="content-wrapper">
+      <div class="mui--appbar-height"></div>
+        <div class="mui-container-fluid">
+          <br>
+          {% block content %}
+
+          {% endblock %}
+        </div>
+    </div>
+
+    {% include 'footer.html' %}
+
   </body>
 </html>

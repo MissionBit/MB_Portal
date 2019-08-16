@@ -399,7 +399,7 @@ def modify_session(request):
 
 
 @group_required("staff")
-def classroom_detail(request):
+def classroom_detail(request, course_id):
     if request.method == "POST":
         if request.POST.get("swap_teacher"):
             form = ChangeTeacherForm(request.POST)
@@ -478,7 +478,7 @@ def classroom_detail(request):
                     request, messages.ERROR, "Invalid Form"
                 )  # Need to have fall through here
                 return redirect("staff")
-    classroom = Classroom.objects.get(id=request.GET.get("course_id"))
+    classroom = Classroom.objects.get(id=course_id)
     class_members = get_class_member_dict(classroom)
     return render(
         request,
