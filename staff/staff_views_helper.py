@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.models import Group
-from django.shortcuts import redirect
+from django.shortcuts import render
 from home.models.salesforce import ClassEnrollment, Contact, ClassOffering
 from home.models.models import (
     Announcement,
@@ -21,6 +21,7 @@ from django.conf import settings
 from django.contrib import messages
 from datetime import timedelta, datetime
 from salesforce.dbapi.exceptions import *
+import random
 
 
 def create_user_with_profile(form, random_password):
@@ -41,17 +42,17 @@ def create_user_with_profile(form, random_password):
 
 
 def validate_username(username):
-    i = 1
-    while DjangoUser.objects.filter(username=username).count() > 0:
-        username = username + str(i)
-        i += 1
-    return username
+    res_username = username
+    while DjangoUser.objects.filter(username=res_username).exists():
+        random_number = random.randint(1, 10000)
+        res_username = username + str(random_number)
+    return res_username
 
 
 def parse_new_user(new_user, form):
     birthdate = form.cleaned_data.get("birthdate")
     if birthdate is None:
-        birthdate = datetime.strptime("January 1, 1901", "%B %d, %Y")
+        birthdate = datetime(1901, 1, 1)
     new_user.userprofile.change_pwd = True
     new_user.userprofile.salesforce_id = "%s%s%s%s%s" % (
         form.cleaned_data.get("first_name")[:3].lower(),
@@ -69,7 +70,7 @@ def save_user_to_salesforce(request, form):
         form.save()
     except SalesforceError:
         messages.error(request, "Error Saving User To Salesforce Database.")
-        return redirect("staff")
+        return render(request, "create_staff_user.html", {"form": form})
 
 
 def create_mission_bit_user(request, form, group):
@@ -243,14 +244,10 @@ def email_classroom(request, email_list, classroom_name):
 
 def get_users_from_form(form):
     group_users = DjangoUser.objects.filter(
-        groups__name__in=[
-            group.name for group in form.cleaned_data.get("recipient_groups")
-        ]
+        groups__name__in=list(form.cleaned_data.get("recipient_groups"))
     )
     classroom_users = DjangoUser.objects.filter(
-        classroom__in=[
-            classroom for classroom in form.cleaned_data.get("recipient_classrooms")
-        ]
+        classroom__in=list(form.cleaned_data.get("recipient_classrooms"))
     )
     return (classroom_users | group_users).distinct()
 
@@ -426,7 +423,7 @@ def create_form_distribution(posted_form, user):
 def get_outstanding_forms():
     outstanding_form_dict = {}
     for form in Form.objects.all():
-        distributions = FormDistribution.objects.filter(form=form)
+        distributions = form.form_to_be_signed.all()
         outstanding_form_dict.update({form.name: distributions})
     return outstanding_form_dict
 
@@ -520,24 +517,16 @@ def get_course_attendance_statistic(course_id):
 
 
 def get_my_announcements(request, group):
-    classroom = get_classroom_by_django_user(request.user)
-    announcements = (
-        Announcement.objects.filter(recipient_groups=Group.objects.get(name=group))
-        | Announcement.objects.filter(recipient_classrooms=classroom)
-    ).distinct()
-    announcement_distributions = AnnouncementDistribution.objects.filter(
-        announcement__in=announcements, user_id=request.user.id, dismissed=False
+    return AnnouncementDistribution.objects.filter(
+        announcement__in=(Announcement.objects.filter(
+            recipient_groups__in=Group.objects.filter(name=group)
+        ) | Announcement.objects.filter(recipient_classrooms__in=[get_classroom_by_django_user(request.user)]))
     )
-    return announcement_distributions
 
 
 def get_my_forms(request, group):
-    classroom = get_classroom_by_django_user(request.user)
-    forms = (
-        Form.objects.filter(recipient_groups=Group.objects.get(name=group))
-        | Form.objects.filter(recipient_classrooms=classroom)
-    ).distinct()
-    form_distributions = FormDistribution.objects.filter(
-        form__in=forms, user_id=request.user.id, submitted=False
+    return FormDistribution.objects.filter(
+        form__in=Form.objects.filter(recipient_groups__in=Group.objects.filter(name=group)) |
+        Form.objects.filter(recipient_classrooms__in=[get_classroom_by_django_user(request.user)])
+
     )
-    return form_distributions

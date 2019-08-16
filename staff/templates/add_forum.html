@@ -11,7 +11,7 @@
     {% include "error.html" %}
 
     <h1 style="padding-bottom: 20px"> Add Forum to Classroom - {{ classroom.course }} </h1>
-        <form class="mui-form" enctype="multipart/form-data" method="post">
+        <form class="mui-form" method="post">
             {% csrf_token %}
             <div class="mui-textfield mui-textfield--float-label">
               {{ form.forum_title }}

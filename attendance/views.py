@@ -123,7 +123,7 @@ def compile_daily_attendance_for_course(course_id):
 
 def get_average_attendance_from_list(daily_attendance):
     attendance_list = [
-        attendance_object.presence == "Present" or attendance_object.presence == "Late"
+        attendance_object.presence in ("Present", "Late")
         for attendance_object in daily_attendance
     ]
     return statistics.mean(attendance_list) if len(attendance_list) > 0 else 0
