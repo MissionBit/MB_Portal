@@ -79,12 +79,6 @@
             return true;
         },
         template: '\{\{model.template\}\}',
-            // CHANGE THE TEMPLATE IF YOU WANT TO
-                   /* template:'<div id="instaphoto_section" style="text-align: center;"><h4 class="slot-description">\{\{location\}\}</h4>' +
-            '<a class="instafeedimg" style="cursor: pointer;"><video width="90%" controls loop><source src="' + image.videos.standard_resolution.url + '" type="video/mp4"/></video></a>' +
-            '<h4 class="slot-description"></h4><h4 class="slot-description"><img src="/static/insta-heart.png" width="25" height="23" style="opacity: 0.75"> \{\{likes\}\} ' +
-            '<img src="/static/insta-comment.png" style="opacity: 0.75" width="33" height="33"> \{\{model.comments.count\}\}' +
-            '</h4><hr style="width: 90%; height:2px;border:none;color:gray;background-color:gray; opacity: 0.3" /></div>' */
       });
       galleryFeed.run();
     });
@@ -97,5 +91,6 @@
            errormsg.className='';
            errormsg.classList.add('alert-close');
        })
+
     });
 </script>
