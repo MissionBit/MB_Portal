@@ -42,35 +42,52 @@
             }
           });
           var $rightpanel = $('#mui-panel');
-          var $img_show = $('.img-display-container');
            $(".instafeedtrigger").click(function() {
              if ($rightpanel.hasClass('rightpanelbody-hidden')) {
                  $rightpanel.removeClass('rightpanelbody-hidden').addClass('rightpanelbody-visible');
              } else if ($rightpanel.hasClass('rightpanelbody-visible')){
                 $rightpanel.removeClass('rightpanelbody-visible').addClass('rightpanelbody-hidden');
-                $img_show.style.display = 'none';
              };
           });
         });
 </script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/instafeed.js/1.4.1/instafeed.min.js"></script>
     <script type="text/javascript">
+    jQuery(function($){
         var galleryFeed = new Instafeed({
         get: "user",
-        userId: "{% settings_value "INSTAUSERID" %}",
-        accessToken: "{% settings_value "INSTATOKEN" %}",
+        userId: "4307478236",
+        accessToken: "4307478236.1677ed0.5948ce474b3a4c479606e0b7bb9fa65e",
         resolution: "standard_resolution",
         useHttp: "true",
         limit: 8,
         target: "instafeed",
-        template: '<div id="instaphoto_section" style="text-align: center;"><h4 class="slot-description">\{\{location\}\}</h4>' +
-            '<a class="instafeedimg" style="cursor: pointer;"><img src="\{\{image\}\}" alt="\{\{caption\}\}" onclick="importImage(this);"></a>' +
+        filter: function(image) {
+            if (image.type == 'image') {
+                image.template = '<div id="instaphoto_section" style="text-align: center;"><h4 class="slot-description">\{\{location\}\}</h4>' +
+            '<a class="instafeedimg" style="cursor: pointer;"><img class="instafeedcontent" src="' + image.images.standard_resolution.url + '" alt="\{\{caption\}\}" onclick="importImage(this);"></a>' +
             '<h4 class="slot-description"></h4><h4 class="slot-description"><img src="/static/insta-heart.png" width="25" height="23" style="opacity: 0.75"> \{\{likes\}\} ' +
             '<img src="/static/insta-comment.png" style="opacity: 0.75" width="33" height="33"> \{\{model.comments.count\}\}' +
             '</h4><hr style="width: 90%; height:2px;border:none;color:gray;background-color:gray; opacity: 0.3" /></div>'
+            } else {
+                image.template = '<div id="instaphoto_section" style="text-align: center;"><h4 class="slot-description">\{\{location\}\}</h4>' +
+            '<a class="instafeedimg" style="cursor: pointer;"><video width="90%"><div><p style="color: white;">123</p></div><source src="' + image.videos.standard_resolution.url + '" type="video/mp4"/></video></a>' +
+            '<h4 class="slot-description"></h4><h4 class="slot-description"><img src="/static/insta-heart.png" width="25" height="23" style="opacity: 0.75"> \{\{likes\}\} ' +
+            '<img src="/static/insta-comment.png" style="opacity: 0.75" width="33" height="33"> \{\{model.comments.count\}\}' +
+            '</h4><hr style="width: 90%; height:2px;border:none;color:gray;background-color:gray; opacity: 0.3" /></div>';
+            }
+            return true;
+        },
+        template: '\{\{model.template\}\}',
             // CHANGE THE TEMPLATE IF YOU WANT TO
+                   /* template:'<div id="instaphoto_section" style="text-align: center;"><h4 class="slot-description">\{\{location\}\}</h4>' +
+            '<a class="instafeedimg" style="cursor: pointer;"><video width="90%" controls loop><source src="' + image.videos.standard_resolution.url + '" type="video/mp4"/></video></a>' +
+            '<h4 class="slot-description"></h4><h4 class="slot-description"><img src="/static/insta-heart.png" width="25" height="23" style="opacity: 0.75"> \{\{likes\}\} ' +
+            '<img src="/static/insta-comment.png" style="opacity: 0.75" width="33" height="33"> \{\{model.comments.count\}\}' +
+            '</h4><hr style="width: 90%; height:2px;border:none;color:gray;background-color:gray; opacity: 0.3" /></div>' */
       });
       galleryFeed.run();
+    });
 </script>
 <script type="text/javascript">
     $(document).ready(function () {
