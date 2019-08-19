@@ -43,8 +43,7 @@
                 <p><a href="{{ form.form.esign.template }}">Esign Here</a></p><br>
               {% endif %}
               <p style="padding-bottom: 10px;">
-                  <p>URL: {{ form.form.form }}</p>
-                  <input type="button" class="mui-btn" value="Download Form" onclick="window.location.href='{{ form.form.form }}'"/>
+                  <a href="{{ form.form.form }}" class="mui-btn">Download Form</a>
               </p>
             </div><br>
         {% endfor %}

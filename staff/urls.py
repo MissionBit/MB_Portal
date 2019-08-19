@@ -25,7 +25,7 @@ urlpatterns = [
     path("create_esign", views.create_esign, name="create_esign"),
     path("form_overview", views.form_overview, name="form_overview"),
     path(
-        "notify_unsubmitted_users",
+        "notify_unsubmitted_users/<notify_about>",
         views.notify_unsubmitted_users,
         name="notify_unsubmitted_users",
     ),
@@ -35,7 +35,7 @@ urlpatterns = [
         name="communication_manager",
     ),
     path("curriculum/", views.curriculum, name="curriculum"),
-    path("modify_session/", views.modify_session, name="modify_session"),
+    path("modify_session/<date>/<classroom>", views.modify_session, name="modify_session"),
     path("add_forum/", views.add_forum, name="add_forum"),
     path("classroom_detail/<course_id>", views.classroom_detail, name="classroom_detail"),
 ]

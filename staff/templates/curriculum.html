@@ -18,13 +18,9 @@
           <td>{{ session.date }}</td>
           <td>{{ session.title }}</td>
           <td>{{ session.description }}</td>
-          <td><form action={% url 'modify_session' %} method="GET">
-            {% csrf_token %}
-            <input type="hidden" name="modify_session" value="True" />
-            <input type="hidden" name="date" value="{{ session.date }}" />
-            <input type="hidden" name="classroom" value="{{ session.classroom_id }}">
-            <button class="mui-btn mui-btn--primary mui-btn--small" type="submit">View/Change Curriculum</button>
-          </form></td>
+          <td><a href="{% url 'modify_session' date=session.date classroom=session.classroom_id %}"
+                 class="mui-btn mui-btn--primary mui-btn--small">View/Change Curriculum</a>
+          </td>
         </tr>
       {% endfor %}
       </table>
