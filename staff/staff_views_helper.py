@@ -195,6 +195,8 @@ def get_teacher_assistant_from_classroom(classroom):
 def get_classroom_by_django_user(django_user):
     try:
         return Classroom.objects.get(membership_classroom__member=django_user)
+    except TypeError:
+        return None
     except Classroom.DoesNotExist:
         return None
 

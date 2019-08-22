@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="//cdn.muicss.com/mui-0.9.43/css/mui.min.css" rel="stylesheet" type="text/css" />
+  <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+  <link rel="stylesheet" href="{% static  'css/mui_assets.css' %}"/>
+  <link rel="icon" href="{% static 'missionbit-icon.png' %}"> <!-- LOGO ON THE TAB BAR -->
+  <script defer src='https://code.getmdl.io/1.3.0/material.min.js'></script>
+  <link rel="stylesheet" href="{% static 'css/errors_and_messages.css' %}">
+  <script src="//cdn.muicss.com/mui-0.9.43/js/mui.min.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <title>Mission Bit</title>
+  {% include 'manipulation_js.html' %}
+</head>
+
+<body class="hide-sidedrawer">
+
+  {% include 'header.html' %}
+
+  {% include 'instafeed.html' %}
+
+  {% include 'left_side_panel.html' %}
+
+  <div id="content-wrapper">
+    <div class="mui--appbar-height"></div>
+      <div class="mui-container-fluid">
+        <br>
+        {% block content %}
+
+        {% endblock %}
+      </div>
+  </div>
+
+  {% include 'footer.html' %}
+
+</body>
+</html>

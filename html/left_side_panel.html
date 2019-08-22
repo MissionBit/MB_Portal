@@ -11,7 +11,7 @@
      <section id="intro">
        <a class="mainslide" href="{% url 'home-home' %}">Home</a>
      </section>
-     {% if user_group == "staff" %}
+     {% if "staff" in user_groups %}
      <section class="intro">
        <a class="mainslide" style="cursor: pointer">Courses</a>
        <div>
@@ -53,10 +53,26 @@
            <hr style="width: 80%;">
        </div>
      </section>
-     {% elif user_group == "teacher" %}
+     {% endif %}
+     {% if "teacher" in user_groups %}
        <section id="intro">
          <a class="mainslide" href="{% url 'my_class_teacher' %}">My Class</a>
        </section>
+       {% if  classroom.forum  %}
+         <section class="intro">
+          <a class="mainslide" href="{{ classroom.forum }}" target="_blank">{{ classroom.forum_title }}</a>
+         </section>
+       {% endif %}
+     {% endif %}
+     {% if "student" in user_groups %}
+       <section class="intro">
+          <a class="mainslide" href="{% url 'my_class_student' %}">My Class</a>
+       </section>
+       {% if  classroom.forum  %}
+         <section class="intro">
+          <a class="mainslide" href="{{ classroom.forum }}" target="_blank">{{ classroom.forum_title }}</a>
+         </section>
+       {% endif %}
      {% endif %}
      <section id="intro">
        <a class="mainslide" href="{% url 'attendance' %}">Attendance</a>

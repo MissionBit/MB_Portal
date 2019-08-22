@@ -31,7 +31,7 @@ def attendance(request):
         context.update(
             {
                 "attendance_statistic": get_course_attendance_statistic(course_id),
-                "user_group": user_group,
+                "user_group": str(user_group),
             }
         )
     else:
@@ -39,7 +39,7 @@ def attendance(request):
         context = {
             "classrooms": Classroom.objects.all(),
             "attendance_averages": attendance_averages,
-            "user_group": user_group,
+            "user_group": str(user_group),
         }
     return render(request, "attendance.html", context)
 

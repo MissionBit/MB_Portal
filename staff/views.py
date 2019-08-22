@@ -65,7 +65,8 @@ def classroom_management(request):
     return render(
         request,
         "classroom_management.html",
-        {"classrooms": classroom_list, "class_dicts": class_dict},
+        {"classrooms": classroom_list, "class_dicts": class_dict,
+         "user_groups": set(request.user.groups.all().values_list('name', flat=True))},
     )
 
 
@@ -79,9 +80,11 @@ def create_staff_user(request):
             messages.add_message(request, messages.SUCCESS, "Staff User Created")
             return redirect("staff")
         else:
-            return render(request, "create_staff_user.html", {"form": form})
+            return render(request, "create_staff_user.html", {"form": form,
+                                                              "user_groups": set(request.user.groups.all().values_list('name', flat=True))})
     form = CreateStaffForm()
-    return render(request, "create_staff_user.html", {"form": form})
+    return render(request, "create_staff_user.html", {"form": form,
+                                                      "user_groups": set(request.user.groups.all().values_list('name', flat=True))})
 
 
 @group_required("staff")
