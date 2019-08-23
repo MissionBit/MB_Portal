@@ -134,22 +134,27 @@ button {
 
 @media (max-width: 767px) {
     #expandedImg{
-      width:78%
+      width:63%
   }
+
+
 
   .mui-panel{
       width: 80%;
   }
 }
 
+
 @media (min-width: 768px) {
 
   .mui-panel{
       width: 50%;
   }
+
   #expandedImg{
-      width:35%
+      width:45%
   }
+
 
   #header {
     left: 200px;
@@ -161,7 +166,7 @@ button {
 
 
   #expandedImg{
-      width:35%
+     width: 30%;
   }
 
   #content-wrapper {
@@ -351,4 +356,31 @@ button {
 }
 .deintro div{
   display: block;
+}
+
+.videoblock{
+  display: flex;
+  align-items: center;
+  justify-content:center;
+}
+.videoblock:hover>.controls{
+  display: flex;
+  transition: all 0.3s ease 0s;
+  opacity: 1
+}
+
+.controls{
+  display: flex;
+  position: absolute;
+  color: whitesmoke;
+    transition: all 0.3s ease 0s;
+  opacity: 0
+}
+
+.controls:hover{
+  cursor: pointer;
+}
+
+.c-video{
+  border-radius: 45px 45px 45px 45px
 }
