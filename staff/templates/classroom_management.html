@@ -1,24 +1,27 @@
-{% extends "staff_base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
 
-    {% include "message.html" %}
+{% include "message.html" %}
 
-<div style="text-align: center;">
-  <div style="display: inline-block; width: 70%;">
-    {% if classrooms %}
-      {% for classroom in classrooms %}
-        <div style="text-align: center" class="mui-panel">
-            <h3>{{ classroom }}</h3>
-            <h6>{{ class_dicts|get_item:classroom.course|get_item:"teacher" }}</h6>
-            <h6>{{ class_dicts|get_item:classroom.course|get_item:"teacher_assistant" }}</h6>
-            <a href="{% url 'classroom_detail' course_id=classroom.id %}" method="get"
-            class="mui-btn mui-btn--fab mui-btn--primary">Go</a>
-        </div><br>
-      {% endfor %}
-    {% endif %}
-  </div>
+<div style="text-align: center">
+<div style="width: 75%; display: inline-block;">
+  {% if classrooms %}
+    {% for classroom in classrooms %}
+      <div style="text-align: center" class="mui-panel">
+        <div style="display: inline-block">
+          <h3>{{ classroom }}</h3>
+          <h6>{{ class_dicts|get_item:classroom.course|get_item:"teacher" }}</h6>
+          <h6>{{ class_dicts|get_item:classroom.course|get_item:"teacher_assistant" }}</h6>
+          <a href="{% url 'classroom_detail' course_id=classroom.id %}" method="get"
+          class="mui-btn mui-btn--fab mui-btn--primary">Go</a>
+        </div>
+      </div><br>
+    {% endfor %}
+  {% endif %}
 </div>
+</div>
+
 
 
 

@@ -1,4 +1,4 @@
-{% extends "teacher_base.html" %}
+{% extends "base.html" %}
 {% load crispy_forms_tags %}
 
 {% block content %}
@@ -66,15 +66,15 @@
     <form class="mui-form" enctype="multipart/form-data" method="POST">
       {% csrf_token %}
       <div class="mui-textfield mui-textfield--float-label">
-        {{ form.title}}
+        {{ form.title }}
         <label>Title</label>
       </div>
       <div class="mui-textfield mui-textfield--float-label">
-          {{ form.description}}
+          {{ form.description }}
           <label>Description</label>
       </div>
       <div class="mui-textfield mui-textfield--float-label">
-          {{ form.link}}
+          {{ form.link }}
        <label>Link -- Starts with http or https</label>
       </div>
       <div class="mui-textfield">

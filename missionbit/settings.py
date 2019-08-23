@@ -81,7 +81,8 @@ ROOT_URLCONF = "missionbit.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, 'static/html')],
+        "DIRS": [os.path.join(BASE_DIR, 'static/html'),
+                 os.path.join(BASE_DIR, "html/")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -91,6 +92,8 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "social_django.context_processors.backends",  # <- Social Django Oauth Google
                 "social_django.context_processors.login_redirect",  # <- Social Django Oauth Google
+                "context_processors.user_groups",
+                "context_processors.user_classroom",
             ]
         },
     }

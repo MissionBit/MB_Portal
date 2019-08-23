@@ -30,9 +30,15 @@
     </div>
 
     <form class="mui-form" method="post">
-      {% block inner_content %}
-
-      {% endblock inner_content %}
+      {% if registration_type == "student" %}
+          <legend>Register As Mission Bit Student</legend>
+      {% endif %}
+      {% if registration_type == "volunteer" %}
+          <legend>Register As Mission Bit Volunteer</legend>
+      {% endif %}
+      {% if registration_type == "donor" %}
+          <legend>Register As Mission Bit Donor</legend>
+      {% endif %}
       {% csrf_token %}
       <div class="mui-textfield">
         First Name: {{ user_form.first_name }}

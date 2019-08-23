@@ -65,7 +65,8 @@ def classroom_management(request):
     return render(
         request,
         "classroom_management.html",
-        {"classrooms": classroom_list, "class_dicts": class_dict},
+        {"classrooms": classroom_list, "class_dicts": class_dict,
+         "user_groups": set(request.user.groups.all().values_list('name', flat=True))},
     )
 
 
@@ -79,9 +80,11 @@ def create_staff_user(request):
             messages.add_message(request, messages.SUCCESS, "Staff User Created")
             return redirect("staff")
         else:
-            return render(request, "create_staff_user.html", {"form": form})
+            return render(request, "create_staff_user.html", {"form": form,
+                                                              "user_groups": set(request.user.groups.all().values_list('name', flat=True))})
     form = CreateStaffForm()
-    return render(request, "create_staff_user.html", {"form": form})
+    return render(request, "create_staff_user.html", {"form": form,
+                                                      "user_groups": set(request.user.groups.all().values_list('name', flat=True))})
 
 
 @group_required("staff")
@@ -254,10 +257,11 @@ def form_overview(request):
 
 
 @group_required("staff")
-def notify_unsubmitted_users(request):
+def notify_unsubmitted_users(request, notify_about=None):
     if request.method == "POST":
         form = NotifyUnsubmittedUsersForm(request.POST)
         if form.is_valid():
+            print("notify_about: ", request.POST.get("notify_about"))
             form_id = Form.objects.get(name=request.POST.get("notify_about")).id
             form_distributions = FormDistribution.objects.filter(
                 form_id=form_id, submitted=False
@@ -274,7 +278,6 @@ def notify_unsubmitted_users(request):
         else:
             return render(request, "notify_unsubmitted_users.html", {"form": form})
     form = NotifyUnsubmittedUsersForm()
-    notify_about = request.GET.get("notify_unsubmitted_users")
     return render(
         request,
         "notify_unsubmitted_users.html",
@@ -370,7 +373,7 @@ def curriculum(request):
 
 
 @group_required("staff")
-def modify_session(request):
+def modify_session(request, date=None, classroom=None):
     if request.method == "POST":
         form = AddCurriculumForm(request.POST, request.FILES)
         if form.is_valid():
@@ -385,16 +388,15 @@ def modify_session(request):
             )
             return render(request, "modify_session.html", {"form": form, "date": date, "classroom": classroom, "session": session})
     form = AddCurriculumForm()
-    date = request.GET.get("date")
-    classroom = Classroom.objects.get(id=request.GET.get("classroom"))
+    date = date
+    course = Classroom.objects.get(id=classroom)
     session = Session.objects.get(
-        classroom_id=request.GET.get("classroom"),
-        date=get_date_from_template_returned_string(request.GET.get("date")),
-    )
+        classroom=classroom,
+        date=date)
     return render(
         request,
         "modify_session.html",
-        {"form": form, "date": date, "classroom": classroom, "session": session},
+        {"form": form, "date": date, "classroom": course, "session": session},
     )
 
 

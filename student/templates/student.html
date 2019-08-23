@@ -1,4 +1,4 @@
-{% extends "student_base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
 
@@ -48,7 +48,7 @@
                 <p><a href="{{ form.form.esign.template }}">Esign Here</a></p><br>
               {% endif %}
               <p style="padding-bottom: 10px;">
-                  <input type="button" class="mui-btn" value="Download Form" onclick="window.location.href='{{ form.form.url }}'"/>
+                  <a href="{{ form.form.form }}" class="mui-btn">Download Form</a>
               </p>
             </div><br>
         {% endfor %}

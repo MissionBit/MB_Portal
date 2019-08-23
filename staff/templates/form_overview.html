@@ -1,4 +1,4 @@
-{% extends "staff_base.html" %}
+{% extends "base.html" %}
 {% load crispy_forms_tags %}
 
 {% block content %}
@@ -37,10 +37,8 @@
                       </tr>
                     {% endfor %}
                   </table>
-                  <form action={% url 'notify_unsubmitted_users' %} method="GET">
-                    <input type="hidden" name="notify_unsubmitted_users" value="{{ form_name }}" />
-                    <br><td><button class="mui-btn mui-btn mui-btn--primary" type="submit">Notify Unsubmitted Users</button></td>
-                  </form>
+                  <a href="{% url 'notify_unsubmitted_users' notify_about=form_name %}"
+                     class="mui-btn mui-btn mui-btn--primary">Notify Unsubmitted Users</a>
                 </div>
             </div>
           {% endfor %}
