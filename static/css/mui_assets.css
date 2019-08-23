@@ -269,6 +269,14 @@ button {
   transition: all 0.3s ease 0s;
 }
 
+.sidenav-content a:hover {
+  color: #ffffff;
+  padding-left: 10px;
+  padding-bottom: 16px;
+  background: gray;
+  overflow: hidden;
+}
+
 .mainslide{
     font-weight: bold;
     font-size: 21px;
