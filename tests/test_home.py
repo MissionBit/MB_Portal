@@ -58,7 +58,7 @@ class BaseTestCase(TestCase):
             "title": "Staff",
             "race": "White",
             "which_best_describes_your_ethnicity": "Hispanic/Latinx",
-            "gender": "Female"
+            "gender": "Female",
         }
 
     def create_valid_contact_form(self):
@@ -208,7 +208,10 @@ class HomeViewsTest(BaseTestCase):
 
     def test_register_as_student_post(self):
         self.client.force_login(self.create_user())
-        response = self.client.post(reverse("home-register_as_student"), self.create_valid_user_and_contact_form())
+        response = self.client.post(
+            reverse("home-register_as_student"),
+            self.create_valid_user_and_contact_form(),
+        )
         Contact.objects.get(client_id="tesuse19010101").delete()
         self.assertEqual(
             DjangoUser.objects.filter(first_name="test").first().first_name, "test"
@@ -227,7 +230,10 @@ class HomeViewsTest(BaseTestCase):
 
     def test_register_as_volunteer_post(self):
         self.client.force_login(self.create_user())
-        response = self.client.post(reverse("home-register_as_volunteer"), self.create_valid_user_and_contact_form())
+        response = self.client.post(
+            reverse("home-register_as_volunteer"),
+            self.create_valid_user_and_contact_form(),
+        )
         Contact.objects.get(client_id="tesuse19010101").delete()
         self.assertEqual(
             DjangoUser.objects.filter(first_name="test").first().first_name, "test"
@@ -246,7 +252,9 @@ class HomeViewsTest(BaseTestCase):
 
     def test_register_as_donor_post(self):
         self.client.force_login(self.create_user())
-        response = self.client.post(reverse("home-register_as_donor"), self.create_valid_user_and_contact_form())
+        response = self.client.post(
+            reverse("home-register_as_donor"), self.create_valid_user_and_contact_form()
+        )
         Contact.objects.get(client_id="tesuse19010101").delete()
         self.assertEqual(
             DjangoUser.objects.filter(first_name="test").first().first_name, "test"

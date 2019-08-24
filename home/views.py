@@ -109,15 +109,27 @@ def register_as_student(request):
             )
             return redirect("login")
         else:
-            return render(request, "home/register.html", {"user_form": user_form,
-                                                          "contact_form": contact_form,
-                                                          "registration_type": "student"})
+            return render(
+                request,
+                "home/register.html",
+                {
+                    "user_form": user_form,
+                    "contact_form": contact_form,
+                    "registration_type": "student",
+                },
+            )
     else:
         user_form = UserRegisterForm()
         contact_form = ContactRegisterForm()
-        return render(request, "home/register.html", {"user_form": user_form,
-                                                      "contact_form": contact_form,
-                                                      "registration_type": "student"})
+        return render(
+            request,
+            "home/register.html",
+            {
+                "user_form": user_form,
+                "contact_form": contact_form,
+                "registration_type": "student",
+            },
+        )
 
 
 def register_as_volunteer(request):
@@ -133,15 +145,27 @@ def register_as_volunteer(request):
             )
             return redirect("login")
         else:
-            return render(request, "home/register.html", {"user_form": user_form,
-                                                          "contact_form": contact_form,
-                                                          "registration_type": "volunteer"})
+            return render(
+                request,
+                "home/register.html",
+                {
+                    "user_form": user_form,
+                    "contact_form": contact_form,
+                    "registration_type": "volunteer",
+                },
+            )
     else:
         user_form = UserRegisterForm()
         contact_form = ContactRegisterForm()
-        return render(request, "home/register.html", {"user_form": user_form,
-                                                      "contact_form": contact_form,
-                                                      "registration_type": "volunteer"})
+        return render(
+            request,
+            "home/register.html",
+            {
+                "user_form": user_form,
+                "contact_form": contact_form,
+                "registration_type": "volunteer",
+            },
+        )
 
 
 def register_as_donor(request):
@@ -157,15 +181,27 @@ def register_as_donor(request):
             )
             return redirect("login")
         else:
-            return render(request, "home/register.html", {"user_form": user_form,
-                                                          "contact_form": contact_form,
-                                                          "registration_type": "donor"})
+            return render(
+                request,
+                "home/register.html",
+                {
+                    "user_form": user_form,
+                    "contact_form": contact_form,
+                    "registration_type": "donor",
+                },
+            )
     else:
         user_form = UserRegisterForm()
         contact_form = ContactRegisterForm()
-        return render(request, "home/register.html", {"user_form": user_form,
-                                                      "contact_form": contact_form,
-                                                      "registration_type": "donor"})
+        return render(
+            request,
+            "home/register.html",
+            {
+                "user_form": user_form,
+                "contact_form": contact_form,
+                "registration_type": "donor",
+            },
+        )
 
 
 def create_django_user(request, form, group):
@@ -189,6 +225,8 @@ def create_contact(request, user_form, contact_form, title):
         title=title,
         owner=User.objects.filter(is_active=True).first(),
         race=contact_form.cleaned_data.get("race"),
-        which_best_describes_your_ethnicity=contact_form.cleaned_data.get("which_best_describes_your_ethnicity"),
-        gender=contact_form.cleaned_data.get("gender")
+        which_best_describes_your_ethnicity=contact_form.cleaned_data.get(
+            "which_best_describes_your_ethnicity"
+        ),
+        gender=contact_form.cleaned_data.get("gender"),
     )

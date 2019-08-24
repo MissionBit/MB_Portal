@@ -137,7 +137,7 @@ class BaseTestCase(TestCase):
             owner=User.objects.filter(is_active=True).first(),
             race="White",
             which_best_describes_your_ethnicity="Hispanic/Latinx",
-            gender="Female"
+            gender="Female",
         )
         return contact[0]
 
@@ -151,7 +151,7 @@ class BaseTestCase(TestCase):
             owner=User.objects.filter(is_active=True).first(),
             race="White",
             which_best_describes_your_ethnicity="Hispanic/Latinx",
-            gender="Female"
+            gender="Female",
         )
         return contact[0]
 
@@ -165,7 +165,7 @@ class BaseTestCase(TestCase):
             owner=User.objects.filter(is_active=True).first(),
             race="White",
             which_best_describes_your_ethnicity="Hispanic/Latinx",
-            gender="Female"
+            gender="Female",
         )
         return contact[0]
 
@@ -316,4 +316,4 @@ class StaffViewsTest(BaseTestCase):
     def test_create_volunteer_user_invalid_form(self):
         self.client.force_login(self.create_staff_user())
         response = self.client.post(reverse("create_volunteer_user"), {})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)       
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

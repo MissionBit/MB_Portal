@@ -65,8 +65,13 @@ def classroom_management(request):
     return render(
         request,
         "classroom_management.html",
-        {"classrooms": classroom_list, "class_dicts": class_dict,
-         "user_groups": set(request.user.groups.all().values_list('name', flat=True))},
+        {
+            "classrooms": classroom_list,
+            "class_dicts": class_dict,
+            "user_groups": set(
+                request.user.groups.all().values_list("name", flat=True)
+            ),
+        },
     )
 
 
@@ -80,11 +85,27 @@ def create_staff_user(request):
             messages.add_message(request, messages.SUCCESS, "Staff User Created")
             return redirect("staff")
         else:
-            return render(request, "create_staff_user.html", {"form": form,
-                                                              "user_groups": set(request.user.groups.all().values_list('name', flat=True))})
+            return render(
+                request,
+                "create_staff_user.html",
+                {
+                    "form": form,
+                    "user_groups": set(
+                        request.user.groups.all().values_list("name", flat=True)
+                    ),
+                },
+            )
     form = CreateStaffForm()
-    return render(request, "create_staff_user.html", {"form": form,
-                                                      "user_groups": set(request.user.groups.all().values_list('name', flat=True))})
+    return render(
+        request,
+        "create_staff_user.html",
+        {
+            "form": form,
+            "user_groups": set(
+                request.user.groups.all().values_list("name", flat=True)
+            ),
+        },
+    )
 
 
 @group_required("staff")
@@ -139,8 +160,7 @@ def create_classroom(request):
         if form.is_valid():
             setup_classroom(request, form)
             messages.success(
-                request,
-                f'{form.cleaned_data.get("course")} Successfully Created',
+                request, f'{form.cleaned_data.get("course")} Successfully Created'
             )
             return redirect("staff")
         else:
@@ -334,7 +354,9 @@ def create_esign(request):
                 created_by=DjangoUser.objects.get(id=request.user.id),
             )
             esign.save()
-            messages.add_message(request, messages.SUCCESS, "Esign Created Successfully")
+            messages.add_message(
+                request, messages.SUCCESS, "Esign Created Successfully"
+            )
             return redirect("staff")
         else:
             return render(request, "create_esign.html", {"form": form})
@@ -357,7 +379,9 @@ def add_forum(request):
             return redirect("staff")
         else:
             classroom = Classroom.objects.get(id=request.GET.get("classroom"))
-            return render(request, "add_forum.html", {"form": form, "classroom": classroom})
+            return render(
+                request, "add_forum.html", {"form": form, "classroom": classroom}
+            )
     classroom = Classroom.objects.get(id=request.GET.get("classroom"))
     form = AddForumForm()
     return render(request, "add_forum.html", {"form": form, "classroom": classroom})
@@ -386,13 +410,20 @@ def modify_session(request, date=None, classroom=None):
                 classroom_id=request.GET.get("classroom"),
                 date=get_date_from_template_returned_string(request.GET.get("date")),
             )
-            return render(request, "modify_session.html", {"form": form, "date": date, "classroom": classroom, "session": session})
+            return render(
+                request,
+                "modify_session.html",
+                {
+                    "form": form,
+                    "date": date,
+                    "classroom": classroom,
+                    "session": session,
+                },
+            )
     form = AddCurriculumForm()
     date = date
     course = Classroom.objects.get(id=classroom)
-    session = Session.objects.get(
-        classroom=classroom,
-        date=date)
+    session = Session.objects.get(classroom=classroom, date=date)
     return render(
         request,
         "modify_session.html",

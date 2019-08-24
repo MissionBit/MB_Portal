@@ -76,7 +76,7 @@ class ContactRegisterForm(forms.Form):
             "which_best_describes_your_ethnicity",
             "race",
             "gender",
-            "expected_graduation_year"
+            "expected_graduation_year",
         ]
 
 
@@ -94,7 +94,7 @@ class UserRegisterForm(UserCreationForm):
             "first_name",
             "last_name",
             "password1",
-            "password2"
+            "password2",
         ]
 
 

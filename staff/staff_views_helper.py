@@ -518,14 +518,24 @@ def get_course_attendance_statistic(course_id):
 
 def get_my_announcements(request, group):
     return AnnouncementDistribution.objects.filter(
-        announcement__in=(Announcement.objects.filter(
-            recipient_groups__in=Group.objects.filter(name=group)
-        ) | Announcement.objects.filter(recipient_classrooms__in=[get_classroom_by_django_user(request.user)])), dismissed=False
+        announcement__in=(
+            Announcement.objects.filter(
+                recipient_groups__in=Group.objects.filter(name=group)
+            )
+            | Announcement.objects.filter(
+                recipient_classrooms__in=[get_classroom_by_django_user(request.user)]
+            )
+        ),
+        dismissed=False,
     )
 
 
 def get_my_forms(request, group):
     return FormDistribution.objects.filter(
-        form__in=Form.objects.filter(recipient_groups__in=Group.objects.filter(name=group)) |
-        Form.objects.filter(recipient_classrooms__in=[get_classroom_by_django_user(request.user)])
+        form__in=Form.objects.filter(
+            recipient_groups__in=Group.objects.filter(name=group)
+        )
+        | Form.objects.filter(
+            recipient_classrooms__in=[get_classroom_by_django_user(request.user)]
+        )
     )
