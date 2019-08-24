@@ -239,6 +239,7 @@ def post_form(request):
                     form.cleaned_data.get("esign", None),
                     subject,
                     message,
+                    posted_form,
                     email_list,
                 )
             distribute_forms(request, posted_form, user_list)

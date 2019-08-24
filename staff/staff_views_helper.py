@@ -290,7 +290,7 @@ def bulk_distribute_announcement(user_list, announcement):
     AnnouncementDistribution.objects.bulk_create(announcement_distributions)
 
 
-def email_posted_form(request, esign, subject, message, email_list):
+def email_posted_form(request, esign, subject, message, posted_form, email_list):
     msg_html = render_to_string(
         "email_templates/post_form_email.html",
         {
@@ -298,6 +298,7 @@ def email_posted_form(request, esign, subject, message, email_list):
             "message": message,
             "from": DjangoUser.objects.get(id=request.user.id),
             "esign_link": esign,
+            "posted_form": posted_form
         },
     )
     text_content = "Please view your new form (attached)"
@@ -309,9 +310,6 @@ def email_posted_form(request, esign, subject, message, email_list):
         subject, text_content, settings.EMAIL_HOST_USER, recipient_list
     )
     email.attach_alternative(msg_html, "text/html")
-    email.attach_file(
-        "%s%s" % ("documents/", str(request.FILES["form"]).replace(" ", "_"))
-    )
     email.send()
     messages.add_message(request, messages.SUCCESS, "Recipients Successfully Emailed")
 
