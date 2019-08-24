@@ -53,6 +53,9 @@
            <hr style="width: 80%;">
        </div>
      </section>
+     <section id="intro">
+       <a class="mainslide" href="{% url 'attendance' %}">Attendance</a>
+     </section>
      {% endif %}
      {% if "teacher" in user_groups %}
        <section id="intro">
@@ -63,6 +66,9 @@
           <a class="mainslide" href="{{ classroom.forum }}" target="_blank">{{ classroom.forum_title }}</a>
          </section>
        {% endif %}
+       <section id="intro">
+         <a class="mainslide" href="{% url 'attendance' %}">Attendance</a>
+       </section>
      {% endif %}
      {% if "student" in user_groups %}
        <section class="intro">
@@ -73,11 +79,9 @@
           <a class="mainslide" href="{{ classroom.forum }}" target="_blank">{{ classroom.forum_title }}</a>
          </section>
        {% endif %}
+       <section id="intro">
+         <a class="mainslide" href="{% url 'attendance_student' %}">Attendance</a>
+       </section>
      {% endif %}
-     <section id="intro">
-       <a class="mainslide" href="{% url 'attendance' %}">Attendance</a>
-       <div>
-       </div>
-     </section>
   </div>
 </div>

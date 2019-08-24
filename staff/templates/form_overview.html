@@ -8,8 +8,8 @@
       <h1 style="text-align: center"> Form Overview </h1><br>
         {% if outstanding_form_dict %}
           {% for form_name, distributions in outstanding_form_dict.items %}
-            <div style="text-align: center">
-              <div style="display: inline-block; width: 85%" class="mui-panel">
+            <div class="table-container">
+              <div class="mui-panel">
                 <table class="mui-table mui-table--bordered">
                   <h3 style="padding-left: 1%">{{ form_name }}</h3>
                   <tr>

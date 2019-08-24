@@ -4,174 +4,129 @@
 
 {% block content %}
 
-<style>
-.wrapper{
-    display: grid;
-    grid-template-columns: repeat(1, .95fr);
-    grid-gap: 20px;
-    padding-left: 10%;
-    padding-top: 5%;
-    padding-bottom: 2%;
-}
-</style>
-
-
-<script>
-function addVolunteersForm() {
-  document.getElementById('add_vols_div').style.display = "block";
-  document.getElementById('undo_addvols_button').style.display = "block";
-  document.getElementById('add_vols_button').style.display = "none";
-}
-function revertAddVols() {
-  document.getElementById('add_vols_div').style.display = "none";
-  document.getElementById('undo_addvols_button').style.display = "none";
-  document.getElementById('add_vols_button').style.display = "block";
-}
-function addStudentsForm() {
-  document.getElementById('add_stus_div').style.display = "block";
-  document.getElementById('undo_addstus_button').style.display = "block";
-  document.getElementById('add_stus_button').style.display = "none";
-}
-function revertASF() {
-  document.getElementById('add_stus_div').style.display = "none";
-  document.getElementById('undo_addstus_button').style.display = "none";
-  document.getElementById('add_stus_button').style.display = "block";
-}
-</script>
-
-
-    <div class="wrapper">
-      <div class="mui-panel">
-        {% include "error.html" %}
-        <h2>{{ classroom.course }}</h2><hr>
-        <h4>{{ class_members|get_item:"teacher"}}</h4>
-        <h4>{{ class_members|get_item:"teacher_assistant"}}</h4><hr>
-        <form class="mui-form" action="{% url 'attendance' %}" method="GET">
-          <input type="hidden" name="course_id" value="{{ classroom.id }}" />
-          <p>Current Attendance: {{ classroom.attendance_summary.attendance_statistic }}%&ensp;&ensp;&ensp;
-          <button type="submit" class="mui-btn mui-btn--primary mui-btn--small">Go</button></p>
-        </form><hr>
-        <form class="mui-form" action="{% url 'curriculum' %}" method="get">
-          <p>Curriculum &ensp;&ensp;&ensp;
-          <input type="hidden" name="classroom_id" value="{{ classroom.id }}" />
-          <button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Go</button></p>
-        </form><hr>
-        <form class="mui-form" action="{% url 'add_forum' %}" method="GET">
-        {% if classroom.forum_title  %}
-        <p>Current Forum: {{ classroom.forum_title }}&ensp;&ensp;&ensp;<button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Change</button></p>
-        {% else %}
-          <p>No Forum&ensp;&ensp;&ensp;<button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Add</button></p>
-        {% endif %}
-          <input type="hidden" name="classroom" value="{{ classroom.id }}" />
-        </form>
-      </div>
+  <div class="notification-container">
+    <div class="mui-panel">
+      {% include "error.html" %}
+      <h2>{{ classroom.course }}</h2><hr>
+      <h4>{{ class_members|get_item:"teacher"}}</h4>
+      <h4>{{ class_members|get_item:"teacher_assistant"}}</h4><hr>
+      <form class="mui-form" action="{% url 'attendance' %}" method="GET">
+        <input type="hidden" name="course_id" value="{{ classroom.id }}" />
+        <p>Current Attendance: {{ classroom.attendance_summary.attendance_statistic }}%&ensp;&ensp;&ensp;
+        <button type="submit" class="mui-btn mui-btn--primary mui-btn--small">Go</button></p>
+      </form><hr>
+      <form class="mui-form" action="{% url 'curriculum' %}" method="get">
+        <p>Curriculum &ensp;&ensp;&ensp;
+        <input type="hidden" name="classroom_id" value="{{ classroom.id }}" />
+        <button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Go</button></p>
+      </form><hr>
+      <form class="mui-form" action="{% url 'add_forum' %}" method="GET">
+      {% if classroom.forum_title  %}
+      <p>Current Forum: {{ classroom.forum_title }}&ensp;&ensp;&ensp;<button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Change</button></p>
+      {% else %}
+        <p>No Forum&ensp;&ensp;&ensp;<button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Add</button></p>
+      {% endif %}
+        <input type="hidden" name="classroom" value="{{ classroom.id }}" />
+      </form>
     </div>
+  </div>
 
-      <div style="padding-left: 10%">
-      <div style="width: 90%;" class="mui-panel">
-       <table class="mui-table mui-table--bordered">
-        <thead>
-          <tr>
-          <th>Role</th>
-          <th>Class Member</th>
-          <th>Alter</th>
-          <th></th>
-        </tr>
-        </thead>
+  <div class="table-container">
+    <div class="mui-panel">
+     <table class="mui-table mui-table--bordered">
+      <thead>
         <tr>
-          <form method="POST">
-            {% csrf_token %}
-            <td>Teacher</td>
-            <td>{{ class_members|get_item:"teacher" }}</td>
-            <td>
-              <div class="mui-select">
-                {{ change_teacher_form.teacher }}
-              </div>
-            </td>
-            <td><button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Submit</button> </td>
-            <input type="hidden" name="swap_teacher" value="True"/>
-            <input type="hidden" name="fmr_teacher"  value="{{ class_members|get_item:"teacher_id" }}" />
-            <input type="hidden" name="course_id" value={{ classroom.id }} />
-            </form>
-        </tr>
-        <tr>
-          <form method="POST">
-            {% csrf_token %}
-            <td>Teacher Assistant</td>
-            <td>{{ class_members|get_item:"teacher_assistant" }}</td>
-            <td>
-              <div class="mui-select">
-                {{ change_teacher_form.teacher }}
-              </div>
-            </td>
-            <td><button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Submit</button> </td>
-            <input type="hidden" name="swap_teacher_assistant" value="True"/>
-            <input type="hidden" name="fmr_teacher_assistant"  value="{{ class_members|get_item:"teacher_assistant_id" }}" />
-            <input type="hidden" name="course_id" value={{ classroom.id }} />
-          </form>
-        </tr>
-        {% for volunteer in class_members|get_item:"volunteers" %}
-        <tr>
-          <form method="POST">
-            {% csrf_token %}
-            <td>Volunteer</td>
-            <td>{{ volunteer }}</td>
-            <td>Can't Swap Volunteer</td>
-            <td><button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Remove</button> </td>
-            <input type="hidden" name="remove_volunteer" value="True"/>
-            <input type="hidden" name="fmr_volunteer" value="{{ volunteer.id }}">
-            <input type="hidden" name="course_id" value={{ classroom.id }} />
-            </form>
-        </tr>
-        {% endfor %}
-        {% for student in class_members|get_item:"students" %}
-        <tr>
-          <form method="POST">
-            {% csrf_token %}
-            <td>Student</td>
-            <td>{{ student }}</td>
-            <td>Can't Swap Student</td>
-            <td><button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Remove</button> </td>
-            <input type="hidden" name="remove_student" value="True"/>
-            <input type="hidden" name="fmr_student" value="{{ student.id }}">
-            <input type="hidden" name="course_id" value={{ classroom.id }} />
-          </form>
-        </tr>
-        {% endfor %}
-      </table>
-        <form method="post">
+        <th style="text-align: center">Role</th>
+        <th style="text-align: center">Class Member</th>
+        <th style="text-align: center">Alter</th>
+        <th style="text-align: center"></th>
+      </tr>
+      </thead>
+      <tr>
+        <form method="POST">
+          {% csrf_token %}
+          <td>Teacher</td>
+          <td>{{ class_members|get_item:"teacher" }}</td>
+          <td>
+            <div class="mui-select">
+              {{ change_teacher_form.teacher }}
+            </div>
+          </td>
+          <td><button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Submit</button> </td>
+          <input type="hidden" name="swap_teacher" value="True"/>
+          <input type="hidden" name="fmr_teacher"  value="{{ class_members|get_item:"teacher_id" }}" />
+          <input type="hidden" name="course_id" value={{ classroom.id }} />
+        </form>
+      </tr>
+      <tr>
+        <form method="POST">
+          {% csrf_token %}
+          <td>Teacher Assistant</td>
+          <td>{{ class_members|get_item:"teacher_assistant" }}</td>
+          <td>
+            <div class="mui-select">
+              {{ change_teacher_form.teacher }}
+            </div>
+          </td>
+          <td><button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Submit</button> </td>
+          <input type="hidden" name="swap_teacher_assistant" value="True"/>
+          <input type="hidden" name="fmr_teacher_assistant"  value="{{ class_members|get_item:"teacher_assistant_id" }}" />
+          <input type="hidden" name="course_id" value={{ classroom.id }} />
+        </form>
+      </tr>
+      {% for volunteer in class_members|get_item:"volunteers" %}
+      <tr>
+        <form method="POST">
+          {% csrf_token %}
+          <td>Volunteer</td>
+          <td>{{ volunteer }}</td>
+          <td>Can't Swap Volunteer</td>
+          <td><button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Remove</button> </td>
+          <input type="hidden" name="remove_volunteer" value="True"/>
+          <input type="hidden" name="fmr_volunteer" value="{{ volunteer.id }}">
+          <input type="hidden" name="course_id" value={{ classroom.id }} />
+        </form>
+      </tr>
+      {% endfor %}
+      {% for student in class_members|get_item:"students" %}
+      <tr>
+        <form method="POST">
+          {% csrf_token %}
+          <td>Student</td>
+          <td>{{ student }}</td>
+          <td>Can't Swap Student</td>
+          <td><button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Remove</button> </td>
+          <input type="hidden" name="remove_student" value="True"/>
+          <input type="hidden" name="fmr_student" value="{{ student.id }}">
+          <input type="hidden" name="course_id" value={{ classroom.id }} />
+        </form>
+      </tr>
+      {% endfor %}
+    </table>
+      <form method="post">
         {% csrf_token %}
-        <div id="add_vols_div"  style="display:none; width: 200px; padding-left: 25px" class="inline-group">
+        <div>
           {% csrf_token %}
           <div class="mui-select">
             {{ add_volunteer_form }}
           </div>
-        <p><button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Submit</button>&emsp;</p>
+        <button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Add Volunteer</button><hr>
         </div>
         <input type="hidden" name="add_volunteer" value="True"/>
         <input type="hidden" name="course_id" value={{ classroom.id }} />
       </form>
-        <p style="padding-left: 25px"><button id="undo_addvols_button" class="mui-btn mui-btn--primary mui-btn--small" style="display:none; color: firebrick" onclick="revertAddVols()">Cancel</button></p>
-        <p><button id="add_vols_button" class="mui-btn mui-btn--primary mui-btn--small" onclick="addVolunteersForm()">Add Volunteer</button></p>
       <form method="post">
-        <div id="add_stus_div"  style="display:none; width: 200px; padding-left: 25px" class="inline-group">
+        <div>
           {% csrf_token %}
           <div class="mui-select">
             {{ add_student_form }}
           </div>
-        <p><button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Submit</button>&emsp;</p>
+        <button class="mui-btn mui-btn--primary mui-btn--small" type="submit">Add Student</button>
         </div>
         <input type="hidden" name="add_student" value="True"/>
         <input type="hidden" name="course_id" value={{ classroom.id }} />
       </form>
-        <p style="padding-left: 25px"><button id="undo_addstus_button" class="mui-btn mui-btn--primary mui-btn--small" style="display:none; color: firebrick" onclick="revertASF()">Cancel</button></p>
-        <p><button id="add_stus_button" class="mui-btn mui-btn--primary mui-btn--small" onclick="addStudentsForm()">Add Student</button></p>
-      </div>
-      </div>
-
-
-
-
-
+    </div>
+  </div>
 
 {% endblock content %}

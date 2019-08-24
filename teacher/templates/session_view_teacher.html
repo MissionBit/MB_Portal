@@ -3,8 +3,8 @@
 
 {% block content %}
 
-<div style="text-align: center;">
-  <div style="width: 85%; display: inline-block" class="mui-panel">
+<div class="table-container">
+  <div class="mui-panel">
     <h1>{{ classroom.course }} - {{ session.date }}</h1><hr>
       {% if session %}
         <h1>{{ session.title }}</h1>
@@ -59,8 +59,8 @@
     </div>
 </div>
 
-<div style="text-align: center;">
-  <div style="width: 45%; display: inline-block" class="mui-panel">
+<div class="form-container">
+  <div class="mui-panel">
     {% include "error.html" %}
     <h3>Add Resource for {{ session.date }}</h3>
     <form class="mui-form" enctype="multipart/form-data" method="POST">

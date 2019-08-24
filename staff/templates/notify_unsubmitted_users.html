@@ -3,8 +3,8 @@
 
 {% block content %}
 
-<div style="text-align: center;">
-  <div style="width: 45%; display: inline-block" class="mui-panel">
+<div class="form-container">
+  <div class="mui-panel">
         {% include "error.html" %}
         <form class="mui-form" method="post">
             <legend>Notify Users About "{{ notify_about }}"</legend><br>
@@ -17,10 +17,10 @@
               {{ form.notification }}
               <label>Notification</label>
             </div>
-            <div style="text-align: center">
-                <div style="display: inline-block">
-                  <div style="text-align: left" class="mui-radio">
-                    <label>Email Recipients</label>
+            <div class="form-container">
+                <div class="mui-panel">
+                  <div class="mui-radio">
+                    <label>Email Recipients &emsp;</label>
                     {{ form.email_recipients }}
                   </div><br>
                 </div>

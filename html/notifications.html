@@ -1,0 +1,24 @@
+<div class="notification-container">
+  <div class="mui-panel">
+    <h3> Notifications </h3><hr>
+    {% for notification in notifications %}
+      <div class="notification">
+        <h2>{{ notification.subject }}</h2><hr>
+        <div>
+        <p>{{ notification.notification }}</p><br>
+        <p>Mission Bit on {{ notification.notified.date }}</p><br>
+        <p>
+          <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="acknowledge_notification" value="true" />
+            <input type="hidden" name="notification" value="{{ notification.id }}" />
+            <p style="padding-bottom: 10px;">
+               <button class="mui-btn">Dismiss</button>
+            </p>
+          </form>
+        </p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>

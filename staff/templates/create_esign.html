@@ -2,27 +2,23 @@
 {% load static %}
 
 {% block content %}
-  <div style="text-align: center;">
-    <div style="width: 45%; display: inline-block" class="mui-panel">
-
+  <div class="form-container">
+    <div class="mui-panel">
       {% include "error.html" %}
-
-      <div class="main-container">
-          <form class="mui-form" method="post">
-            <legend>Create E-Sign Link</legend><br>
-            {% csrf_token %}
-            <div class="mui-textfield mui-textfield--float-label">
-              {{ form.name }}
-              <label>Name</label>
-            </div>
-            <div class="mui-textfield mui-textfield--float-label">
-              {{ form.link }}
-              <label>Link - starts with http or https</label>
-            </div>
-            <br>
-          <button type="submit" class="mui-btn mui-btn--raised mui-btn--primary">Create Esign</button>
-          </form>
-      </div>
+      <form class="mui-form" method="post">
+        <legend>Create E-Sign Link</legend><br>
+        {% csrf_token %}
+        <div class="mui-textfield mui-textfield--float-label">
+          {{ form.name }}
+          <label>Name</label>
+        </div>
+        <div class="mui-textfield mui-textfield--float-label">
+          {{ form.link }}
+          <label>Link - starts with http or https</label>
+        </div>
+        <br>
+      <button type="submit" class="mui-btn mui-btn--raised mui-btn--primary">Create Esign</button>
+      </form>
     </div>
   </div>
 {% endblock content %}

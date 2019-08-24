@@ -317,7 +317,6 @@ button {
   transition: all 0.3s ease 0s;
   box-shadow: 3px 3px 12px 5px lightgray;
   font-size: 20px;
-
 }
 
 .appbarnav {
@@ -391,4 +390,30 @@ button {
 
 .c-video{
   border-radius: 45px 45px 45px 45px
+}
+
+.notification-container {
+    text-align: center;
+}
+
+.notification-container > .mui-panel {
+    display: inline-block;
+}
+
+.form-container {
+    text-align: center;
+}
+
+.form-container > .mui-panel {
+    width: 45%;
+    display: inline-block;
+}
+
+.table-container {
+    text-align: center;
+}
+
+.table-container > .mui-panel {
+    width: 85%;
+    display: inline-block;
 }

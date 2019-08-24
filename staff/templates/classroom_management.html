@@ -4,12 +4,10 @@
 
 {% include "message.html" %}
 
-<div style="text-align: center">
-<div style="width: 75%; display: inline-block;">
   {% if classrooms %}
     {% for classroom in classrooms %}
-      <div style="text-align: center" class="mui-panel">
-        <div style="display: inline-block">
+      <div class="notification-container">
+        <div class="mui-panel">
           <h3>{{ classroom }}</h3>
           <h6>{{ class_dicts|get_item:classroom.course|get_item:"teacher" }}</h6>
           <h6>{{ class_dicts|get_item:classroom.course|get_item:"teacher_assistant" }}</h6>
@@ -19,10 +17,6 @@
       </div><br>
     {% endfor %}
   {% endif %}
-</div>
-</div>
-
-
 
 
 {% endblock content %}

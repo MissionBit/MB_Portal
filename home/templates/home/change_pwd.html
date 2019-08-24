@@ -3,23 +3,9 @@
 
 {% block content %}
 
-<div style="text-align: center;">
-  <div style="width: 45%; display: inline-block" class="mui-panel">
-
-    <div>
-      {% if form.errors %}
-        {% for field in form %}
-          {% for error in field.errors %}
-          <div class="alert alert-danger">
-              <p style="padding-top: 10px">{{ error|escape }}
-              <span id="close" class="close"><img class="delete-icon" src="{% static "close.svg" %}"/></span>
-              </p>
-          </div><br><br>
-          {% endfor %}
-        {% endfor %}
-      {% endif %}
-    </div>
-
+<div class="form-container">
+  <div class="mui-panel">
+    {% include "error.html" %}
     <form class="mui-form" method="post">
       <legend>Please change your password</legend>
       {% csrf_token %}
@@ -36,7 +22,6 @@
       <br>
       <br>
     </form>
-
   </div>
 </div>
 

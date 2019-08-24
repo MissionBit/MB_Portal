@@ -2,88 +2,18 @@
 
 {% block content %}
 
-
-<div class="main-container">
-    {% if messages %}
-    {% for message in messages %}
-        <div style="color: lightgreen; width: 500px" class="alert alert-{{message.tags}}">
-            {{ message }}
-        </div>
-        {% endfor %}
-        {% endif %}
+  <div class="main-container">
+    {% include "message.html" %}
     <h1 style="text-align: center">Teacher User Home</h1><br>
     {% if announcements %}
-      <div style="text-align: center">
-        <div style="width: 50%; display: inline-block" class="mui-panel">
-                <h3> Announcements </h3><hr>
-        {% for announcement in announcements reversed %}
-              <div class="announcement">
-              <h2>{{ announcement.announcement.title }}</h2><hr>
-              <p>{{ announcement.announcement.announcement }}</p><br>
-              <p>{{ announcement.announcement.created_by }} on {{ announcement.announcement.posted.date }}</p><hr/>
-              <br>
-              <form method="POST">
-                {% csrf_token %}
-                  <p style="padding-bottom: 10px;">
-                      <button class="mui-btn">Dismiss</button>
-                  </p>
-                <input type="hidden" name="dismiss_announcement" value="true" />
-                <input type="hidden" name="announcement" value="{{ announcement.announcement.id }}" />
-              </form>
-              </div><br>
-        {% endfor %}
-        </div>
-      </div>
+      {% include "announcements.html" %}
     {% endif %}
     {% if forms %}
-    <div style="text-align: center">
-      <div style="width: 50%; display: inline-block" class="mui-panel">
-      <h3> Forms </h3><hr>
-        {% for form in forms reversed %}
-            <div class="form">
-              <h2>{{ form.form.name }}</h2><hr>
-              <p>{{ form.form.description }}</p><br>
-              <p>{{ form.form.created_by }} on {{ form.form.posted.date }}</p><br><hr>
-              {% if form.form.esign %}
-                <p><a href="{{ form.form.esign.template }}">Esign Here</a></p><br>
-              {% endif %}
-              <p style="padding-bottom: 10px;">
-                <a href="{{ form.form.form }}" class="mui-btn">Download Form</a>
-              </p>
-            </div><br>
-        {% endfor %}
-      </div>
-    </div>
+      {% include "forms.html" %}
     {% endif %}
     {% if notifications %}
-    <div style="text-align: center">
-      <div style="width: 50%; display: inline-block" class="mui-panel">
-        <h3> Notifications </h3><hr>
-          {% for notification in notifications %}
-            <div class="notification">
-              <h2>{{ notification.subject }}</h2><hr>
-              <div>
-              <p>{{ notification.notification }}</p><br>
-              <p>Mission Bit on {{ notification.notified.date }}</p><br>
-              <p>
-                <form method="POST">
-                  {% csrf_token %}
-                  <input type="hidden" name="acknowledge_notification" value="true" />
-                  <input type="hidden" name="notification" value="{{ notification.id }}" />
-                  <p style="padding-bottom: 10px;">
-                     <button class="mui-btn">Dismiss</button>
-                  </p>
-                </form>
-              </p>
-              </div>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
+      {% include "notifications.html" %}
     {% endif %}
-</div>
-
-
-
+  </div>
 
 {% endblock content %}

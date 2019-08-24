@@ -1,0 +1,21 @@
+<div class="notification-container">
+  <div class="mui-panel">
+    <h3> Announcements </h3><hr>
+    {% for announcement in announcements reversed %}
+      <div class="announcement">
+        <h2>{{ announcement.announcement.title }}</h2><hr>
+        <p>{{ announcement.announcement.announcement }}</p><br>
+        <p>{{ announcement.announcement.created_by }} on {{ announcement.announcement.posted.date }}</p><hr/>
+        <br>
+        <form method="POST">
+          {% csrf_token %}
+            <p style="padding-bottom: 10px;">
+                <button class="mui-btn">Dismiss</button>
+            </p>
+          <input type="hidden" name="dismiss_announcement" value="true" />
+          <input type="hidden" name="announcement" value="{{ announcement.announcement.id }}" />
+        </form>
+      </div><br>
+    {% endfor %}
+  </div>
+</div>

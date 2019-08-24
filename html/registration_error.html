@@ -1,0 +1,24 @@
+{% load static %}
+
+<div>
+{% if user_form.errors or contact_form.errors %}
+  {% for field in user_form %}
+    {% for error in field.errors %}
+    <div class="alert alert-danger">
+        <p style="padding-top: 10px">{{ error|escape }}
+        <span class="close"><img class="delete-icon" src="{% static "close.svg" %}"/></span>
+        </p>
+    </div>
+    {% endfor %}
+  {% endfor %}
+  {% for field in contact_form %}
+    {% for error in field.errors %}
+    <div class="alert alert-danger">
+        <p style="padding-top: 10px">{{ error|escape }}
+        <span class="close"><img class="delete-icon" src="{% static "close.svg" %}"/></span>
+        </p>
+    </div><br><br>
+    {% endfor %}
+  {% endfor %}
+{% endif %}
+</div>

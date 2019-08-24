@@ -2,8 +2,8 @@
 
 {% block content %}
 
-  <div style="text-align: center">
-    <div style="width: 45%; display: inline-block" class="mui-panel">
+  <div class="form-container">
+    <div class="mui-panel">
         {% include "error.html" %}
         <form class="mui-form" method="post">
           <legend>Create Staff User</legend>
@@ -36,12 +36,9 @@
             <label>Owner</label>
             {{ form.owner }}
             </div>
-        <button type="submit" class="mui-btn mui-btn--raised">Create User</button>
+        <button type="submit" class="mui-btn mui-btn--raised mui-btn--primary">Create User</button>
         </form>
     </div>
-    </div>
-
-
-
+  </div>
 
 {% endblock content %}

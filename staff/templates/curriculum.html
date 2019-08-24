@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div style="text-align: center;">
-  <div style="width: 85%; display: inline-block" class="mui-panel">
-
+<div class="table-container">
+  <div class="mui-panel">
     <h1>{{ classroom.course }}'s Curriculum</h1><hr><br>
     {% if sessions %}
       <table class="mui-table mui-table--bordered">

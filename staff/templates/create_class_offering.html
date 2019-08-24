@@ -2,48 +2,48 @@
 
 {% block content %}
 
-      <div style="text-align: center">
-        <div style="width: 50%; display: inline-block" class="mui-panel">
-          {% include "error.html" %}
-            <form style="display: inline-block" class="mui-form" method="post">
-              {% csrf_token %}
-              <legend>Create Class Offering</legend>
-              <div class="mui-textfield mui-textfield--float-label">
-                {{ form.name}}
-                <label>Name*</label>
-              </div>
-              <div class="mui-textfield mui-textfield--float-label">
-                {{ form.description}}
-                <label>Description*</label>
-              </div>
-              <div class="mui-select">
-                <label>Instructor*</label>
-                {{ form.instructor }}
-              </div>
-              <div style="text-align: center"></div>
-              <div style="display: inline-block;" class="mui-textfield">
-                <label>Start Date*</label>
-                {{ form.start_date }}
-              </div>
-              <div style="display: inline-block" class="mui-textfield">
-                <label>End Date*</label>
-                {{ form.end_date }}
-              </div>
-              <div class="mui-select">
-                <label>Location*</label>
-                {{ form.location }}
-              </div>
-              <div class="mui-select">
-                <label>Meeting Days*</label>
-                {{ form.meeting_days }}
-              </div>
-              <div class="mui-select">
-                <label>Created By*</label>
-                {{ form.created_by }}
-              </div>
-              <br>
-              <button type="submit" class="mui-btn mui-btn--primary">Create Class Offering</button>
-            </form>
-        </div>
-      </div>
+  <div class="form-container">
+    <div class="mui-panel">
+      {% include "error.html" %}
+        <form class="mui-form" method="post">
+          {% csrf_token %}
+          <legend>Create Class Offering</legend>
+          <div class="mui-textfield mui-textfield--float-label">
+            {{ form.name}}
+            <label>Name*</label>
+          </div>
+          <div class="mui-textfield mui-textfield--float-label">
+            {{ form.description}}
+            <label>Description*</label>
+          </div>
+          <div class="mui-select">
+            <label>Instructor*</label>
+            {{ form.instructor }}
+          </div>
+          <div class="mui-textfield">
+            <label>Start Date*</label>
+            {{ form.start_date }}
+          </div>
+          <div class="mui-textfield">
+            <label>End Date*</label>
+            {{ form.end_date }}
+          </div>
+          <div class="mui-select">
+            <label>Location*</label>
+            {{ form.location }}
+          </div>
+          <div class="mui-select">
+            <label>Meeting Days*</label>
+            {{ form.meeting_days }}
+          </div>
+          <div class="mui-select">
+            <label>Created By*</label>
+            {{ form.created_by }}
+          </div>
+          <br>
+          <button type="submit" class="mui-btn mui-btn--primary">Create Class Offering</button>
+        </form>
+    </div>
+  </div>
+
 {% endblock content %}

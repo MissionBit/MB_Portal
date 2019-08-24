@@ -2,12 +2,11 @@
 
 {% block content %}
 
-
     <div class="main-container">
     <h1 style="padding-bottom: 20px; text-align: center"> Communication Manager </h1><hr>
     {% if announcements %}
-      <div style="text-align: center;">
-        <div style="width: 85%; display: inline-block" class="mui-panel">
+      <div class="table-container">
+        <div class="mui-panel">
           <h3>Announcements</h3><hr>
           <table class="mui-table mui-table--bordered">
             <tr>
@@ -36,8 +35,8 @@
       </div>
     {% endif %}
     {% if notifications %}
-      <div style="text-align: center;">
-        <div style="width: 85%; display: inline-block" class="mui-panel">
+      <div class="table-container">
+        <div class="mui-panel">
         <h3>Notifications</h3><hr>
         <table class="mui-table mui-table--bordered">
           <tr>
@@ -66,8 +65,8 @@
      </div>
       {% endif %}
       {% if forms %}
-      <div style="text-align: center;">
-        <div style="width: 85%; display: inline-block" class="mui-panel">
+      <div class="table-container">
+        <div class="mui-panel">
         <h3>Forms</h3><hr>
         <table class="mui-table mui-table--bordered">
           <tr>
