@@ -1,21 +1,45 @@
-{% extends "staff_base.html" %}
+{% extends "base.html" %}
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="sidenav">
 
-</div>
-
-<div class="main-container">
-<h1> Create Classroom </h1>
-
-<form method="post">
-    {% csrf_token %}
-    {{ form|crispy }}
-<br>
-<button type="submit" class="btn btn-primary">Create Classroom</button>
-</form>
-</div>
-
+  <div class="form-container">
+    <div class="mui-panel">
+      {% include "error.html" %}
+      <form class="mui-form" method="post">
+          <legend>Create Classroom</legend>
+          {% csrf_token %}
+          <div class="mui-select">
+            <label>Course*</label>
+            {{ form.course }}
+          </div>
+          <div class="mui-select">
+            <label>Teacher*</label>
+            {{ form.teacher }}
+          </div>
+          <div class="mui-select">
+            <label>Teacher Assistant*</label>
+            {{ form.teacher_assistant }}
+          </div><br>
+          <div class="mui-select">
+            <label>Created By*</label>
+            {{ form.created_by }}
+          </div><br>
+          <div style="text-align: center">
+            <div style="display: inline-block">
+              <div style="text-align: left" class="mui-checkbox">
+                <strong style="padding-left: 20px"><label>Volunteer(s)*</label></strong>
+                {{ form.volunteers }}
+              </div><br>
+              <div style="text-align: left" class="mui-checkbox">
+                <strong style="padding-left: 20px"><label>Students*</label></strong>
+                {{ form.students }}
+              </div><br>
+            </div>
+          </div>
+          <button type="submit" class="mui-btn mui-btn--primary">Create Classroom</button>
+      </form><br>
+    </div>
+  </div>
 
 {% endblock content %}

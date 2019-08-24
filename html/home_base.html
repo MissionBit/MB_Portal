@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//cdn.muicss.com/mui-0.9.43/css/mui.min.css" rel="stylesheet" type="text/css" />
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="icon" href="{% static "missionbit-icon.png" %}"> <!-- LOGO ON THE TAB BAR -->
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="//cdn.muicss.com/mui-0.9.43/js/mui.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/mui_assets.css' %}">
+    <link rel="stylesheet" href="{% static 'css/landing_pg.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/errors_and_messages.css' %}">
+    <title>Mission Bit</title>
+
+    {% include "manipulation_js.html" %}
+</head>
+
+<body class="hide-sidedrawer">
+    {% include "header.html" %}
+
+    {% include "instafeed.html" %}
+
+    <div id="content-wrapper">
+      <div class="mui--appbar-height"></div>
+      <div class="mui-container-fluid">
+        <br>
+        {% block content %}
+
+        {% endblock %}
+      </div>
+    </div>
+
+
+    <div id="sidedrawer" class="mui--no-user-select">
+      <div id="sidedrawer-brand" class="mui--appbar-line-height">
+        </div>
+        <div class="mui-divider"></div>
+        <br>
+        <a href="{% url 'home-home' %}"><img style="padding-left: 12px; width: 170px" src="{% static 'logo.svg' %}"/></a>
+        <hr/>
+      <div class="sidenav-content">
+        <a href="{% url 'login' %}">Log In with Username</a>
+        <a href="{% url 'social:begin' 'google-oauth2' %}">Log In with Gmail</a>
+        <a href="{% url 'home-register_as_student' %}">Register As Student</a>
+        <a href="{% url 'home-register_as_volunteer' %}">Register As Volunteer</a>
+        <a href="{% url 'home-register_as_donor' %}">Register As Donor</a>
+     </div>
+    </div>
+
+    {% include "footer.html" %}
+
+  </body>
+</html>

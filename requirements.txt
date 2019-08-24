@@ -26,3 +26,4 @@ unittest-xml-reporting==2.5.1
 django-q==1.0.1
 django-storages[azure]==1.7.1
 Werkzeug==0.15.5
+whitenoise==4.1.3

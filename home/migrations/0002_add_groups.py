@@ -18,9 +18,7 @@ class Migration(migrations.Migration):
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ("auth", "0011_update_proxy_permissions"),
-        ('home', '0001_initial'),
+        ("home", "0001_initial"),
     ]
 
-    operations = [
-        migrations.RunPython(add_groups),
-    ]
+    operations = [migrations.RunPython(add_groups)]

@@ -3,7 +3,6 @@ from . import views
 
 urlpatterns = [
     path("", views.staff, name="staff"),
-    path("user_management/", views.user_management, name="user_management"),
     path(
         "classroom_management/", views.classroom_management, name="classroom_management"
     ),
@@ -15,7 +14,6 @@ urlpatterns = [
         views.create_volunteer_user,
         name="create_volunteer_user",
     ),
-    path("my_account_staff/", views.my_account_staff, name="my_account_staff"),
     path("create_classroom/", views.create_classroom, name="create_classroom"),
     path(
         "create_class_offering/",
@@ -26,10 +24,22 @@ urlpatterns = [
     path("post_form/", views.post_form, name="post_form"),
     path("create_esign", views.create_esign, name="create_esign"),
     path("form_overview", views.form_overview, name="form_overview"),
-    path("notify_unsubmitted_users", views.notify_unsubmitted_users, name="notify_unsubmitted_users"),
-    path("communication_manager/", views.communication_manager, name="communication_manager"),
+    path(
+        "notify_unsubmitted_users/<notify_about>",
+        views.notify_unsubmitted_users,
+        name="notify_unsubmitted_users",
+    ),
+    path(
+        "communication_manager/",
+        views.communication_manager,
+        name="communication_manager",
+    ),
     path("curriculum/", views.curriculum, name="curriculum"),
-    path("modify_session/", views.modify_session, name="modify_session"),
+    path(
+        "modify_session/<date>/<classroom>", views.modify_session, name="modify_session"
+    ),
     path("add_forum/", views.add_forum, name="add_forum"),
-    path("classroom_detail/", views.classroom_detail, name="classroom_detail")
+    path(
+        "classroom_detail/<course_id>", views.classroom_detail, name="classroom_detail"
+    ),
 ]

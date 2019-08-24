@@ -1,20 +1,57 @@
-{% extends "staff_base.html" %}
+{% extends "base.html" %}
 {% load crispy_forms_tags %}
 
 {% block content %}
 
-    <div class="sidenav">
-
-</div>
-
-<div class="main-container">
-    <h1 style="padding-bottom: 20px"> Create Volunteer User </h1>
-        <form method="post">
+  <div class="form-container">
+    <div class="mui-panel">
+        {% include "error.html" %}
+        <form class="mui-form" method="post">
+          <legend>Create Volunteer User</legend>
             {% csrf_token %}
-            {{ form|crispy }}
-        <br>
-        <button type="submit" class="btn btn-primary">Create User</button>
+            <div class="mui-textfield mui-textfield--float-label">
+            <label>First Name*</label>
+            {{ form.first_name }}
+            </div>
+            <div class="mui-textfield mui-textfield--float-label">
+            <label>Last Name*</label>
+            {{ form.last_name }}
+            </div>
+            <div class="mui-textfield">
+            <label>Email</label>
+            {{ form.email }}
+            </div>
+            <div class="mui-textfield">
+            <label>Birth date</label>
+            {{ form.birthdate }}
+            </div>
+            <div class="mui-select">
+            <label>Race</label>
+            {{ form.race }}
+            </div>
+            <div class="mui-select">
+            <label>Ethnicity</label>
+            {{ form.which_best_describes_your_ethnicity }}
+            </div>
+            <div class="mui-select">
+            <label>Gender</label>
+            {{ form.gender }}
+            </div>
+            <div class="mui-textfield">
+            <label>Title</label>
+            {{ form.title }}
+            </div>
+            <div class="mui-select">
+            <label>Account</label>
+            {{ form.account }}
+            </div>
+            <div class="mui-select">
+            <label>Owner</label>
+            {{ form.owner }}
+            </div>
+        <button type="submit" class="mui-btn mui-btn--raised mui-btn--primary">Create User</button>
         </form>
     </div>
+</div>
 
 {% endblock content %}

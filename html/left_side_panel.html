@@ -1,0 +1,87 @@
+{% load static %}
+
+<div id="sidedrawer" class="mui--no-user-select">
+  <div id="sidedrawer-brand" class="mui--appbar-line-height">
+  </div>
+  <div class="mui-divider"></div>
+    <br>
+    <img src="{% static 'logo.svg' %}" style="width: 80%; padding-left: 10%">
+    <hr style="width: 90%;">
+    <div class="sidenav-content">
+     <section id="intro">
+       <a class="mainslide" href="{% url 'home-home' %}">Home</a>
+     </section>
+     {% if "staff" in user_groups %}
+     <section class="intro">
+       <a class="mainslide" style="cursor: pointer">Courses</a>
+       <div>
+           <hr style="width: 80%;">
+           <a href="{% url 'create_classroom' %}">Create Classroom</a>
+           <a href="{% url 'create_class_offering' %}">Create Class Offering</a>
+           <a href="{% url 'classroom_management' %}">Classroom Management</a>
+           <hr style="width: 80%;">
+       </div>
+     </section>
+     <section class="intro">
+       <a class="mainslide" style="cursor: pointer">Users</a>
+       <div>
+           <hr style="width: 80%;">
+           <a href="{% url 'create_staff_user' %}">Create Staff User</a>
+           <a href="{% url 'create_student_user' %}">Create Student User</a>
+           <a href="{% url 'create_teacher_user' %}">Create Teacher User</a>
+           <a href="{% url 'create_volunteer_user' %}">Create Volunteer User</a>
+           <hr style="width: 80%;">
+       </div>
+     </section>
+     <section class="intro">
+       <a class="mainslide" style="cursor: pointer">Forms</a>
+       <div>
+           <hr style="width: 80%;">
+           <a href="{% url 'form_overview' %}">Form Overview</a>
+           <a href="{% url 'post_form' %}">Post New Form</a>
+           <a href="{% url 'create_esign' %}">Create Esign</a>
+           <hr style="width: 80%;">
+       </div>
+     </section>
+     <section class="intro">
+         <a class="mainslide" style="cursor: pointer">Communication</a>
+         <div style="">
+             <!-- Dropdown content here -->
+           <hr style="width: 80%;">
+           <a href="{% url 'make_announcement' %}">Create Announcement</a>
+           <a href="{% url 'communication_manager' %}">Communication Manager</a>
+           <hr style="width: 80%;">
+       </div>
+     </section>
+     <section id="intro">
+       <a class="mainslide" href="{% url 'attendance' %}">Attendance</a>
+     </section>
+     {% endif %}
+     {% if "teacher" in user_groups %}
+       <section id="intro">
+         <a class="mainslide" href="{% url 'my_class_teacher' %}">My Class</a>
+       </section>
+       {% if  classroom.forum  %}
+         <section class="intro">
+          <a class="mainslide" href="{{ classroom.forum }}" target="_blank">{{ classroom.forum_title }}</a>
+         </section>
+       {% endif %}
+       <section id="intro">
+         <a class="mainslide" href="{% url 'attendance' %}">Attendance</a>
+       </section>
+     {% endif %}
+     {% if "student" in user_groups %}
+       <section class="intro">
+          <a class="mainslide" href="{% url 'my_class_student' %}">My Class</a>
+       </section>
+       {% if  classroom.forum  %}
+         <section class="intro">
+          <a class="mainslide" href="{{ classroom.forum }}" target="_blank">{{ classroom.forum_title }}</a>
+         </section>
+       {% endif %}
+       <section id="intro">
+         <a class="mainslide" href="{% url 'attendance_student' %}">Attendance</a>
+       </section>
+     {% endif %}
+  </div>
+</div>

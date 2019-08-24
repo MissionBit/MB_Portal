@@ -1,0 +1,100 @@
+{% load settings_tags %}
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+        $(document).ready(function($) {
+            var $bodyEl = $('body'),
+                $sidedrawerEl = $('#sidedrawer');
+
+
+            function showSidedrawer() {
+                // show overlay
+                var options = {
+                    onclose: function () {
+                        $sidedrawerEl
+                            .removeClass('active')
+                            .appendTo(document.body);
+                    }
+                };
+
+                var $overlayEl = $(mui.overlay('on', options));
+
+
+                $sidedrawerEl.appendTo($overlayEl);
+                setTimeout(function () {
+                    $sidedrawerEl.addClass('active');
+                }, 20);
+            }
+
+
+            function hideSidedrawer() {
+                $bodyEl.toggleClass('hide-sidedrawer');
+            }
+
+
+            $('.js-show-sidedrawer').on('click', showSidedrawer);
+            $('.js-hide-sidedrawer').on('click', hideSidedrawer);
+
+            $(".intro").click(function () {
+                if ($(this).hasClass("intro")) {
+                    $(this).removeClass("intro").addClass("deintro");
+                } else if ($(this).hasClass("deintro")) {
+                    $(this).removeClass("deintro").addClass("intro");
+                }
+            });
+            var $rightpanel = $('#mui-panel');
+            $(".instafeedtrigger").click(function () {
+                if ($rightpanel.hasClass('rightpanelbody-hidden')) {
+                    $rightpanel.removeClass('rightpanelbody-hidden').addClass('rightpanelbody-visible');
+                } else if ($rightpanel.hasClass('rightpanelbody-visible')) {
+                    $rightpanel.removeClass('rightpanelbody-visible').addClass('rightpanelbody-hidden');
+                }
+            });
+
+            document.getElementById("copyright").innerHTML = new Date().getFullYear() + ' © Mission Bit. A 501(c)3 Non-Profit.';
+        });
+</script>
+<script type="text/javascript">
+    var name = "missionbit";
+    $.get("https://images" + ~~(Math.random() * 33) + "-focus-opensocial.googleusercontent.com/gadgets/proxy?container=none&url=https://www.instagram.com/" + name + "/", function (html) {
+        if (html) {
+            var regex = /_sharedData = ({.*);<\/script>/m,
+                json = JSON.parse(regex.exec(html)[1]),
+                edges = json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.edges;
+            $.each(edges, function (n, edge) {
+                var node = edge.node;
+                var likes = node.edge_liked_by.count;
+                var comments = node.edge_media_to_comment.count;
+                var caption = node.edge_media_to_caption.edges;
+                var location = node["location"];
+                if (location != null || location != undefined){
+                    location = location["name"];
+                }else{
+                    location = " ";
+                }
+                if (caption.length >= 1) {
+                    caption = caption[0].node.text;
+                } else {
+                    caption = " ";
+                }
+                var instafeed = document.getElementById("instafeed")
+                instafeed.innerHTML = instafeed.innerHTML + '<div id="instaphoto_section" style="text-align: center;"><h4 class="slot-description">'+ location +'</h4>' +
+            '<a class="instafeedimg" style="cursor: pointer;"><img class="instafeedcontent" src="' + node.thumbnail_src + '" alt="' + caption + '" onclick="importImage(this, true);"></a>' +
+            '<h4 class="slot-description"></h4><h4 class="slot-description"><img src="/static/insta-heart.png" width="25" height="23" style="opacity: 0.75">'+ likes +
+            '<img src="/static/insta-comment.png" style="opacity: 0.75" width="33" height="33">' +
+            ' ' + comments + '</h4><hr style="width: 90%; height:2px;border:none;color:gray;background-color:gray; opacity: 0.3" /></div>'
+            });
+        }
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+       $(".close").click(function () {
+           // Method down below is working
+           var errormsg = this.closest('.alert');
+           errormsg.className='';
+           errormsg.classList.add('alert-close');
+       });
+    });
+</script>
+

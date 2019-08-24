@@ -1,19 +1,40 @@
-{% extends "staff_base.html" %}
-{% load crispy_forms_tags %}
+{% extends "base.html" %}
 
 {% block content %}
-
-<div class="sidenav">
-
-</div>
-
-    <div class="main-container">
-    <h1 style="padding-bottom: 20px"> Make Announcement </h1>
-        <form style="width: 400px" method="post">
-            {% csrf_token %}
-            {{ form|crispy }}
-        <br>
-        <button type="submit" class="btn btn-primary">Make Announcement</button>
+    <div class="form-container">
+    <div class="mui-panel">
+        {% include "error.html" %}
+        <form class="mui-form" method="post">
+          {% csrf_token %}
+          <legend>Announcement</legend><br>
+          <div class="mui-textfield">
+            {{ form.title }}
+            <label>Title</label>
+          </div>
+          <div class="mui-textfield">
+            {{ form.announcement }}
+            <label>Announcement</label>
+          </div><br>
+          <div style="text-align: center">
+              <div style="display: inline-block">
+                <div style="text-align: left" class="mui-checkbox">
+                  <label>Recipient Groups</label>
+                  {{ form.recipient_groups }}
+                </div><br>
+                <div style="text-align: left" class="mui-checkbox">
+                  <label>Recipient Classrooms</label>
+                  {{ form.recipient_classrooms }}
+                </div><br>
+                <div style="text-align: left" class="mui-radio">
+                  <label>Email Recipients</label>
+                  {{ form.email_recipients }}
+                </div><br>
+              </div>
+            </div>
+          <div>
+            <button type="submit" class="mui-btn mui-btn--raised mui-btn--primary">Submit</button>
+          </div>
         </form>
+      </div>
     </div>
 {% endblock content %}

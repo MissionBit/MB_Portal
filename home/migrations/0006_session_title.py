@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0005_userprofile_in_classroom'),
-    ]
+    dependencies = [("home", "0005_userprofile_in_classroom")]
 
     operations = [
         migrations.AddField(
-            model_name='session',
-            name='title',
-            field=models.CharField(default='No Title', max_length=240),
-        ),
+            model_name="session",
+            name="title",
+            field=models.CharField(default="No Title", max_length=240),
+        )
     ]

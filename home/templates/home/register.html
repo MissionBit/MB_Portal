@@ -1,29 +1,61 @@
-{% extends "home/home.html" %}
+{% extends "home_base.html" %}
+{% load static %}
 
 {% block content %}
 
-   <div class="sidenav">
-        <a href="{% url 'social:begin' 'google-oauth2' %}">Sign In With Google</a>
-        <a href="{% url 'login' %}">Sign in with Username</a><br>
-    </div>
-
-  <div class="main-container">
-  {% if messages %}
-    {% for message in messages %}
-        <div class = "alert alert-{{message.tags}}">
-            {{ message }}
+<div class="form-container">
+  <div class="mui-panel">
+    {% include "registration_error.html" %}
+    <img class="logo" src="{% static 'missionbit-logo.png' %}"/>
+    <form class="mui-form" method="post">
+      {% if registration_type == "student" %}
+          <legend>Register As Mission Bit Student</legend>
+      {% endif %}
+      {% if registration_type == "volunteer" %}
+          <legend>Register As Mission Bit Volunteer</legend>
+      {% endif %}
+      {% if registration_type == "donor" %}
+          <legend>Register As Mission Bit Donor</legend>
+      {% endif %}
+      {% csrf_token %}
+      <div class="mui-textfield">
+        First Name: {{ user_form.first_name }}
+      </div>
+      <div class="mui-textfield">
+        Last Name: {{ user_form.last_name }}
+      </div>
+      <div class="mui-textfield">
+        Birthdate: {{ contact_form.birthdate }}
+      </div>
+      <div class="mui-textfield">
+        Email: {{ user_form.email }}
+      </div>
+      <div class="mui-textfield">
+        Choose Username: {{ user_form.username }}
+      </div>
+      <div class="mui-textfield">
+        Password: {{ user_form.password1 }}
+      </div>
+      <div class="mui-textfield">
+        Enter Same Password: {{ user_form.password2 }}
+      </div>
+      <div class="mui-select">
+        <label>Race</label>
+        {{ contact_form.race }}
         </div>
-    {% endfor %}
-    {% endif %}
-
-    <h3>Register with Mission Bit</h3><br>
-    <a href="{% url 'home-register_as_student' %}">Register As Student</a><br><br>
-
-    <a href="{% url 'home-register_as_volunteer' %}">Register As Volunteer</a><br><br>
-
-    <a href="{% url 'home-register_as_donor' %}">Register As Donor</a><br><br>
-  </form>
-
+      <div class="mui-select">
+        <label>Ethnicity</label>
+        {{ contact_form.which_best_describes_your_ethnicity }}
+      </div>
+      <div class="mui-select">
+        <label>Gender</label>
+        {{ contact_form.gender }}
+      </div>
+      <button class="mui-btn mui-btn--primary" type="submit">Submit</button>
+      <br>
+      <br>
+    </form>
   </div>
+</div>
 
 {% endblock content %}

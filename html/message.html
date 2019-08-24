@@ -1,0 +1,15 @@
+{% load static %}
+
+{% if messages %}
+  <div style="text-align: center">
+    <div style="display: inline-block; width: 60%">
+      {% for message in messages %}
+        <div style="width: 100%" class = "alert alert-{{message.tags}}">
+            <p style="padding-top: 10px; font-size: 14px">{{ message }}
+              <span class="close"><img class="delete-icon" src="{% static "close.svg" %}"/></span>
+            </p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}

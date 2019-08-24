@@ -1,113 +1,79 @@
-{% extends "staff_base.html" %}
-{% load crispy_forms_tags %}
+{% extends "base.html" %}
 
 {% block content %}
 
-<style>
+<div class="table-container">
+  <div class="mui-panel">
 
-form{
-  width: 100%;
-}
+    {% include "error.html" %}
 
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 75%;
-}
-
-td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-
-tr:nth-child(even) {
-  background-color: #dddddd;
-}
-
-h2 {
-    color: steelblue;
-    padding-left: 10px;
-}
-strong {
-    font-size: 24px;
-    padding-left: 20px;
-    padding-bottom: 1px;
-}
-p {
-    font-size: 16px;
-    padding-left: 30px;
-    padding-top: 10px;
-}
-.button {
-   font-size: 14px;
-   font-family: "American Typewriter";
-   border-radius: 18px;
-   background-color: white;
-   color: #4CAF50;
-   border: 2px solid #4CAF50;
-
-}
-</style>
-
-
-<div class="sidenav">
-
+    <h1>{{ classroom.course }} - {{ date }}</h1><hr>
+    <form class="mui-form" enctype="multipart/form-data" method="POST">
+      {% csrf_token %}
+      <table class="mui-table mui-table--bordered">
+        <tr style="text-align: center">
+          <th style="text-align: center">Field Name</th>
+          <th style="text-align: center">Current Value</th>
+          <th style="text-align: center">Modify</th>
+          <th style="text-align: center">Change</th>
+        </tr>
+        <tr>
+          <td>Session Title</td>
+          <td>{{ session.title }}</td>
+          <td>
+              <div class="mui-textfield mui-textfield--float-label">
+                {{ form.title }}
+                <label>Title</label>
+              </div>
+          </td>
+          <td><input type="checkbox" name="change_title" value="True" /></td>
+        </tr>
+        <tr>
+          <td>Session Description</td>
+          <td>{{ session.description }}</td>
+          <td>
+            <div class="mui-textfield mui-textfield--float-label">
+                {{ form.description }}
+                <label>Description</label>
+            </div>
+          </td>
+          <td><input type="checkbox" name="change_description" value="True" /></td>
+        </tr>
+        <tr>
+          <td>Lesson Plan</td>
+          <td>{{ session.lesson_plan }}</td>
+          <td>{{ form.lesson_plan }}</td>
+          <td><input type="checkbox" name="change_lesson_plan" value="True" /></td>
+        </tr>
+        <tr>
+          <td>Lecture</td>
+          <td>{{ session.lecture }}</td>
+          <td>{{ form.lecture }}</td>
+          <td><input type="checkbox" name="change_lecture" value="True" /></td>
+        </tr>
+        <tr>
+          <td>Activity</td>
+          <td>{{ session.activity }}</td>
+          <td>{{ form.activity }}</td>
+          <td><input type="checkbox" name="change_activity" value="True" /></td>
+        </tr>
+        <tr>
+          <td>Video</td>
+          <td><a href="{{ session.video }}">{{ session.video }}</a></td>
+          <td>
+            <div class="mui-textfield mui-textfield--float-label">
+                {{ form.video}}
+             <label>Link -- Starts with http or https</label>
+            </div>
+          </td>
+          <td><input type="checkbox" name="change_video" value="True" /></td>
+        </tr>
+      </table><br>
+      <input type="hidden" name="session_id" value="{{ session.id }}"/>
+      <button class="mui-btn mui-btn--primary mui-btn--raised">Submit</button>
+    </form>
+  </div>
 </div>
 
-<div class="main-container">
-  <h1>{{ classroom.course }} - {{ date }}</h1><hr>
-  <h1>Modify Session</h1><hr><br>
-  <form enctype="multipart/form-data" method="POST">
-    {% csrf_token %}
-    <table>
-      <tr>
-        <th>Field Name</th>
-        <th>Current Value</th>
-        <th>Modify</th>
-        <th>Change</th>
-      </tr>
-      <tr>
-        <td>Session Title</td>
-        <td>{{ session.title }}</td>
-        <td>{{ form.title }}</td>
-        <td><input type="checkbox" name="change_title" value="True" /></td>
-      </tr>
-      <tr>
-        <td>Session Description</td>
-        <td>{{ session.description }}</td>
-        <td>{{ form.description }}</td>
-        <td><input type="checkbox" name="change_description" value="True" /></td>
-      </tr>
-      <tr>
-        <td>Lesson Plan</td>
-        <td>{{ session.lesson_plan }}</td>
-        <td>{{ form.lesson_plan }}</td>
-        <td><input type="checkbox" name="change_lesson_plan" value="True" /></td>
-      </tr>
-      <tr>
-        <td>Lecture</td>
-        <td>{{ session.lecture }}</td>
-        <td>{{ form.lecture }}</td>
-        <td><input type="checkbox" name="change_lecture" value="True" /></td>
-      </tr>
-      <tr>
-        <td>Activity</td>
-        <td>{{ session.activity }}</td>
-        <td>{{ form.activity }}</td>
-        <td><input type="checkbox" name="change_activity" value="True" /></td>
-      </tr>
-      <tr>
-        <td>Video</td>
-        <td><a href="{{ session.video }}">{{ session.video }}</a></td>
-        <td>{{ form.video }}</td>
-        <td><input type="checkbox" name="change_video" value="True" /></td>
-      </tr>
-    </table><br>
-    <input type="hidden" name="session_id" value="{{ session.id }}"/>
-    <button class="button" type="submit">Submit</button>
-  </form>
-
-</div>
 
 {% endblock content %}

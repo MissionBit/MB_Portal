@@ -19,6 +19,14 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.9/howto/static-files/
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_URL = "/static/"
+
+
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -53,7 +61,8 @@ INSTALLED_APPS = [
     "coverage",  # <- for testing
     "salesforce",  # <- salesforce database
     "django_q",  # <- For queueing tasks
-    "storages", # <- Storing uploaded files in Azure Storage
+    "storages",  # <- Storing uploaded files in Azure Storage
+    "static",  # <- Accessing Static HTML templates
 ]
 
 MIDDLEWARE = [
@@ -64,6 +73,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # <- Whitenoise for serving static assets
 ]
 
 ROOT_URLCONF = "missionbit.urls"
@@ -71,7 +81,10 @@ ROOT_URLCONF = "missionbit.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            os.path.join(BASE_DIR, "static/html"),
+            os.path.join(BASE_DIR, "html/"),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -81,6 +94,8 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "social_django.context_processors.backends",  # <- Social Django Oauth Google
                 "social_django.context_processors.login_redirect",  # <- Social Django Oauth Google
+                "context_processors.user_groups",
+                "context_processors.user_classroom",
             ]
         },
     }
@@ -184,11 +199,6 @@ EMAIL_PORT = os.getenv("EMAIL_PORT")
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
-
-STATIC_URL = "/static/"
-
 LOGIN_URL = "home-landing_page"
 
 LOGIN_REDIRECT_URL = "home-home"
@@ -196,11 +206,37 @@ LOGIN_REDIRECT_URL = "home-home"
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 # Azure file storage
-DEFAULT_FILE_STORAGE = 'missionbit.azure_storage_backend.CustomAzureStorage'
-AZURE_EMULATED_MODE = os.getenv('AZURE_EMULATED_MODE') == 'true'
-AZURE_ACCOUNT_NAME = os.getenv('AZURE_ACCOUNT_NAME')
-AZURE_ACCOUNT_KEY = os.getenv('AZURE_ACCOUNT_KEY')
-AZURE_CONTAINER = os.getenv('AZURE_CONTAINER')
-AZURE_CUSTOM_DOMAIN = os.getenv('AZURE_CUSTOM_DOMAIN', f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net')
-AZURE_PROTOCOL = 'http' if AZURE_EMULATED_MODE else 'https'
-MEDIA_URL = os.getenv('MEDIA_URL', f'{AZURE_PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/')
+DEFAULT_FILE_STORAGE = "missionbit.azure_storage_backend.CustomAzureStorage"
+AZURE_EMULATED_MODE = os.getenv("AZURE_EMULATED_MODE") == "true"
+AZURE_ACCOUNT_NAME = os.getenv("AZURE_ACCOUNT_NAME")
+AZURE_ACCOUNT_KEY = os.getenv("AZURE_ACCOUNT_KEY")
+AZURE_CONTAINER = os.getenv("AZURE_CONTAINER")
+AZURE_CUSTOM_DOMAIN = os.getenv(
+    "AZURE_CUSTOM_DOMAIN", f"{AZURE_ACCOUNT_NAME}.blob.core.windows.net"
+)
+AZURE_PROTOCOL = "http" if AZURE_EMULATED_MODE else "https"
+MEDIA_URL = os.getenv(
+    "MEDIA_URL", f"{AZURE_PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/"
+)
+
+INSTAUSERID = os.getenv("INSTAUSERID")
+INSTATOKEN = os.getenv("INSTATOKEN")
+
+"""
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        }
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    }
+}
+"""

@@ -1,25 +1,19 @@
-{% extends "home/home.html" %}
+{% extends "home_base.html" %}
+{% load static %}
 
 {% block content %}
 
-    <div class="sidenav">
-        <a href="{% url 'social:begin' 'google-oauth2' %}">Sign In With Google</a>
-        <a href="{% url 'login' %}">Sign In With Username and Password</a>
-        <a href="{% url 'home-register' %}">Register</a><br>
+  <div class="form-container">
+    <div class="mui-panel">
+       <img class="logo" src="{% static 'missionbit-logo.png' %}"/>
+       <h1>You have been logged out</h1><hr>
+      <form action="{% url 'social:begin' 'google-oauth2' %}">
+        <button type="submit" class="loginBtn loginBtn--google mui-btn mui-btn--raised">Login with Google</button>
+      </form><br>
+      <form action="{% url 'login' %}">
+        <button class="mui-btn mui-btn--raised">Login with Username</button>
+      </form><br>
     </div>
-
-
-    <div class="main-container">
-    {% if messages %}
-    {% for message in messages %}
-        <div class = "alert alert-{{message.tags}}">
-            {{ message }}
-        </div>
-    {% endfor %}
-    {% endif %}
-    <h1>You have been logged out</h1>
-    <div class="border-top pt-3">
-    </div>
-    </div>
+  </div>
 
 {% endblock content %}

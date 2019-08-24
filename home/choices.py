@@ -629,7 +629,9 @@ INCOME_LEVEL_CHOICES = (
 
 CHANGE_STUDENT_CHOICES = (("Add", "Add"), ("Remove", "Remove"), ("None", "None"))
 
-CLASSROOM_MEMBERSHIP_CHOICES = (("teacher", "teacher"),
-                                ("teacher_assistant", "teacher_assistant"),
-                                ("student", "student"),
-                                ("volunteer", "volunteer"))
+CLASSROOM_MEMBERSHIP_CHOICES = (
+    ("teacher", "teacher"),
+    ("teacher_assistant", "teacher_assistant"),
+    ("student", "student"),
+    ("volunteer", "volunteer"),
+)

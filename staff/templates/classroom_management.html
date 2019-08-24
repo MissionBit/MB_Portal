@@ -1,75 +1,22 @@
-{% extends "staff_base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
 
-<style>
-.wrapper{
-    display: grid;
-    grid-template-columns: repeat(4, .15fr);
-    grid-gap: 20px;
-    padding-left: 300px;
-    padding-top: 120px;
-    padding-bottom: 200px;
-}
-</style>
+{% include "message.html" %}
 
-<style>
-.sidenav {
-  height: 100%;
-  width: 240px;
-  position: fixed;
-  z-index: 1;
-  top: 80px;
-  left: 0;
-  background-color: whitesmoke;
-  overflow-x: hidden;
-  padding-top: 100px;
-}
-
-.sidenav a {
-  padding-top: 10px;
-  padding-left: 25px;
-  text-decoration: #333333;
-  font-size: 18px;
-  color: steelblue;
-  display: block;
-}
-
-.sidenav a:hover {
-  color: #666666;
-}
-
-.button {
-   font-size: 10px;
-   font-family: "American Typewriter";
-   border-radius: 14px;
-   background-color: white;
-   color: #4CAF50;
-   border: 2px solid #4CAF50;
-}
-</style>
-
-<div class="sidenav">
-  <a href={% url 'staff' %}>Staff Home</a>
-  <a href="{% url 'create_classroom' %}">Create Classroom</a>
-  <a href="{% url 'create_class_offering' %}">Create Class Offering</a>
-</div>
-
-<div class="wrapper">
   {% if classrooms %}
     {% for classroom in classrooms %}
-      <div style="border-style: groove; border-color: darkslateblue; width: 350px; padding-left: 10px; padding-bottom: 20px;">
+      <div class="notification-container">
+        <div class="mui-panel">
           <h3>{{ classroom }}</h3>
           <h6>{{ class_dicts|get_item:classroom.course|get_item:"teacher" }}</h6>
           <h6>{{ class_dicts|get_item:classroom.course|get_item:"teacher_assistant" }}</h6>
-              <form action="{% url 'classroom_detail' %}" method="get">
-              <input type="hidden" name="course_id" value="{{ classroom.id }}" />
-              <button class="button" type="submit">Go To Classroom</button>
-          </form>
+          <a href="{% url 'classroom_detail' course_id=classroom.id %}" method="get"
+          class="mui-btn mui-btn--fab mui-btn--primary">Go</a>
+        </div>
       </div><br>
     {% endfor %}
   {% endif %}
-</div>
 
 
 {% endblock content %}

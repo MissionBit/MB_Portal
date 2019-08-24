@@ -1,32 +1,28 @@
-{% extends "home/home.html" %}
-{% load crispy_forms_tags %}
+{% extends "home_base.html" %}
+{% load static %}
 
 {% block content %}
 
-  <div class="sidenav">
-
-    </div>
-
-    <h3>Change your Password</h3>
-    <h5>Please refer to the email you received to find your temporary password</h5>
-
-  <div class="main-container">
-    {% if messages %}
-    {% for message in messages %}
-        <div class = "alert alert-{{message.tags}}">
-            {{ message }}
-        </div>
-    {% endfor %}
-    {% endif %}
-
-    <form method="post">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <br>
-    <button type="submit" class="btn btn-primary">Change Password</button>
-      </form>
-
-  </form>
+<div class="form-container">
+  <div class="mui-panel">
+    {% include "error.html" %}
+    <form class="mui-form" method="post">
+      <legend>Please change your password</legend>
+      {% csrf_token %}
+      <div class="mui-textfield">
+        Old Password: {{ form.old_password }}
+      </div>
+      <div class="mui-textfield">
+        New Password: {{ form.new_password1 }}
+      </div>
+      <div class="mui-textfield">
+        Retype Password: {{ form.new_password2 }}
+      </div>
+      <button class="mui-btn mui-btn--primary" type="submit">Submit</button>
+      <br>
+      <br>
+    </form>
   </div>
+</div>
 
 {% endblock content %}

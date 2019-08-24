@@ -1,29 +1,27 @@
-{% extends "home/home.html" %}
+{% extends "home_base.html" %}
+{% load static %}
 
-    {% block content %}
+{% block content %}
 
-      <div class="sidenav">
-
-    </div>
-
-    <div class = "main-container">
-    {% if messages %}
-    {% for message in messages %}
-        <div class = "alert alert-{{message.tags}}">
-            {{ message }}
-        </div>
-    {% endfor %}
-    {% endif %}
-
-    <h4>Please Complete Registration</h4>
-    <form method = "POST">
-        {% csrf_token %}
-        Choose Your Role:<br><br>
-        <input type="radio" name="role" value="student" checked>Student<br>
-          <input type="radio" name="role" value="volunteer">Volunteer<br><br>
-        <button class = "btn btn-outline-info" type="submit">Finish Registration</button>
+<div class="form-container">
+  <div class="mui-panel">
+    {% include "error.html" %}
+    <img class="logo" src="{% static 'missionbit-logo.png' %}"/>
+    <form class="mui-form" method="post">
+      <legend>Register As Student or Volunteer</legend>
+      {% csrf_token %}
+      <div class="mui-radio">
+        <label>
+          <input type="radio" name="role" value="student" checked>Student</label>
+      </div>
+      <div class="mui-radio">
+        <label><input type="radio" name="role" value="volunteer">Volunteer</label>
+      </div>
+      <button class="mui-btn mui-btn--primary" type="submit">Submit</button>
+      <br>
     </form>
-    </div>
+  </div>
+</div>
 
 
 {% endblock content %}
