@@ -8,6 +8,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from home.choices import *
 from werkzeug import secure_filename
+from django_q.models import Task
 
 
 def get_name(self):
@@ -15,6 +16,8 @@ def get_name(self):
 
 
 DjangoUser.add_to_class("__str__", get_name)
+
+Task.add_to_class("minutes", "minutes")
 
 
 def upload_to(instance, filename):

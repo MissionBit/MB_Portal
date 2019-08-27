@@ -525,6 +525,7 @@ def get_my_announcements(request, group):
             )
         ),
         dismissed=False,
+        user_id=request.user
     )
 
 
@@ -535,5 +536,7 @@ def get_my_forms(request, group):
         )
         | Form.objects.filter(
             recipient_classrooms__in=[get_classroom_by_django_user(request.user)]
-        )
+        ),
+        submitted=False,
+        user_id=request.user
     )
