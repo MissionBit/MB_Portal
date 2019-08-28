@@ -16,6 +16,8 @@ services:
       - "10000:10000"
     volumes:
       - azdata:/data
+  redis:
+    image: "redis:alpine"
   web:
     build: .
     command:
@@ -48,6 +50,22 @@ services:
     depends_on:
       - db
       - azurite
+  celery:
+    build: .
+    command: celery -A missionbit worker -l info
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - redis
+  celery-beat:
+    build: .
+    command: celery -A missionbit worker -l info
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - redis
 
 volumes:
   pgdata:
