@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "django_q",  # <- For queueing tasks
     "storages",  # <- Storing uploaded files in Azure Storage
     "static",  # <- Accessing Static HTML templates
+    "django_celery_beat", # <- Scheduled tasks
 ]
 
 MIDDLEWARE = [
@@ -251,7 +252,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 
 CELERY_BEAT_SCHEDULE = {
     'hello': {
-        'task': 'missionbit.tasks.hello',
+        'task': 'staff.tasks.hello',
         'schedule': crontab()  # execute every minute
     }
 }
