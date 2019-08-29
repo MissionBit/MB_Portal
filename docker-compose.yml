@@ -8,6 +8,8 @@ services:
       - POSTGRES_DB=mbdb
     volumes:
       - pgdata:/var/lib/postgresql/data
+    ports:
+        - "5432:5432"
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite
     ports:

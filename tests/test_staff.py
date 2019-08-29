@@ -108,24 +108,36 @@ class BaseTestCase(TestCase):
     def valid_create_class_offering_form(self):
         return {
             "name": "Test Course",
-            "location": Account.objects.get(name="Test_Org").id,
+            "location": Account.objects.get_or_create(name="Test_Org", npe01_systemis_individual=False)[0].id,
             "created_by": User.objects.filter(is_active=True).first().id,
-            "start_date": "07/07/2019",
-            "end_date": "01/01/2020",
+            "start_date": "2019-07-07",
+            "end_date": "2019-09-09",
             "description": "This is a test classroom",
-            "instructor": Contact.objects.get(client_id="clatea19010101").id,
+            "instructor": self.get_or_create_test_teacher().id,
             "meeting_days": "M/W",
         }
 
     def valid_create_classroom_form(self):
         return {
-            "course": ClassOffering.objects.get(name="Test_Class").id,
+            "course": self.get_or_create_test_course().id,
             "teacher": self.get_or_create_test_teacher().id,
             "teacher_assistant": self.get_or_create_test_teacher().id,
             "volunteers": self.get_or_create_test_volunteer().id,
             "students": self.get_or_create_test_student().id,
             "created_by": User.objects.filter(is_active=True).first().id,
         }
+
+    def get_or_create_test_course(self):
+        course = ClassOffering.objects.get_or_create(
+            name="Test Course",
+            location=Account.objects.get_or_create(name="Test_Org", npe01_systemis_individual=False)[0],
+            created_by=User.objects.filter(is_active=True).first(),
+            start_date="2019-07-07",
+            end_date="2019-09-09",
+            instructor=self.get_or_create_test_teacher(),
+            meeting_days="M/W",
+        )
+        return course[0]
 
     def get_or_create_test_teacher(self):
         contact = Contact.objects.get_or_create(
@@ -202,6 +214,11 @@ class StaffViewsTest(BaseTestCase):
         response = self.client.post(
             reverse("create_classroom"), self.valid_create_classroom_form()
         )
+        ClassOffering.objects.get(name="Test Course").delete()
+        Contact.objects.get(client_id="clatea19010101").delete()
+        Contact.objects.get(client_id="stuuse19010101").delete()
+        Contact.objects.get(client_id="voluse19010101").delete()
+        Account.objects.get(name="Test_Org").delete()
         self.assertEqual(response.url, reverse("staff"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
@@ -218,6 +235,8 @@ class StaffViewsTest(BaseTestCase):
         response = self.client.post(
             reverse("create_class_offering"), self.valid_create_class_offering_form()
         )
+        ClassOffering.objects.get(name="Test Course").delete()
+        Account.objects.get(name="Test_Org").delete()
         self.assertEqual(response.url, reverse("staff"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
