@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "django_q",  # <- For queueing tasks
     "storages",  # <- Storing uploaded files in Azure Storage
     "static",  # <- Accessing Static HTML templates
+    "django_celery_beat", # <- Scheduled tasks
 ]
 
 MIDDLEWARE = [
@@ -240,3 +241,16 @@ LOGGING = {
     }
 }
 """
+
+from celery.schedules import crontab
+
+CELERY_BROKER_URL = 'redis://redis:6379'
+CELERY_RESULT_BACKEND = 'redis://redis:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+
+CELERY_BEAT_SCHEDULE = {
+
+}

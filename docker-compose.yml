@@ -16,6 +16,8 @@ services:
       - "10000:10000"
     volumes:
       - azdata:/data
+  redis:
+    image: "redis:alpine"
   web:
     build: .
     command:
@@ -48,6 +50,21 @@ services:
     depends_on:
       - db
       - azurite
+  celerybeat:
+    build: .
+    command:
+    - bash
+    - '-c'
+    - |
+      pip install -r requirements.txt &&
+      celery -A missionbit worker -B -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    environment:
+      - DATABASE_URL=postgres://mbdb@db/mbdb
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - redis
 
 volumes:
   pgdata:
