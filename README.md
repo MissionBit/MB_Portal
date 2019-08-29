@@ -40,6 +40,17 @@ Create the database and apply any necessary migrations:
 python manage.py migrate
 ```
 
+Next, seed your database with some data:
+
+```
+python manage.py loaddata fixtures.json
+```
+
+Once you've seeded the database, you will be able to log in with
+either a staff account, student account, or teacher account, with usernames
+'staff_user', 'student_user', and teacher_user, respectively.  All three account
+passwords are 'topsecret123'
+
 Finally run the application on your local machine with:
 
 ```
@@ -51,8 +62,6 @@ Navigate in your browser to:
 ```
 localhost:8000/
 ```
-
-And Bob's your uncle.
 
 ## Running the tests
 
@@ -123,6 +132,17 @@ Azure Storage server accessible at
 ```bash
 docker-compose up
 ```
+
+To seed your database with some data:
+
+```
+docker-compose run web python manage.py loaddata fixtures.json
+```
+
+Once you've seeded the database, you will be able to log in with
+either a staff account, student account, or teacher account, with usernames
+'staff_user', 'student_user', and teacher_user, respectively.  All three account
+passwords are 'topsecret123'
 
 To start over with a fresh environment:
 
