@@ -87,7 +87,7 @@ def create_mission_bit_user(request, form, group):
     first_name = form.cleaned_data.get("first_name")
     messages.success(request, f"Student Account Successfully Created For {first_name}")
     email_new_user(
-        request, email, first_name, group, new_user.username, random_password
+        email, first_name, group, new_user.username, random_password
     )
     messages.add_message(request, messages.SUCCESS, "Email sent successfully")
 
