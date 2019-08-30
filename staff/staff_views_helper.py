@@ -89,6 +89,7 @@ def create_mission_bit_user(request, form, group):
     email_new_user(
         request, email, first_name, group, new_user.username, random_password
     )
+    messages.add_message(request, messages.SUCCESS, "Email sent successfully")
 
 
 def enroll_in_class(form, contact):
@@ -201,7 +202,7 @@ def get_classroom_by_django_user(django_user):
         return None
 
 
-def email_new_user(request, email, first_name, account_type, username, password):
+def email_new_user(email, first_name, account_type, username, password):
     subject = "%s - Your new %s account has been set up" % (first_name, account_type)
     msg_html = render_to_string(
         "email_templates/new_user_email.html",
@@ -221,7 +222,6 @@ def email_new_user(request, email, first_name, account_type, username, password)
         recipient_list=["tyler.iams@gmail.com"],  # Will replace with email
         html_message=msg_html,
     )
-    messages.add_message(request, messages.SUCCESS, "Email sent successfully")
 
 
 def email_classroom(request, email_list, classroom_name):
@@ -540,3 +540,25 @@ def get_my_forms(request, group):
         submitted=False,
         user_id=request.user
     )
+
+
+def create_django_user_from_contact(contact):
+    username = validate_username("%s.%s" % (contact.first_name, contact.last_name))
+    password = DjangoUser.objects.make_random_password()
+    dj = DjangoUser.objects.create_user(
+        first_name=contact.first_name,
+        last_name=contact.last_name,
+        email=contact.email,
+        username=username,
+        password=password,
+        is_staff=False,
+        is_superuser=False,
+        is_active=True
+    )
+    up = UserProfile.objects.get(user=dj)
+    up.change_pwd = True
+    up.date_of_birth = contact.birthdate
+    up.salesforce_id = contact.client_id
+    up.save()
+    Group.objects.get(name=str(contact.title).lower()).user_set.add(dj)
+    email_new_user(contact.email, contact.first_name, contact.title, username, password)
