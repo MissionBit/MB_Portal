@@ -17,8 +17,6 @@ def add_salesforce_contacts_to_postgres():
                                          last_name=contact.last_name,
                                          email=contact.email).exists():
             create_django_user_from_contact(contact)
-        else:
-            print("Here method changed")
 
 
 @shared_task
@@ -32,7 +30,7 @@ def sync_userprofile_data_with_salesforce_data():
         except Contact.DoesNotExist:
             print("%s %s, id: %s - not found in salesfoce." % (django_user.first_name, django_user.last_name, django_user.id))
             continue
-        if str(user.salesforce_id) != str(contact.birthdate):
+        if user.salesforce_id is not contact.client_id:
             user.date_of_birth = contact.birthdate
             user.salesforce_id = str(contact.client_id).lower()
             user.save()
