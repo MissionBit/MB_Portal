@@ -30,7 +30,7 @@ def sync_userprofile_data_with_salesforce_data():
         except Contact.DoesNotExist:
             print("%s %s, id: %s - not found in salesfoce." % (django_user.first_name, django_user.last_name, django_user.id))
             continue
-        if user.salesforce_id is not contact.client_id:
+        if user.salesforce_id != contact.client_id:
             user.date_of_birth = contact.birthdate
             user.salesforce_id = str(contact.client_id).lower()
             user.save()
