@@ -555,10 +555,9 @@ def create_django_user_from_contact(contact):
         is_superuser=False,
         is_active=True
     )
-    up = UserProfile.objects.get(user=dj)
-    up.change_pwd = True
-    up.date_of_birth = contact.birthdate
-    up.salesforce_id = contact.client_id
-    up.save()
+    dj.userprofile.change_pwd = True
+    dj.userprofile.date_of_birth = contact.birthdate
+    dj.userprofile.salesforce_id = contact.client_id
+    dj.save()
     Group.objects.get(name=str(contact.title).lower()).user_set.add(dj)
     email_new_user(contact.email, contact.first_name, contact.title, username, password)
