@@ -203,7 +203,8 @@ class CreateClassroomForm(forms.ModelForm):
 
 
 class CreateClassOfferingForm(forms.ModelForm):
-    name = forms.CharField(max_length="80")
+    course = forms.ChoiceField(required=True, choices=COURSE_CHOICES)
+    name = forms.CharField(required=True)
     location = forms.ModelChoiceField(
         queryset=Account.objects.filter(npe01_systemis_individual=False)
     )
@@ -217,6 +218,7 @@ class CreateClassOfferingForm(forms.ModelForm):
     class Meta:
         model = ClassOffering
         fields = [
+            "course",
             "name",
             "location",
             "created_by",

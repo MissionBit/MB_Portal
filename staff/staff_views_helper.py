@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.models import Group
 from django.shortcuts import render
-from home.models.salesforce import ClassEnrollment, Contact, ClassOffering
+from home.models.salesforce import ClassEnrollment, Contact, ClassOffering, ClassMeeting, ClassAttendance, User
 from home.models.models import (
     Announcement,
     UserProfile,
@@ -169,6 +169,7 @@ def generate_classroom_sessions_and_attendance(classroom):
         for session in sessions
     ]
     Attendance.objects.bulk_create(attendances)
+    create_classroom_attendance_in_salesforce(classroom, attendances)
 
 
 def get_classroom_sessions(classroom):
@@ -561,3 +562,32 @@ def create_django_user_from_contact(contact):
     dj.save()
     Group.objects.get(name=str(contact.title).lower()).user_set.add(dj)
     email_new_user(contact.email, contact.first_name, contact.title, username, password)
+
+
+def create_classroom_attendance_in_salesforce(classroom, attendances):
+    user = get_mission_bit_api_user()
+    class_offering = ClassOffering.objects.get(name=classroom.course)
+    print("class offering: ", class_offering.name)
+    students = ClassEnrollment.objects.filter(class_offering=class_offering).select_related('contact')
+    class_meetings = [
+        ClassMeeting.objects.create(
+            name="%s-%s" % (classroom.course[0:25], attendance.date),
+            created_by=user,
+            date=attendance.date,
+            class_offering=class_offering
+        )
+        for attendance in attendances
+    ]
+    for class_meeting in class_meetings:
+        for student in students:
+            if str(student.contact.title) == "Student":
+                ClassAttendance.objects.create(
+                    name="%s-%s" % (student.contact, class_meeting.date),
+                    class_meeting=class_meeting,
+                    contact=student.contact,
+                    status='Signed-up',
+                )
+
+
+def get_mission_bit_api_user():
+    return User.objects.get(name="Mission Bit API")

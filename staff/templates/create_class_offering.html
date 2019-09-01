@@ -8,6 +8,10 @@
         <form class="mui-form" method="post">
           {% csrf_token %}
           <legend>Create Class Offering</legend>
+          <div class="mui-select">
+            {{ form.course}}
+            <label>Course*</label>
+          </div>
           <div class="mui-textfield mui-textfield--float-label">
             {{ form.name}}
             <label>Name*</label>

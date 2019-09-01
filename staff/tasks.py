@@ -1,7 +1,7 @@
 # Create your tasks here
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
-from home.models.models import DjangoUser, UserProfile, Group
+from home.models.models import DjangoUser, UserProfile
 from home.models.salesforce import Contact
 from staff.staff_views_helper import create_django_user_from_contact
 
@@ -34,4 +34,3 @@ def sync_userprofile_data_with_salesforce_data():
             user.date_of_birth = contact.birthdate
             user.salesforce_id = str(contact.client_id).lower()
             user.save()
-
