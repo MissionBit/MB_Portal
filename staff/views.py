@@ -33,7 +33,6 @@ import os
 
 @group_required("staff")
 def staff(request):
-    sync_attendance_with_salesforce_attendance()
     if request.method == "POST":
         if request.POST.get("dismiss_announcement") == "true":
             mark_announcement_dismissed(
