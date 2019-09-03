@@ -259,5 +259,9 @@ CELERY_BEAT_SCHEDULE = {
     'userprofile_sync': {
         'task': 'staff.tasks.sync_userprofile_data_with_salesforce_data',
         'schedule': crontab()
+    },
+    'cross_reference_classrooms': {
+        'task': 'staff.tasks.cross_reference_classrooms_with_class_offerings',
+        'schedule': crontab()
     }
 }

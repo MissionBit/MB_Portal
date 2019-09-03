@@ -12,6 +12,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.contrib import messages
+from staff.tasks import sync_attendance_with_salesforce_attendance
 import statistics
 
 
@@ -19,6 +20,12 @@ import statistics
 def attendance(request):
     user_group = request.user.groups.first()
     if request.method == "POST":
+        if request.POST.get("sync_data"):
+            sync_attendance_with_salesforce_attendance.delay()
+            messages.add_message(
+                request, messages.SUCCESS, "Attendance sync with Salesforce initiated."
+            )
+            return redirect("attendance")
         store_attendance_data(request)
         async_task(
             "attendance.views.update_course_attendance_statistic",

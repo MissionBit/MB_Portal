@@ -3,12 +3,15 @@
     "model":"home.classroom",
     "pk":1,
     "fields":{
-      "course":"Unity Game Dev",
+      "course":"Fall 2019 - Unity - Unity Game Dev School - M/W - Teacher User",
       "attendance_summary":{
         "attendance_statistic":0.0
       },
       "forum_title":null,
-      "forum":null
+      "forum":null,
+      "end_date":"2019-09-25",
+      "meeting_days":"M/W",
+      "start_date":"2019-08-21"
     }
   },
   {

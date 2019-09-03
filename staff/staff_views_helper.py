@@ -153,7 +153,7 @@ def generate_classroom_sessions_and_attendance(classroom):
         "attendance_statistic": get_course_attendance_statistic(classroom.id)
     }
     classroom.save()
-    class_offering = ClassOffering.objects.get(name=classroom.course)
+    class_offering = ClassOffering.objects.get(mbportal_id=classroom.id)
     dates = class_offering_meeting_dates(class_offering)
     sessions = [Session(classroom_id=classroom.id, date=day) for day in dates]
     Session.objects.bulk_create(sessions)
@@ -567,7 +567,6 @@ def create_django_user_from_contact(contact):
 def create_classroom_attendance_in_salesforce(classroom, attendances):
     user = get_mission_bit_api_user()
     class_offering = ClassOffering.objects.get(name=classroom.course)
-    print("class offering: ", class_offering.name)
     students = ClassEnrollment.objects.filter(class_offering=class_offering).select_related('contact')
     class_meetings = [
         ClassMeeting.objects.create(
@@ -585,9 +584,12 @@ def create_classroom_attendance_in_salesforce(classroom, attendances):
                     name="%s-%s" % (student.contact, class_meeting.date),
                     class_meeting=class_meeting,
                     contact=student.contact,
-                    status='Signed-up',
+                    status='Present',
                 )
 
 
 def get_mission_bit_api_user():
     return User.objects.get(name="Mission Bit API")
+
+
+

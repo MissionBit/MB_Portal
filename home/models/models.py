@@ -6,6 +6,7 @@ from django.contrib.auth.models import Group
 from django.contrib.postgres.fields import JSONField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from .salesforce import ClassOffering
 from home.choices import *
 from werkzeug import secure_filename
 from django_q.models import Task
@@ -54,6 +55,9 @@ class Classroom(mdls.Model):
     attendance_summary = JSONField(default=None, null=True)
     forum_title = mdls.CharField(max_length=240, default=None, null=True)
     forum = mdls.URLField(default=None, null=True)
+    start_date = mdls.DateField(null=True)
+    end_date = mdls.DateField(null=True)
+    meeting_days = mdls.CharField(max_length=80, null=True)
 
     def __str__(self):
         return "%s" % (self.course)
