@@ -125,6 +125,16 @@ Python, PostgreSQL, or anything but
 (or a Linux installation of docker-compose). Conveniently, we can also use
 this to run emulated versions of services we depend on such as Azure Storage.
 
+First, apply the migrations
+```
+docker-compose run web python manage.py migrate
+```
+
+Then seed your database with some data:
+```
+docker-compose run web python manage.py loaddata fixtures.json
+```
+
 This will start up the Django server, PostgreSQL database, and
 Azure Storage server accessible at
 [http://localhost:8000/](http://localhost:8000/):
@@ -133,16 +143,10 @@ Azure Storage server accessible at
 docker-compose up
 ```
 
-To seed your database with some data:
-
-```
-docker-compose run web python manage.py loaddata fixtures.json
-```
-
-Once you've seeded the database, you will be able to log in with
-either a staff account, student account, or teacher account, with usernames
+Once you've seeded the database and started your container, you will be able to log in with
+either a staff account, student account, or teacher account using usernames
 'staff_user', 'student_user', and teacher_user, respectively.  All three account
-passwords are 'topsecret123'
+passwords are 'topsecret123'.  Enjoy!
 
 To start over with a fresh environment:
 

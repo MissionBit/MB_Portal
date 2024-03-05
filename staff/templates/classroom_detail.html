@@ -6,6 +6,7 @@
 
   <div class="notification-container">
     <div class="mui-panel">
+      {% include "message.html" %}
       {% include "error.html" %}
       <h2>{{ classroom.course }}</h2><hr>
       <h4>{{ class_members|get_item:"teacher"}}</h4>
@@ -126,6 +127,24 @@
         <input type="hidden" name="add_student" value="True"/>
         <input type="hidden" name="course_id" value={{ classroom.id }} />
       </form>
+    </div>
+  </div><br><br><br><br><br><br><br>
+  <div class="dangerous-action">
+    <h1>Danger Zone</h1><hr>
+    <div class="mui-panel">
+      <div class="dangerous-action">
+        <h3>Reset Course Data</h3><hr>
+        <p>Only reset course data if absolutely necessary.
+        This action cannot be undone easily.  If this course is ongoing,
+         and already contains attendance and/or session data, please speak
+        to a member of the Mission Bit developer team before taking action.</p>
+        <form method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="reset_classroom" value="True">
+          <input type="hidden" name="classroom" value="{{ classroom.id }}" />
+          <button class="mui-btn mui-btn--raised mui-btn--accent" type="submit">Reset Data</button>
+        </form>
+      </div>
     </div>
   </div>
 

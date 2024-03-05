@@ -423,6 +423,17 @@ class ClassOffering(models.Model):
         blank=True,
         null=True,
     )
+    mbportal_id = models.DecimalField(
+        custom=True,
+        db_column="MBPortal_id__c",
+        unique=True,
+        max_digits=8,
+        decimal_places=0,
+        verbose_name="MBPortal_id",
+        help_text="This will be automatically set by the Mission Bit Portal, and should not be altered.",
+        blank=True,
+        null=True,
+    )
     created_date = models.DateTimeField(sf_read_only=models.READ_ONLY)
     created_by = models.ForeignKey(
         "User",
@@ -828,3 +839,140 @@ class ClassEnrollment(models.Model):
         verbose_name = "Class Enrollment"
         verbose_name_plural = "Class Enrollments"
         # keyPrefix = 'a0i'
+
+
+class ClassMeeting(models.Model):
+    is_deleted = models.BooleanField(
+        verbose_name="Deleted", sf_read_only=models.READ_ONLY, default=False
+    )
+    name = models.CharField(
+        max_length=80,
+        verbose_name="Class Meeting Name",
+        default=models.DEFAULTED_ON_CREATE,
+        blank=True,
+        null=True,
+    )
+    created_date = models.DateTimeField(sf_read_only=models.READ_ONLY)
+    created_by = models.ForeignKey(
+        "User",
+        models.DO_NOTHING,
+        related_name="classmeeting_createdby_set",
+        sf_read_only=models.READ_ONLY,
+    )
+    last_modified_date = models.DateTimeField(sf_read_only=models.READ_ONLY)
+    last_modified_by = models.ForeignKey(
+        "User",
+        models.DO_NOTHING,
+        related_name="classmeeting_lastmodifiedby_set",
+        sf_read_only=models.READ_ONLY,
+    )
+    system_modstamp = models.DateTimeField(sf_read_only=models.READ_ONLY)
+    date = models.DateField(custom=True, blank=True, null=True)
+    class_offering = models.ForeignKey(
+        "ClassOffering", models.DO_NOTHING, db_column="Class_Offering__c", custom=True
+    )  # Master Detail Relationship 0
+    start_time = models.TimeField(
+        custom=True,
+        db_column="Start_Time__c",
+        verbose_name="Start Time",
+        blank=True,
+        null=True,
+    )
+    end_time = models.TimeField(
+        custom=True,
+        db_column="End_Time__c",
+        verbose_name="End Time",
+        blank=True,
+        null=True,
+    )
+    duration_hours = models.DecimalField(
+        custom=True,
+        db_column="Duration_hours__c",
+        max_digits=2,
+        decimal_places=0,
+        verbose_name="Duration (hours)",
+        blank=True,
+        null=True,
+    )
+
+    class Meta(models.Model.Meta):
+        db_table = "Class_Meeting__c"
+        verbose_name = "Class Meeting"
+        verbose_name_plural = "Class Meetings"
+
+
+class ClassAttendance(models.Model):
+    is_deleted = models.BooleanField(
+        verbose_name="Deleted", sf_read_only=models.READ_ONLY, default=False
+    )
+    name = models.CharField(
+        max_length=80, verbose_name="Class Attendance #", sf_read_only=models.READ_ONLY
+    )
+    created_date = models.DateTimeField(sf_read_only=models.READ_ONLY)
+    created_by = models.ForeignKey(
+        "User",
+        models.DO_NOTHING,
+        related_name="classattendance_createdby_set",
+        sf_read_only=models.READ_ONLY,
+    )
+    last_modified_date = models.DateTimeField(sf_read_only=models.READ_ONLY)
+    last_modified_by = models.ForeignKey(
+        "User",
+        models.DO_NOTHING,
+        related_name="classattendance_lastmodifiedby_set",
+        sf_read_only=models.READ_ONLY,
+    )
+    system_modstamp = models.DateTimeField(sf_read_only=models.READ_ONLY)
+    contact = models.ForeignKey(
+        "Contact", models.DO_NOTHING, custom=True, sf_read_only=models.NOT_UPDATEABLE
+    )  # Master Detail Relationship 0
+    status = models.CharField(
+        custom=True,
+        max_length=255,
+        choices=[
+            ("Present", "Present"),
+            ("Late", "Late"),
+            ("Excused", "Excused"),
+            ("Absent", "Absent"),
+            ("Signed-up", "Signed-up"),
+        ],
+        blank=True,
+        null=True,
+    )
+    class_meeting = models.ForeignKey(
+        "ClassMeeting",
+        models.DO_NOTHING,
+        db_column="Class_Meeting__c",
+        custom=True,
+        sf_read_only=models.NOT_UPDATEABLE,
+    )  # Master Detail Relationship 1
+    class_meeting_date = models.DateField(
+        custom=True,
+        db_column="Class_Meeting_Date__c",
+        verbose_name="Class Meeting Date",
+        sf_read_only=models.READ_ONLY,
+        blank=True,
+        null=True,
+    )
+    assessment_score = models.DecimalField(
+        custom=True,
+        db_column="Assessment_Score__c",
+        max_digits=1,
+        decimal_places=0,
+        verbose_name="Assessment Score",
+        blank=True,
+        null=True,
+    )
+    teacher_s_notes = models.TextField(
+        custom=True,
+        db_column="Teacher_s_Notes__c",
+        verbose_name="Teacher's Notes",
+        blank=True,
+        null=True,
+    )
+
+    class Meta(models.Model.Meta):
+        db_table = "Class_Attendance__c"
+        verbose_name = "Class Attendance"
+        verbose_name_plural = "Class Attendance"
+        # keyPrefix = 'a0k'

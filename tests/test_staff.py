@@ -108,6 +108,7 @@ class BaseTestCase(TestCase):
     def valid_create_class_offering_form(self):
         return {
             "name": "Test Course",
+            "course": "Android Game Design",
             "location": Account.objects.get_or_create(name="Test_Org", npe01_systemis_individual=False)[0].id,
             "created_by": User.objects.filter(is_active=True).first().id,
             "start_date": "2019-07-07",
@@ -130,6 +131,7 @@ class BaseTestCase(TestCase):
     def get_or_create_test_course(self):
         course = ClassOffering.objects.get_or_create(
             name="Test Course",
+            course="Android Game Design",
             location=Account.objects.get_or_create(name="Test_Org", npe01_systemis_individual=False)[0],
             created_by=User.objects.filter(is_active=True).first(),
             start_date="2019-07-07",
@@ -214,7 +216,7 @@ class StaffViewsTest(BaseTestCase):
         response = self.client.post(
             reverse("create_classroom"), self.valid_create_classroom_form()
         )
-        ClassOffering.objects.get(name="Test Course").delete()
+        ClassOffering.objects.get(name="Summer 2019 - Android - Test_Org - M/W - classroom teacher").delete()
         Contact.objects.get(client_id="clatea19010101").delete()
         Contact.objects.get(client_id="stuuse19010101").delete()
         Contact.objects.get(client_id="voluse19010101").delete()
@@ -235,7 +237,7 @@ class StaffViewsTest(BaseTestCase):
         response = self.client.post(
             reverse("create_class_offering"), self.valid_create_class_offering_form()
         )
-        ClassOffering.objects.get(name="Test Course").delete()
+        ClassOffering.objects.get(name="Summer 2019 - Android - Test_Org - M/W - classroom teacher").delete()
         Account.objects.get(name="Test_Org").delete()
         self.assertEqual(response.url, reverse("staff"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)

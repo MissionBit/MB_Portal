@@ -23,6 +23,8 @@ from home.forms import (
 from .staff_views_helper import *
 from attendance.views import get_date_from_template_returned_string
 from home.models.models import Classroom, Form, Esign, Notification, Announcement
+from .tasks import cross_reference_classrooms_with_class_offerings, reset_classroom_data
+from django.db import transaction
 from django_q.models import Schedule
 from datetime import datetime
 from pytz import timezone as tz
@@ -515,6 +517,12 @@ def classroom_detail(request, course_id):
                     request, messages.ERROR, "Invalid Form"
                 )  # Need to have fall through here
                 return redirect("staff")
+        if request.POST.get("reset_classroom"):
+            reset_classroom_data.delay(request.POST.get("classroom"))
+            messages.add_message(
+                request, messages.SUCCESS, "Revisit page in several minutes to see changes."
+            )
+            return redirect("classroom_detail", request.POST.get("classroom"))
     classroom = Classroom.objects.get(id=course_id)
     class_members = get_class_member_dict(classroom)
     return render(

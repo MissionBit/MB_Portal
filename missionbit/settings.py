@@ -252,5 +252,16 @@ CELERY_RESULT_SERIALIZER = 'json'
 
 
 CELERY_BEAT_SCHEDULE = {
-
+    'users_contacts_sync': {
+        'task': 'staff.tasks.add_salesforce_contacts_to_postgres',
+        'schedule': crontab()
+    },
+    'userprofile_sync': {
+        'task': 'staff.tasks.sync_userprofile_data_with_salesforce_data',
+        'schedule': crontab()
+    },
+    'cross_reference_classrooms': {
+        'task': 'staff.tasks.cross_reference_classrooms_with_class_offerings',
+        'schedule': crontab()
+    }
 }
